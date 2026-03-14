@@ -14,26 +14,48 @@ const ListDSConfig = (): DataSetProps => {
     pageSize: 100,
     queryFields: [
       {
-        label: intl.get(`${intlPrefix}.title`).d('标题'),
-        name: 'title',
+        label: intl.get(`${intlPrefix}.title`).d('姓名'),
+        name: 'name',
         type: FieldType.string,
       },
       {
-        label: intl.get(`${intlPrefix}.content`).d('内容'),
-        name: 'content',
-        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.content`).d('年龄'),
+        name: 'age',
+        type: FieldType.number,
+        max: 100,
+        step: 1
+      },
+      {
+        label: intl.get(`${intlPrefix}.content`).d('邮箱'),
+        name: 'email',
+        type: FieldType.email,
+        help: '用户邮箱，可以自动补全',
       },
     ],
     fields: [
       {
-        name: 'title',
+        name: 'name',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.title`).d('标题'),
+        label: '姓名',
+        required: true,
       },
       {
-        name: 'content',
+        name: 'age',
+        type: FieldType.number,
+        label: '年龄',
+        max: 100,
+        step: 1,
+        computedProps: {
+          required: ({ record }) => record.get('age') > 18,
+        },
+      },
+      {
+        name: 'email',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.content`).d('内容'),
+        label: '邮箱',
+        help: '用户邮箱，可以自动补全',
+        required: true,
+
       },
     ],
     // data: [
@@ -49,6 +71,14 @@ const ListDSConfig = (): DataSetProps => {
           method: 'GET',
         };
       },
+      submit: ({ dataSet, data }) => {
+        console.log('submit==', data);
+        return {
+          data: data[0],  // body 参数
+          url: `${process.env.SRM_DEV_HOST}/demo/`,
+          method: 'POST',
+        };
+      },
       destroy: ({ data }): AxiosRequestConfig => {
         const ids = data.map((item) => item.id);
         return {
@@ -56,6 +86,14 @@ const ListDSConfig = (): DataSetProps => {
           url: `${process.env.SRM_DEV_HOST}/demo/${ids[0]}`,
           method: 'DELETE',
         };
+      },
+    },
+    events: {
+      load: ({ dataSet }) => {
+        console.log('load', dataSet);
+      },
+      query: ({ params, data }) => {
+        console.log('query', params, data);
       },
     },
   };

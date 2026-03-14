@@ -10,10 +10,12 @@ import { ListDSConfig } from '../stores/indexDS';
 import { ListProps } from '@/typings';
 import { Record } from 'choerodon-ui/dataset';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
-import { ColumnLock, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
-import {ButtonColor} from "choerodon-ui/pro/lib/button/enum";
-import React from "react";
-import TitleCom from "@/pages/Demo/Index/TitleCom";
+import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
+import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
+import React, {useCallback, useMemo, useState} from "react";
+import TitleCom from '@/pages/Demo/Index/TitleCom';
+import {AutoComplete} from 'choerodon-ui/pro';
+import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
 
 const intlPrefix = 'srm.demo';
 
@@ -40,14 +42,59 @@ const Index = (props: ListProps) => {
     listDS.query(listDS.currentPage);
   }
 
+  const emailOptionDS = useMemo(() => {
+    return new DataSet({
+      fields: [
+        {
+          name: 'value',
+          type: FieldType.string,
+        },
+        {
+          name: 'meaning',
+          type: FieldType.string,
+        },
+      ],
+    });
+  }, []);
+
+  const handleValueChange = useCallback((v) => {
+    const { value } = v.target;
+    const suffixList = ['@qq.com', '@163.com', '@hand-china.com'];
+    if (value.indexOf('@') !== -1) {
+      emailOptionDS.loadData([]);
+    } else {
+      emailOptionDS.loadData(suffixList.map(suffix => ({
+        value: `${value}${suffix}`,
+        meaning: `${value}${suffix}`,
+      })));
+    }
+  }, [emailOptionDS]);
+
   const columns: Array<ColumnProps> = [
     {
       width: 200,
-      name: 'title',
+      name: 'name',
+      editor: true,
+      help: '主键，区分用户',
     },
     {
       width: 200,
-      name: 'content',
+      name: 'age',
+      editor: true,
+      sortable: true,
+    },
+    {
+      width: 200,
+      name: 'email',
+      editor: () => {
+        return (
+          <AutoComplete
+            onFocus={handleValueChange}
+            onInput={handleValueChange}
+            options={emailOptionDS}
+          />
+        );
+      },
     },
     {
       name: 'action',
@@ -92,6 +139,35 @@ const Index = (props: ListProps) => {
     },
   ];
 
+  const [consoleValue, setConsoleValue]:any = useState('');
+
+  const toDataButton = (
+    <Button onClick={() => {
+      // toData 转换成普通数据，不包含删除的数据
+      setConsoleValue(listDS.toData());
+      console.log(listDS.toData());
+    }}>
+      toData
+    </Button>
+  );
+
+  const toJSONDataButton = (
+    <Button onClick={() => {
+      // toJSONData 转换成用于提交的 json 数据
+      setConsoleValue(listDS.toJSONData());
+      console.log(listDS.toJSONData());
+    }}>
+      toJSONData
+    </Button>
+  );
+
+  // setQueryParameter 自定义查询参数
+  const setQueryParamButton = (
+    <Button onClick={() => listDS.setQueryParameter('customPara', 'test')}>
+      设置查询参数
+    </Button>
+  );
+
   return (
     <>
       <Header title={intl.get(`${intlPrefix}.view.demo`).d('例子')}>
@@ -107,9 +183,9 @@ const Index = (props: ListProps) => {
         <Table
           dataSet={listDS}
           columns={columns}
-          queryBar={TableQueryBarType.filterBar}
+          queryBar={TableQueryBarType.professionalBar}
           queryBarProps={{
-            queryFieldsLimit: 6,
+            queryFieldsLimit: 2,
             fuzzyQueryPlaceholder: intl
               .get(`${intlPrefix}.view.purchaseCode`)
               .d('模糊筛选...'),
@@ -118,8 +194,25 @@ const Index = (props: ListProps) => {
             },
           }}
           queryFields={{
-            title: <TitleCom/>
+            email: <AutoComplete
+              onFocus={handleValueChange}
+              onInput={handleValueChange}
+              options={emailOptionDS}
+            />
           }}
+          buttons={[
+            TableButtonType.add,
+            TableButtonType.query,
+            TableButtonType.save,
+            TableButtonType.delete,
+            TableButtonType.reset,
+            TableButtonType.expandAll,
+            TableButtonType.collapseAll,
+            TableButtonType.export,
+            toDataButton,
+            toJSONDataButton,
+            setQueryParamButton,
+          ]}
         />
       </Content>
     </>

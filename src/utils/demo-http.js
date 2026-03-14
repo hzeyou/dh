@@ -3,10 +3,10 @@ const url = require('url');
 
 // 内存数据存储
 let demoData = [
-  {title: '标题1', content: '内容1', id: 1},
-  {title: '标题2', content: '内容2', id: 2},
-  {title: '标题3', content: '内容3', id: 3},
-  {title: '标题4', content: '内容4', id: 4},
+  {name: '宋江', age: 68, email: '88@qq.com', id: 1},
+  {name: '张飞', age: 60, email: '33@qq.com', id: 2},
+  {name: '小明', age: 25, email: '22@qq.com', id: 3},
+  {name: '小红', age: 88, email: '11@qq.com', id: 4},
 ];
 let idCounter = 1;
 
@@ -53,9 +53,9 @@ const handlers = {
       if (idsParam) {
         const ids = Array.isArray(idsParam) ? idsParam : [idsParam];
         const items = demoData.filter(d => ids.includes(String(d.id)));
-        sendJSON(res, 200, items);
+        sendJSON(res, 200, {content: items});
       } else {
-        sendJSON(res, 200, demoData);
+        sendJSON(res, 200, {content: demoData});
       }
     }
   },
