@@ -42,6 +42,16 @@ export default extendParentConfig({
           component: './Demo/Detail',
           authorized: true,
         },
+        {
+          path: '/srm/demo/tree',
+          component: './Demo/Tree',
+          authorized: true,
+        },
+        {
+          path: '/srm/demo/select',
+          component: './Demo/Select',
+          authorized: true,
+        },
       ],
     },
   ],

@@ -3,7 +3,21 @@ import formatterCollections from 'utils/intl/formatterCollections';
 import {observer} from 'mobx-react';
 import {Header, Content} from 'components/Page';
 import {DetailProps} from '@/typings';
-import {Button, DataSet, DatePicker, Form, Lov, Modal, Output, Select, TextArea, TextField} from 'choerodon-ui/pro';
+import {
+  Button,
+  DataSet,
+  DatePicker,
+  Form,
+  Lov,
+  Modal,
+  NumberField,
+  Output,
+  Select,
+  TextArea,
+  TextField,
+  EmailField,
+  SelectBox,
+} from 'choerodon-ui/pro';
 import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
 import {intl} from 'utils/utils';
 import React, {useMemo} from 'react';
@@ -64,13 +78,15 @@ function Page(props: DetailProps) {
         <Form dataSet={detailDS} columns={3}>
           {isReadOnly ? (
             <>
-              <Output name="title" />
+              <Output name="name" />
               <Output name="content" />
             </>
           ) : (
             <>
-              <TextField name="title" />
-              <TextField name="content" />
+              <TextField name="name" />
+              <NumberField name="age" />
+              <EmailField name="email" />
+              <SelectBox name="gender"/>
             </>
           )}
         </Form>
