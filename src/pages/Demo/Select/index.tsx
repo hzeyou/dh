@@ -35,15 +35,15 @@ function App() {
   }, [selectDataSet]);
 
   return (
-    <Row>
-      <Col>
+    <Row gutter={10}>
+      <Col  span={24}>
         <Select
           dataSet={selectDataSet}
           name="sex"
           placeholder="请选择"
         />
       </Col>
-      <Col>
+      <Col  span={12}>
         <Select
           multiple
           dataSet={selectDataSet}
@@ -51,8 +51,29 @@ function App() {
           placeholder="请选择"
         />
       </Col>
-      <Col>
-        <Button onClick={changeOptions}>account 切换选项</Button>
+      <Col span={12}>
+        <Button onClick={changeOptions}>Account 加载数据</Button>
+      </Col>
+      <Col  span={8}>
+        <Select
+          dataSet={selectDataSet}
+          name="sheng"
+          placeholder="请选择"
+        />
+      </Col>
+      <Col  span={8}>
+        <Select
+          dataSet={selectDataSet}
+          name="shi"
+          placeholder="请选择"
+        />
+      </Col>
+      <Col  span={8}>
+        <Select
+          dataSet={selectDataSet}
+          name="street"
+          placeholder="请选择"
+        />
       </Col>
     </Row>
   );
