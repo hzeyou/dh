@@ -52,6 +52,11 @@ export default extendParentConfig({
           component: './Demo/Select',
           authorized: true,
         },
+        {
+          path: '/srm/demo/lov',
+          component: './Demo/Lov',
+          authorized: true,
+        },
       ],
     },
   ],
