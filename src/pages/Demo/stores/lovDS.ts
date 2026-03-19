@@ -19,8 +19,12 @@ const lovDS = {
       type: 'object',
       lovCode: 'SCM.SUPPLIER',
       multiple: true,
-      lovDefineUrl: `http://localhost:8088/demo/lov`,
-      lovQueryUrl: `http://localhost:8088/demo/lov-data`,
+      // lovDefineUrl: `http://localhost:8088/demo/lov`,
+      // lovQueryUrl: `http://localhost:8088/demo/lov-data`,
+      noCache: true,
+      ignore: "always",
+      textField: "supplierShortName",
+      fetchSingle: true,
       // lovQueryAxiosConfig: (code, lovConfig, props, lovQueryUrl) => {
       //   console.log('lovQueryAxiosConfig', props);
       //   const { params, lovQueryDetail } = props || {};
@@ -44,13 +48,11 @@ const lovDS = {
       name: 'code_code',
       type: 'string',
       bind: 'code.code',
-      multiple: ',',
     },
     {
       name: 'code_description',
       type: 'string',
       bind: 'code.description',
-      multiple: ',',
     },
   ],
   selection: 'multiple',
