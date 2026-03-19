@@ -12,14 +12,11 @@ function App() {
   return (
     <Row gutter={10}>
       <Col span={12}>
-        <Lov dataSet={lovDataSet}
-          name="code"
-          tableProps={{ selectionMode: SelectionMode.rowbox }}
-        />
+        <Lov dataSet={lovDataSet} name="code"/>
       </Col>
-      <Col span={12}>
+      {/*<Col span={12}>
         <Lov dataSet={lovDataSet} name="code_string" />
-      </Col>
+      </Col>*/}
     </Row>
   );
 

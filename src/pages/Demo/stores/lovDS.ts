@@ -5,57 +5,55 @@ import {DataSet} from 'choerodon-ui/pro';
 
 
 const lovDS = {
-  autoCreate: true,
+  primaryKey: 'code',
+  // data: [
+  //   // { 'code_code': 'HR.EMPLOYEE_GENDER, HR.EMPLOYEE_STATUS, SYS.USER_STATUS11' , 'code_description': '性别,员工状态,SYS.USER_STATUS11' },
+  //   {
+  //     code_code: 'HR.EMPLOYEE_GENDER,HR.EMPLOYEE_STATUS',
+  //     code_description: '性别,员工状态',
+  //   },
+  // ],
   fields: [
     {
       name: 'code',
-      textField: 'code',
-      type: FieldType.object,
-      // lovCode: 'LOV_CODE',
-      lovPara: { code: '111' },
-      required: true,
-      options: new DataSet({
-        data: [
-          {
-            code: '1',
-            description: '1'
-          },
-          {
-            code: '2',
-            description: '2'
-          },
-          {
-            code: '3',
-            description: '3'
-          },
-        ]
-      })
+      type: 'object',
+      lovCode: 'SCM.SUPPLIER',
+      multiple: true,
+      lovDefineUrl: `http://localhost:8088/demo/lov`,
+      lovQueryUrl: `http://localhost:8088/demo/lov-data`,
+      // lovQueryAxiosConfig: (code, lovConfig, props, lovQueryUrl) => {
+      //   console.log('lovQueryAxiosConfig', props);
+      //   const { params, lovQueryDetail } = props || {};
+      //   let defaultUrl = `/common/lov/dataset/${code}${
+      //     code === 'LOV_CODE' && params
+      //       ? `/${params.pagesize}/${params.page}`
+      //       : ''
+      //   }`;
+      //   defaultUrl = lovQueryDetail
+      //     ? lovConfig
+      //       ? lovConfig.detailUrl
+      //       : `/common/lov/dataset/detail/${code}`
+      //     : defaultUrl;
+      //   return {
+      //     url: 'http://localhost:8088/demo/lov-data',
+      //     method: 'get',
+      //   };
+      // },
     },
     {
-      name: 'code_string',
-      type: FieldType.object,
-      lovCode: 'LOV_CODE',
-      optionsProps: (dsProps) => {
-        console.log(dsProps);
-        return dsProps;
-      },
-      required: true,
+      name: 'code_code',
+      type: 'string',
+      bind: 'code.code',
+      multiple: ',',
     },
-    { name: 'code_code', type: FieldType.string, bind: 'code.code' },
-    { name: 'code_description', type: FieldType.string, bind: 'code.description' },
+    {
+      name: 'code_description',
+      type: 'string',
+      bind: 'code.description',
+      multiple: ',',
+    },
   ],
-  events: {
-    update: ({ record, name, value, oldValue }) => {
-      console.log(
-        '[dataset]',
-        value,
-        '[oldValue]',
-        oldValue,
-        `[record.get('${name}')]`,
-        record.get(name),
-      );
-    },
-  },
+  selection: 'multiple',
 };
 
 export default lovDS;
