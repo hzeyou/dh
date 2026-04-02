@@ -16,6 +16,12 @@ export default extendParentConfig({
       authorized: true,
     },
     {
+      path: '/public/demo', // 供应商
+      component: './Demo/Public',
+      authorized: true,
+      priority: 1,
+    },
+    {
       path: '/srm/purchase-order', // 供应商
       routes: [
         {

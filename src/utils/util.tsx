@@ -5,18 +5,10 @@ import request from 'utils/request';
 import notification from 'utils/notification';
 
 /*
- * @description: 函数式编程工具
+ * @description: 函数式编程工具 - 使用 reduce 实现
  */
-export const compose = (...fns) => (...args) => {
-  const [...tmpFns] = fns;
-  const composed = (...restArgs) => {
-    if (tmpFns.length === 0) {
-      return restArgs[0];
-    }
-    return composed(tmpFns.pop()(...restArgs));
-  };
-  return composed(...args);
-};
+export const compose = (...fns) => (...args) => 
+  fns.reduceRight((result, fn) => [fn(...result)], args)[0];
 //
 // /**
 //  * @description request下载文件

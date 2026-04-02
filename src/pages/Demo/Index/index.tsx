@@ -12,7 +12,7 @@ import { Record } from 'choerodon-ui/dataset';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
 import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from 'react';
 import TitleCom from '@/pages/Demo/Index/TitleCom';
 import {AutoComplete} from 'choerodon-ui/pro';
 import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
@@ -22,6 +22,8 @@ const intlPrefix = 'srm.demo';
 const Index = (props: ListProps) => {
 
   const { history, listDS } = props;
+
+  console.log('组件 Index');
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
@@ -227,7 +229,7 @@ export default compose(
   }),
   withProps(() => {
     const listDS = new DataSet(ListDSConfig());
-    console.log('listDS==', listDS);
+    console.log('withProps==', listDS);
     return {
       listDS,
     };
