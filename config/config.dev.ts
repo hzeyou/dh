@@ -4,16 +4,16 @@ export default {
   define: {
     'process.env': {
       // 这里修改成网关服务器后端地址
-      SRM_DEV_HOST: 'http://localhost:8088',
+      SRM_DEV_HOST: 'http://localhost:5000',
     },
   },
-  proxy: {
-    '/hsrm/': {
-      target: 'http://localhost:8088',
-      changeOrigin: true,
-      pathRewrite: {
-        '^/hsrm': '',
-      },
-    },
-  },
+  // proxy: {
+  //   '/hsrm/': {
+  //     target: 'http://localhost:5000',
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       '^/hsrm': '',
+  //     },
+  //   },
+  // },
 };
