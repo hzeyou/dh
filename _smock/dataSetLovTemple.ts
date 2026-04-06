@@ -1,28 +1,17 @@
 import { Request, Response } from 'express';
-const { setCorsHeaders } = require('./_utils/cors');
 
 module.exports = {
   name: 'ts-demo',
   desc: 'ts apis',
   apis: [
     {
-      name: 'ts-demo lov options',
-      desc: 'CORS preflight',
-      method: 'OPTIONS',
-      url: '/demo/lov',
-      handle: (req: Request, res: Response) => {
-        setCorsHeaders(req, res);
-        res.sendStatus(200);
-      },
-    },
-    {
       name: 'ts-demo one',
       desc: 'example',
       method: 'GET',
       url: '/demo/lov',
       handle: (req: Request, res: Response) => {
-        setCorsHeaders(req, res);
         res.status(200);
+
         res.send({
           "totalPages": 2,
           "totalElements": 18,

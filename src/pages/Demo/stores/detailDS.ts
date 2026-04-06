@@ -72,10 +72,11 @@ const DetailDSConfig = (): DataSetProps => {
       },
       destroy: ({ dataSet, data }) => {
         const ids = data.map((item) => item.id);
+        console.log('ids==', ids);
         return {
           // params: data,  // query 参数
           data: {ids},
-          url: `${process.env.SRM_DEV_HOST}/demo/${ids[0]}`,
+          url: `${process.env.SRM_DEV_HOST}/demo`,
           method: 'DELETE',
         };
       },

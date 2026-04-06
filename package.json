@@ -4,8 +4,6 @@
   "license": "MIT",
   "scripts": {
     "start": "cross-env UMI_ENV=dev node ../../node_modules/umi/bin/umi.js dev",
-    "start-mock": "smock -p 5000 & npm run start",
-    "start-mock-1": "start /B smock -p 5000 && npm run start",
     "build": "cross-env UMI_ENV=dev node ../../node_modules/umi/bin/umi.js hzero-build",
     "build:ms": "cross-env BUILD_SINGLE_PUBLIC_MS=true node ../../node_modules/umi/bin/umi.js hzero-build",
     "transpile": "node ../../node_modules/umi/bin/umi.js hzero-transpile",

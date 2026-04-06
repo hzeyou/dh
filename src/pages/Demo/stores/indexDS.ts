@@ -83,7 +83,7 @@ const ListDSConfig = (): DataSetProps => {
         const ids = data.map((item) => item.id);
         return {
           data: {ids},
-          url: `${process.env.SRM_DEV_HOST}/demo/${ids[0]}`,
+          url: `${process.env.SRM_DEV_HOST}/demo`,
           method: 'DELETE',
         };
       },
