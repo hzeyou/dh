@@ -8,6 +8,8 @@ const list = [
   {name: '小红', age: 88, email: '11@qq.com', id: 4},
 ];
 
+let id = 5;
+
 module.exports = {
   name: '例子',
   desc: 'ts apis',
@@ -34,13 +36,16 @@ module.exports = {
       },
     },
     {
-      name: '增添',
+      name: '新增',
       desc: 'example',
       method: 'POST',
-      url: '/demo/:id',
+      url: '/demo',
       handle: (req: Request, res: Response) => {
         const body = req.body;
-        list.push(body);
+        list.push({
+          ...body,
+          id: id++,
+        });
         res.status(200);
         res.send({ content: [body] } );
       },

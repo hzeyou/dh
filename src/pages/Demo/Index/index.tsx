@@ -6,16 +6,19 @@ import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { observer } from 'mobx-react';
 import intl from 'utils/intl';
 import { Content, Header } from 'components/Page';
-import { ListDSConfig } from '../stores/indexDS';
 import { ListProps } from '@/typings';
 import { Record } from 'choerodon-ui/dataset';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
-import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
+import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import React, {useCallback, useMemo, useState} from 'react';
 import TitleCom from '@/pages/Demo/Index/TitleCom';
 import {AutoComplete} from 'choerodon-ui/pro';
 import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
+import ExcelExportPro from 'components/ExcelExportPro';
+import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
+import PermissionButton from 'components/Permission/Button';
+import { ListDSConfig } from '../stores/indexDS';
 
 const intlPrefix = 'srm.demo';
 
@@ -42,6 +45,7 @@ const Index = (props: ListProps) => {
     if (res === false) return;
 
     listDS.query(listDS.currentPage);
+
   }
 
   const emailOptionDS = useMemo(() => {
@@ -76,27 +80,27 @@ const Index = (props: ListProps) => {
     {
       width: 200,
       name: 'name',
-      editor: true,
+      // editor: true,
       help: '主键，区分用户',
     },
     {
       width: 200,
       name: 'age',
-      editor: true,
+      // editor: true,
       sortable: true,
     },
     {
       width: 200,
       name: 'email',
-      editor: () => {
-        return (
-          <AutoComplete
-            onFocus={handleValueChange}
-            onInput={handleValueChange}
-            options={emailOptionDS}
-          />
-        );
-      },
+      // editor: () => {
+      //   return (
+      //     <AutoComplete
+      //       onFocus={handleValueChange}
+      //       onInput={handleValueChange}
+      //       options={emailOptionDS}
+      //     />
+      //   );
+      // },
     },
     {
       name: 'action',
@@ -141,6 +145,27 @@ const Index = (props: ListProps) => {
     },
   ];
 
+  function getExportQueryParams() {
+    // 勾选导出
+    if (listDS.selected.length > 0) {
+      return {
+        actionHeaderIds: listDS.selected.map((record) => record.get('actionHeaderId')).join(','),
+        needPerControl: '1',
+      };
+    }
+
+    // 参数导出
+    const formData = listDS.queryDataSet?.current?.toJSONData() || {};
+
+    console.log('formData==', formData);
+
+    return filterNullValueObject({
+      ...formData,
+      actionDesc: listDS.getQueryParameter('actionDesc'),
+      needPerControl: '1',
+    });
+  }
+
   const [consoleValue, setConsoleValue]:any = useState('');
 
   const toDataButton = (
@@ -170,6 +195,8 @@ const Index = (props: ListProps) => {
     </Button>
   );
 
+  console.log(listDS.selected);
+
   return (
     <>
       <Header title={intl.get(`${intlPrefix}.view.demo`).d('例子')}>
@@ -180,6 +207,20 @@ const Index = (props: ListProps) => {
         >
           {intl.get('hzero.common.button.add').d('新增')}
         </Button>
+        <ExcelExportPro
+          defaultSelectAll
+          requestUrl={`/hpts/v1/${getCurrentOrganizationId()}/action-headers/export`}
+          queryParams={getExportQueryParams}
+          modalProps={{closable: true}}
+          exportAsync
+        />
+        {/*<Button
+          icon="export"
+          onClick={() => toDetail('view')}
+          color={ButtonColor.gray}
+        >
+          {intl.get('hzero.common.button.add').d('导出')}
+        </Button>*/}
       </Header>
       <Content>
         <Table
@@ -203,7 +244,28 @@ const Index = (props: ListProps) => {
             />
           }}
           buttons={[
-            TableButtonType.add,
+            [TableButtonType.add, { children: <span>新增</span>, icon: undefined, color: ButtonColor.gray, funcType: FuncType.flat }],
+            <PermissionButton
+              key="add-1"
+              onClick={(event) => {
+                listDS.create({}, 0);
+              }}
+              type="c7n-pro"
+              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+            >
+              新增1
+            </PermissionButton>,
+            <PermissionButton
+              key="add-2"
+              disabled={!listDS.selected.length}
+              onClick={(event) => {
+                listDS['delete'](listDS.selected);
+              }}
+              type="c7n-pro"
+              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+            >
+              删除
+            </PermissionButton>,
             TableButtonType.query,
             TableButtonType.save,
             TableButtonType.delete,

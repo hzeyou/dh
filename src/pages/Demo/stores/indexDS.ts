@@ -37,7 +37,7 @@ const ListDSConfig = (): DataSetProps => {
         name: 'name',
         type: FieldType.string,
         label: '姓名',
-        required: true,
+        // required: true,
       },
       {
         name: 'age',
@@ -54,7 +54,7 @@ const ListDSConfig = (): DataSetProps => {
         type: FieldType.string,
         label: '邮箱',
         help: '用户邮箱，可以自动补全',
-        required: true,
+        // required: true,
 
       },
     ],
