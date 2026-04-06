@@ -34,6 +34,18 @@ module.exports = {
       },
     },
     {
+      name: '增添',
+      desc: 'example',
+      method: 'POST',
+      url: '/demo/:id',
+      handle: (req: Request, res: Response) => {
+        const body = req.body;
+        list.push(body);
+        res.status(200);
+        res.send({ content: [body] } );
+      },
+    },
+    {
       name: '修改',
       desc: 'example',
       method: 'PUT',

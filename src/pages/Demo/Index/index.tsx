@@ -136,7 +136,7 @@ const Index = (props: ListProps) => {
             title: intl.get('hzero.common.button.delete').d('删除'), // 文字提示的显示文本
           },
         ];
-        return operatorRender(operators, record, { limit: 2 }); // operatorRender接受三个参数，第一个是操作列数组，第二个是当前行数据，第三个是配置
+        return operatorRender(operators, record, { limit: 3 }); // operatorRender接受三个参数，第一个是操作列数组，第二个是当前行数据，第三个是配置
       },
     },
   ];
