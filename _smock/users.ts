@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+const { createCRUD } = require('./_utils_/util');
 
 
 const list = [
@@ -8,7 +9,7 @@ const list = [
   {name: '小红', age: 88, email: '11@qq.com', id: 4},
 ];
 
-let id = 5;
+const userCRUD = createCRUD(list);
 
 module.exports = {
   name: '例子',
@@ -21,7 +22,7 @@ module.exports = {
       url: '/demo',
       handle: (req: Request, res: Response) => {
         res.status(200);
-        res.send({ content: list });
+        res.send({ content: userCRUD.getList() });
       },
     },
     {
@@ -32,7 +33,7 @@ module.exports = {
       handle: (req: Request, res: Response) => {
         const { id } = req.params;
         res.status(200);
-        res.send({ content: [list.find(v => v.id == id)] } );
+        res.send({ content: [userCRUD.getById(parseInt(id))] } );
       },
     },
     {
@@ -42,12 +43,9 @@ module.exports = {
       url: '/demo',
       handle: (req: Request, res: Response) => {
         const body = req.body;
-        list.push({
-          ...body,
-          id: id++,
-        });
+        const newItem = userCRUD.create(body);
         res.status(200);
-        res.send({ content: [body] } );
+        res.send({ content: [newItem] } );
       },
     },
     {
@@ -66,18 +64,11 @@ module.exports = {
 
         try {
           const body = req.body;
+          const updated = userCRUD.update(parseInt(id), body);
 
-          const index = list.findIndex(d => d.id === parseInt(id));
-
-          if (index !== -1) {
-            list[index] = {
-              ...list[index],
-              ...body,
-              id: parseInt(id),
-              updatedAt: new Date().toISOString()
-            };
+          if (updated) {
             res.status(200);
-            res.send({success: true, data: list[index]});
+            res.send({success: true, data: updated});
           } else {
             res.status(404);
             res.send({success: false, message: '数据不存在'});
@@ -96,15 +87,7 @@ module.exports = {
       url: '/demo',
       handle: (req: Request, res: Response) => {
         const { ids } = req.body;
-        console.log('ids==', ids);
-        const delList = [];
-        ids.forEach((id) => {
-          const index = list.findIndex(d => d.id === parseInt(id));
-          if (index !== -1) {
-            Array.prototype.push.call(delList, ...list.splice(index, 1));
-          }
-        });
-        console.log('delList==', delList);
+        const delList = userCRUD.delete(ids.map((id: string) => parseInt(id)));
         res.status(200);
         res.send({success: true, data: delList} );
       },

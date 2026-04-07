@@ -32,12 +32,18 @@ function Page(props: DetailProps) {
     const _detailDS = new DataSet(DetailDSConfig());
     if (id) {
       _detailDS.query(undefined, { id });
+    } else {
+      detailDS?.current?.set('dirty', false);
     }
     return _detailDS;
   }, []);
 
   const handleSave = async () => {
-    await detailDS.submit();
+    const res = await detailDS.submit();
+    if (res?.success) {
+      detailDS?.current?.commit();
+      detailDS?.current?.setState('isSubmit', 1);
+    }
   };
 
   const handleDelete = async () => {
@@ -57,7 +63,8 @@ function Page(props: DetailProps) {
       <Header
         title={intl.get(`dd`).d('详情')}
         backPath="/srm/demo/list"
-        isChange={detailDS.dirty}
+        stateData={{status: detailDS?.current?.getState('isSubmit')}}
+        isChange={detailDS?.dirty}
       >
         <Button
           icon="save"

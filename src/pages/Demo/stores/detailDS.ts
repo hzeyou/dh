@@ -12,7 +12,7 @@ const intlPrefix = 'srm.demo.model';
 const DetailDSConfig = (): DataSetProps => {
   return {
     // DataSet 不和后端交互时，自动新建一条数据，在表单场景下比较常见
-    autoCreate: true,
+    autoCreate: false,
     // 这里是与后端约定的，上传时用到的字段
     fields: [
       {

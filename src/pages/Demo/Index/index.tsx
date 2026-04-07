@@ -11,7 +11,7 @@ import { Record } from 'choerodon-ui/dataset';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
 import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import TitleCom from '@/pages/Demo/Index/TitleCom';
 import {AutoComplete} from 'choerodon-ui/pro';
 import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
@@ -19,14 +19,26 @@ import ExcelExportPro from 'components/ExcelExportPro';
 import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
 import PermissionButton from 'components/Permission/Button';
 import { ListDSConfig } from '../stores/indexDS';
+import {useUrlHistory} from 'components/UrlHistoryProvider';
 
 const intlPrefix = 'srm.demo';
 
 const Index = (props: ListProps) => {
 
+  // const _useUrlHistory = useUrlHistory();
+  // const urlHistory = _useUrlHistory.urlHistory;
+
+  // console.log('urlHistory==', urlHistory);
+
   const { history, listDS } = props;
 
   console.log('组件 Index');
+
+  useEffect(() => {
+    if (history.action === 'REPLACE' && history.location.state.status === 1) {
+      listDS.query(listDS.currentPage);
+    }
+  }, []);
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
@@ -122,7 +134,7 @@ const Index = (props: ListProps) => {
           {
             key: 'view', // key
             ele: (
-              <a onClick={() => toDetail('view', record)}>
+              <a onClick={() => toDetail('edit', record)}>
                 {intl.get('hzero.common.button.view').d('查看')}
               </a>
             ), // 操作栏的按钮

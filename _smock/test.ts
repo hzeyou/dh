@@ -13,6 +13,19 @@ module.exports = {
       url: '/test/mock',
       handle: (req: Request, res: Response) => {
         res.status(200);
+        res.send({
+          name: 'name',
+          age: 16,
+        });
+      },
+    },
+    {
+      name: 'test-mock',
+      desc: 'example',
+      method: 'GET',
+      url: '/test/mock1',
+      handle: (req: Request, res: Response) => {
+        res.status(200);
         res.send(Mock.mock({
           'list|1-10': [{
             // 属性 id 是一个自增数，起始值为 1，每次增 1
@@ -20,7 +33,7 @@ module.exports = {
           }]
         }));
       },
-    }
+    },
   ]
 
 
