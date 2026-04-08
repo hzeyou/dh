@@ -1,7 +1,7 @@
 import { compose } from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import withProps from 'utils/withProps';
-import { Button, DataSet, DateTimePicker, Table } from 'choerodon-ui/pro';
+import { Button, DataSet, DateTimePicker, Modal, Table } from 'choerodon-ui/pro';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { observer } from 'mobx-react';
 import intl from 'utils/intl';
@@ -11,16 +11,17 @@ import { Record } from 'choerodon-ui/dataset';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
 import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React from 'react';
 import TitleCom from '@/pages/Demo/Index/TitleCom';
 import {AutoComplete} from 'choerodon-ui/pro';
-import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
+import { useEmailAutoComplete } from '@/hooks/useEmailAutoComplete';
 import ExcelExportPro from 'components/ExcelExportPro';
 import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
 import PermissionButton from 'components/Permission/Button';
 import { ListDSConfig } from '../stores/indexDS';
-import {useUrlHistory} from 'components/UrlHistoryProvider';
-import {useEmailAutoComplete} from '@/hooks/useEmailAutoComplete';
+import { useModal } from 'components/Import';
+import { openModalHelper } from '@/utils/modalHelper';
+import DetailOpen from '@/components/Detail';
 
 const intlPrefix = 'srm.demo';
 
@@ -33,31 +34,32 @@ const Index = (props: ListProps) => {
 
   const { history, listDS } = props;
 
-  console.log('组件 Index');
+  console.log('组件 Page');
 
-  useEffect(() => {
-    if (history.action === 'REPLACE' && history.location.state.status === 1) {
-      listDS.query(listDS.currentPage);
-    }
-  }, []);
+  // Modal - 使用工具函数简化
+
+  const queryFn = () => {
+    listDS.query(listDS.currentPage);
+  };
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
-      history.push('/srm/demo/detail');
+      // history.push('/srm/demo/detail');
+      DetailOpen({ data: {onSubmit: queryFn}});
       return;
     }
     const id = record?.get('id');
-    history.push(`/srm/demo/detail/${id}`);
+    DetailOpen({data: {id, onSubmit: queryFn}});
   }
 
   async function delItem(record) {
 
-    const res = await listDS.delete(record, intl.get('srm.demo.list.delete.single').d('是否确认删除？'));
+    const res = await listDS.delete(record);
 
     // 刷新
     if (res === false) return;
 
-    listDS.query(listDS.currentPage);
+    await listDS.query(listDS.currentPage);
 
   }
 
@@ -67,27 +69,16 @@ const Index = (props: ListProps) => {
     {
       width: 200,
       name: 'name',
-      // editor: true,
       help: '主键，区分用户',
     },
     {
       width: 200,
       name: 'age',
-      // editor: true,
       sortable: true,
     },
     {
       width: 200,
       name: 'email',
-      // editor: () => {
-      //   return (
-      //     <AutoComplete
-      //       onFocus={handleValueChange}
-      //       onInput={handleValueChange}
-      //       options={emailOptionDS}
-      //     />
-      //   );
-      // },
     },
     {
       name: 'action',
@@ -153,37 +144,6 @@ const Index = (props: ListProps) => {
     });
   }
 
-  const [consoleValue, setConsoleValue]:any = useState('');
-
-  const toDataButton = (
-    <Button onClick={() => {
-      // toData 转换成普通数据，不包含删除的数据
-      setConsoleValue(listDS.toData());
-      console.log(listDS.toData());
-    }}>
-      toData
-    </Button>
-  );
-
-  const toJSONDataButton = (
-    <Button onClick={() => {
-      // toJSONData 转换成用于提交的 json 数据
-      setConsoleValue(listDS.toJSONData());
-      console.log(listDS.toJSONData());
-    }}>
-      toJSONData
-    </Button>
-  );
-
-  // setQueryParameter 自定义查询参数
-  const setQueryParamButton = (
-    <Button onClick={() => listDS.setQueryParameter('customPara', 'test')}>
-      设置查询参数
-    </Button>
-  );
-
-  console.log(listDS.selected);
-
   return (
     <>
       <Header title={intl.get(`${intlPrefix}.view.demo`).d('例子')}>
@@ -201,13 +161,17 @@ const Index = (props: ListProps) => {
           modalProps={{closable: true}}
           exportAsync
         />
-        {/*<Button
-          icon="export"
-          onClick={() => toDetail('view')}
-          color={ButtonColor.gray}
+        <PermissionButton
+          key="add-2"
+          disabled={!listDS.selected.length}
+          onClick={(event) => {
+            listDS['delete'](listDS.selected);
+          }}
+          type="c7n-pro"
+          // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
         >
-          {intl.get('hzero.common.button.add').d('导出')}
-        </Button>*/}
+          删除
+        </PermissionButton>
       </Header>
       <Content>
         <Table
@@ -230,40 +194,6 @@ const Index = (props: ListProps) => {
               options={emailOptionDS}
             />
           }}
-          buttons={[
-            [TableButtonType.add, { children: <span>新增</span>, icon: undefined, color: ButtonColor.gray, funcType: FuncType.flat }],
-            <PermissionButton
-              key="add-1"
-              onClick={(event) => {
-                listDS.create({}, 0);
-              }}
-              type="c7n-pro"
-              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-            >
-              新增1
-            </PermissionButton>,
-            <PermissionButton
-              key="add-2"
-              disabled={!listDS.selected.length}
-              onClick={(event) => {
-                listDS['delete'](listDS.selected);
-              }}
-              type="c7n-pro"
-              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-            >
-              删除
-            </PermissionButton>,
-            TableButtonType.query,
-            TableButtonType.save,
-            TableButtonType.delete,
-            TableButtonType.reset,
-            TableButtonType.expandAll,
-            TableButtonType.collapseAll,
-            TableButtonType.export,
-            toDataButton,
-            toJSONDataButton,
-            setQueryParamButton,
-          ]}
         />
       </Content>
     </>

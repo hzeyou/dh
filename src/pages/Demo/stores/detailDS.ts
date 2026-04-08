@@ -12,23 +12,26 @@ const intlPrefix = 'srm.demo.model';
 const DetailDSConfig = (): DataSetProps => {
   return {
     // DataSet 不和后端交互时，自动新建一条数据，在表单场景下比较常见
-    autoCreate: false,
+    autoCreate: true,
     // 这里是与后端约定的，上传时用到的字段
     fields: [
       {
         name: 'name',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.title`).d('标题'),
+        label: intl.get(`${intlPrefix}.title`).d('名字'),
+        required: true,
       },
       {
         name: 'age',
         type: FieldType.number,
         label: intl.get(`${intlPrefix}.content`).d('年龄'),
+        required: true,
       },
       {
         name: 'email',
         type: FieldType.email,
         label: intl.get(`${intlPrefix}.content`).d('邮箱'),
+        required: true,
       },
       {
         name: 'gender',

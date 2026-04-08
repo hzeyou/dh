@@ -39,6 +39,11 @@ export default extendParentConfig({
       path: '/srm/demo', // 供应商
       routes: [
         {
+          path: '/srm/demo/page',
+          component: './Demo/Page',
+          authorized: true,
+        },
+        {
           path: '/srm/demo/list',
           component: './Demo/Index',
           authorized: true,
