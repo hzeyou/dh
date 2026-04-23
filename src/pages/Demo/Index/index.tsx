@@ -35,11 +35,11 @@ const Index = (props: ListProps) => {
 
   console.log('组件 Index');
 
-  useEffect(() => {
-    if (history.action === 'REPLACE' && history.location.state.status === 1) {
-      listDS.query(listDS.currentPage);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (history.action === 'REPLACE' && history.location.state.status === 1) {
+  //     listDS.query(listDS.currentPage);
+  //   }
+  // }, []);
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
@@ -282,6 +282,6 @@ export default compose(
     return {
       listDS,
     };
-  }),
+  }, {cacheState: false}),  // 不需要缓存
   observer,
 )(Index);
