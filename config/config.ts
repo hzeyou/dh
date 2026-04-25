@@ -36,6 +36,16 @@ export default extendParentConfig({
       ],
     },
     {
+      path: '/srm/rfq', // 询报价
+      routes: [
+        {
+          path: '/srm/rfq/list',
+          component: './RFQ/List',
+          authorized: true,
+        },
+      ],
+    },
+    {
       path: '/srm/demo', // 供应商
       routes: [
         {
