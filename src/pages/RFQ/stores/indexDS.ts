@@ -3,6 +3,7 @@ import intl from 'utils/intl';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import { getCurrentOrganizationId } from 'utils/utils';
 import {AxiosRequestConfig} from 'axios';
+import { DataSet } from 'choerodon-ui/pro';
 
 const organizationId = getCurrentOrganizationId();
 
@@ -14,7 +15,7 @@ const ListDSConfig = (): DataSetProps => {
     pageSize: 100,
     queryFields: [
       {
-        label: intl.get(`${intlPrefix}.title`).d('询价单号'),
+        label: intl.get(`${intlPrefix}.rfq_number`).d('询价单号'),
         name: 'rfq_number',
         type: FieldType.string,
         placeholder: '请输入',
@@ -35,6 +36,16 @@ const ListDSConfig = (): DataSetProps => {
         label: intl.get(`${intlPrefix}.rfq_type`).d('询价类型'),
         name: 'rfq_type',
         type: FieldType.string,
+        placeholder: '请选择',
+        options: new DataSet({
+          data: [{
+            meaning: '公开询价',
+            value: 1,
+          },{
+            meaning: '邀请询价',
+            value: 2,
+          }]
+        })
       },
       {
         label: intl.get(`${intlPrefix}.supplier_code`).d('供应商编码/名称'),
@@ -92,40 +103,50 @@ const ListDSConfig = (): DataSetProps => {
     ],
     fields: [
       {
-        name: 'name',
+        name: 'rfq_number',
         type: FieldType.string,
-        label: '姓名',
-        // required: true,
+        label: intl.get(`${intlPrefix}.title`).d('询价单号'),
       },
       {
-        name: 'age',
-        type: FieldType.number,
-        label: '年龄',
-        max: 100,
-        step: 1,
-        computedProps: {
-          required: ({ record }) => record.get('age') > 18,
-        },
+        name: 'pricing_number',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.pricing_number`).d('定价单号'),
       },
       {
-        name: 'email',
+        name: 'company',
         type: FieldType.string,
-        label: '邮箱',
-        help: '用户邮箱，可以自动补全',
-        // required: true,
-
+        label: intl.get(`${intlPrefix}.company`).d('公司'),
+      },
+      {
+        name: 'business_type',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.business_type`).d('业务类型'),
+      },
+      {
+        name: 'rfq_title',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.rfq_title`).d('询价标题'),
+      },
+      {
+        name: 'rfq_status',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.rfq_status`).d('询价状态'),
+      },
+      {
+        name: 'supplier_response_status',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.supplier_response_status`).d('供应商参与状态'),
+      },
+      {
+        name: 'rfq_type',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.rfq_type`).d('询价类型'),
       },
     ],
-    // data: [
-    //   {title: '标题1', content: '内容1', id: 1},
-    //   {title: '标题2', content: '内容2', id: 2},
-    //   {title: '标题3', content: '内容3', id: 3},
-    //   {title: '标题4', content: '内容4', id: 4},
-    // ],
     transport: {
       read: (): AxiosRequestConfig => {
         return {
-          url: `${process.env.SRM_DEV_HOST}/demo`,
+          url: `${process.env.SRM_DEV_HOST}/rfq/list`,
           method: 'GET',
         };
       },

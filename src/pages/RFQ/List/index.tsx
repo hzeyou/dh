@@ -19,18 +19,13 @@ import ExcelExportPro from 'components/ExcelExportPro';
 import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
 import PermissionButton from 'components/Permission/Button';
 import { ListDSConfig } from '../stores/indexDS';
-import {useUrlHistory} from 'components/UrlHistoryProvider';
 import {useEmailAutoComplete} from '@/hooks/useEmailAutoComplete';
 import ListTable from '@/pages/RFQ/components/ListTable';
+import RFQMethodChangeModalOpen from '@/pages/RFQ/components/RFQMethodChangeModal';
 
 const intlPrefix = 'srm.rfq';
 
 const Index = (props: ListProps) => {
-
-  // const _useUrlHistory = useUrlHistory();
-  // const urlHistory = _useUrlHistory.urlHistory;
-
-  // console.log('urlHistory==', urlHistory);
 
   const { history, listDS } = props;
 
@@ -62,62 +57,126 @@ const Index = (props: ListProps) => {
 
   }
 
-  const { emailOptionDS, handleValueChange } = useEmailAutoComplete();
+  const tabList = [
+    { label: '全部', value: 'all' },
+    { label: '询价中', value: 'inquiry_ing' },
+    { label: '询价截止', value: 'inquiry_stop' },
+    { label: '议价中', value: 'dicker_ing' },
+    { label: '议价截止', value: 'dicker_stop' },
+    { label: '定价中', value: 'pricing' },
+    { label: '定价完成', value: 'pricing_stop' },
+    { label: '询价取消', value: 'inquiry_cancel' },
+    { label: '待审批(询价方式变更/重新询价)', value: 'pending' },
+    { label: '审批拒绝(询价方式变更/重新询价)', value: 'refuse' },
+    { label: '待审批过期(询价方式变更/重新询价)', value: 'expired' },
+  ];
 
   const columns: Array<ColumnProps> = [
     {
-      width: 200,
-      name: 'name',
-      help: '主键，区分用户',
+      name: 'rfq_number',
     },
     {
-      width: 200,
-      name: 'age',
-      sortable: true,
+      name: 'pricing_number',
     },
     {
-      width: 200,
-      name: 'email',
+      name: 'company',
+    },
+    {
+      name: 'business_type',
+    },
+    {
+      name: 'rfq_title',
+    },
+    {
+      name: 'rfq_status',
+    },
+    {
+      name: 'supplier_response_status',
+    },
+    {
+      name: 'rfq_type',
     },
     {
       name: 'action',
       title: intl.get('hzero.common.button.action').d('操作'),
-      width: 120,
       lock: ColumnLock.right,
+      width: 370,
       renderer: ({ record }) => {
         const operators = [
           {
-            key: 'edit', // key
+            key: 'action1', // key
             ele: (
               <a onClick={() => toDetail('edit', record)}>
-                {intl.get('hzero.common.button.edit').d('编辑')}
+                {intl.get('hzero.common.button.edit1').d('定价')}
               </a>
             ), // 操作栏的按钮
-            len: 2, // 该按钮占相应中文数的宽度
-            title: intl.get('hzero.common.button.edit').d('编辑'), // 文字提示的显示文本
+            len: 2,
           },
           {
-            key: 'view', // key
+            key: 'action2', // key
             ele: (
-              <a onClick={() => toDetail('edit', record)}>
-                {intl.get('hzero.common.button.view').d('查看')}
+              <a onClick={() => RFQMethodChangeModalOpen({ data: { record, onSubmit: () => listDS.query(listDS.currentPage)}})}>
+                {intl.get('hzero.common.button.view1').d('方式变更')}
               </a>
-            ), // 操作栏的按钮
-            len: 2, // 该按钮占相应中文数的宽度
-            title: intl.get('hzero.common.button.view').d('查看'), // 文字提示的显示文本
+            ),
+            len: 4,
           },
           {
-            key: 'delete', // key
+            key: 'action3', // key
             ele: (
               <a onClick={() => delItem(record)}>
-                {intl.get('hzero.common.button.delete').d('删除')}
+                {intl.get('hzero.common.button.stop1').d('询价截止')}
               </a>
-            ), // 操作栏的按钮
-            len: 2, // 该按钮占相应中文数的宽度
-            title: intl.get('hzero.common.button.delete').d('删除'), // 文字提示的显示文本
+            ),
+            len: 4,
+          },
+          {
+            key: 'action4', // key
+            ele: (
+              <a onClick={() => delItem(record)}>
+                {intl.get('hzero.common.button.delete1').d('邀请供应商')}
+              </a>
+            ),
+            len: 5,
+          },
+          {
+            key: 'action5', // key
+            ele: (
+              <a onClick={() => delItem(record)}>
+                {intl.get('hzero.common.button.time').d('调整时间')}
+              </a>
+            ),
+            len: 4,
+          },
+          {
+            key: 'action6', // key
+            ele: (
+              <a onClick={() => delItem(record)}>
+                {intl.get('hzero.common.button.cac').d('取消')}
+              </a>
+            ),
+            len: 2,
+          },
+          {
+            key: 'action7', // key
+            ele: (
+              <a onClick={() => delItem(record)}>
+                {intl.get('hzero.common.button.rerfq').d('重新询价')}
+              </a>
+            ),
+            len: 4,
+          },
+          {
+            key: 'action8', // key
+            ele: (
+              <a onClick={() => delItem(record)}>
+                {intl.get('hzero.common.button.copy').d('复制')}
+              </a>
+            ),
+            len: 2,
           },
         ];
-        return operatorRender(operators, record, { limit: 3 }); // operatorRender接受三个参数，第一个是操作列数组，第二个是当前行数据，第三个是配置
+        return operatorRender(operators, record, { limit: 6 }); // operatorRender接受三个参数，第一个是操作列数组，第二个是当前行数据，第三个是配置
       },
     },
   ];
@@ -143,36 +202,11 @@ const Index = (props: ListProps) => {
     });
   }
 
-  const [consoleValue, setConsoleValue]:any = useState('');
+  const onChange = async (activeKey: string) => {
+    await listDS.query(1, {status: activeKey});
+  };
 
-  const toDataButton = (
-    <Button onClick={() => {
-      // toData 转换成普通数据，不包含删除的数据
-      setConsoleValue(listDS.toData());
-      console.log(listDS.toData());
-    }}>
-      toData
-    </Button>
-  );
 
-  const toJSONDataButton = (
-    <Button onClick={() => {
-      // toJSONData 转换成用于提交的 json 数据
-      setConsoleValue(listDS.toJSONData());
-      console.log(listDS.toJSONData());
-    }}>
-      toJSONData
-    </Button>
-  );
-
-  // setQueryParameter 自定义查询参数
-  const setQueryParamButton = (
-    <Button onClick={() => listDS.setQueryParameter('customPara', 'test')}>
-      设置查询参数
-    </Button>
-  );
-
-  console.log(listDS.selected);
 
   return (
     <>
@@ -194,22 +228,20 @@ const Index = (props: ListProps) => {
       </Header>
       <Content>
 
-        <Tabs defaultActiveKey="kpi">
-          <Tabs.TabPane
-            tab={intl.get('pts.pbcBoard.view.tab.kpi').d('全部')}
-            key="kpi"
-            style={{ height: `calc(100vh - 190px})` }}
-          >
-            <ListTable dataSet={listDS} columns={columns}/>
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab={intl.get('pts.pbcBoard.view.tab.task').d('询价中')}
-            key="task"
-            style={{ height: `calc(100vh - 190px})` }}
-          >
-            <ListTable dataSet={listDS} columns={columns}/>
-          </Tabs.TabPane>
+        <Tabs defaultActiveKey="all" onChange={onChange}>
+          {
+            tabList.map(item => (
+              <Tabs.TabPane
+                tab={intl.get('pts.pbcBoard.view.tab.kpi').d(item.label)}
+                key={item.value}
+                style={{ height: `calc(100vh - 190px})` }}
+              >
+              </Tabs.TabPane>
+            ))
+          }
         </Tabs>
+
+        <ListTable dataSet={listDS} columns={columns}/>
 
 
       </Content>
