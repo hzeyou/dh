@@ -4,7 +4,7 @@ const { createCRUD } = require('./_utils_/util');
 import Mock from 'mockjs';
 
 const list = Mock.mock({
-  'list|50': [{
+  'list|20': [{
     // 属性 id 是一个自增数，起始值为 1，每次增 1
     'id|+1': 1,
     'rfq_number': /[1-9][0-9]{5}/,

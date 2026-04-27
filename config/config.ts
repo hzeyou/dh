@@ -43,6 +43,11 @@ export default extendParentConfig({
           component: './RFQ/List',
           authorized: true,
         },
+        {
+          path: '/srm/rfq/detail',
+          component: './RFQ/Detail',
+          authorized: true,
+        },
       ],
     },
     {

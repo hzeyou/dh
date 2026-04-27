@@ -30,11 +30,13 @@ const App = ({ record, modal, onSubmit }: any) => {
 
   modal.handleOk(handleSave);
 
+  // onOption={({record}) => ({disabled: record.index === 0})}
+
   return (
     <>
       <Form dataSet={detailDS} columns={1}>
         <Select name="old_rfq_method"/>
-        <Select name="new_rfq_method" onOption={({record}) => ({disabled: record.index === 0})}/>
+        <Select name="new_rfq_method"/>
       </Form>
     </>
   );

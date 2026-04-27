@@ -1,25 +1,20 @@
-import { compose } from '@/utils/util';
+import {compose} from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import withProps from 'utils/withProps';
-import {Button, DataSet, DateTimePicker, Table, Tabs} from 'choerodon-ui/pro';
-import { operatorRender } from 'hzero-front/lib/utils/renderer';
-import { observer } from 'mobx-react';
+import {Button, DataSet, Tabs} from 'choerodon-ui/pro';
+import {operatorRender} from 'hzero-front/lib/utils/renderer';
+import {observer} from 'mobx-react';
 import intl from 'utils/intl';
-import { Content, Header } from 'components/Page';
-import { ListProps } from '@/typings';
-import { Record } from 'choerodon-ui/dataset';
-import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
-import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
-import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
-import React, { useState } from 'react';
-import TitleCom from '@/pages/Demo/Index/TitleCom';
-import {AutoComplete} from 'choerodon-ui/pro';
-import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
+import {Content, Header} from 'components/Page';
+import {ListProps} from '@/typings';
+import {Record} from 'choerodon-ui/dataset';
+import {ColumnProps} from 'choerodon-ui/pro/lib/table/Column';
+import {ColumnLock} from 'choerodon-ui/pro/lib/table/enum';
+import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
+import React from 'react';
 import ExcelExportPro from 'components/ExcelExportPro';
-import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
-import PermissionButton from 'components/Permission/Button';
-import { ListDSConfig } from '../stores/indexDS';
-import {useEmailAutoComplete} from '@/hooks/useEmailAutoComplete';
+import {filterNullValueObject, getCurrentOrganizationId} from 'utils/utils';
+import {ListDSConfig} from '../stores/indexDS';
 import ListTable from '@/pages/RFQ/components/ListTable';
 import RFQMethodChangeModalOpen from '@/pages/RFQ/components/RFQMethodChangeModal';
 
@@ -39,11 +34,11 @@ const Index = (props: ListProps) => {
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
-      history.push('/srm/demo/detail');
+      history.push('/srm/rfq/detail');
       return;
     }
     const id = record?.get('id');
-    history.push(`/srm/demo/detail/${id}`);
+    history.push(`/srm/rfq/detail/${id}`);
   }
 
   async function delItem(record) {
@@ -74,6 +69,7 @@ const Index = (props: ListProps) => {
   const columns: Array<ColumnProps> = [
     {
       name: 'rfq_number',
+      lock: ColumnLock.left,
     },
     {
       name: 'pricing_number',

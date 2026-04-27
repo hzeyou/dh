@@ -1,9 +1,11 @@
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import intl from 'utils/intl';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import {FieldIgnore, FieldType} from 'choerodon-ui/dataset/data-set/enum';
 import { getCurrentOrganizationId } from 'utils/utils';
 import {AxiosRequestConfig} from 'axios';
 import { DataSet } from 'choerodon-ui/pro';
+import moment from 'moment/moment';
+import { DEFAULT_DATE_FORMAT } from 'utils/constants';
 
 const organizationId = getCurrentOrganizationId();
 
@@ -37,15 +39,7 @@ const ListDSConfig = (): DataSetProps => {
         name: 'rfq_type',
         type: FieldType.string,
         placeholder: '请选择',
-        options: new DataSet({
-          data: [{
-            meaning: '公开询价',
-            value: 1,
-          },{
-            meaning: '邀请询价',
-            value: 2,
-          }]
-        })
+        lookupCode: 'SCM.DELIVERY_STATUS',
       },
       {
         label: intl.get(`${intlPrefix}.supplier_code`).d('供应商编码/名称'),
@@ -62,43 +56,71 @@ const ListDSConfig = (): DataSetProps => {
       {
         label: intl.get(`${intlPrefix}.procurement_entity`).d('采购主体'),
         name: 'procurement_entity',
+        placeholder: '请选择',
         type: FieldType.string,
+        lookupCode: 'SCM.DELIVERY_STATUS',
       },
       {
         label: intl.get(`${intlPrefix}.business_type`).d('业务类型'),
         name: 'business_type',
         type: FieldType.string,
-        placeholder: '请输入',
-      },
-      {
-        label: intl.get(`${intlPrefix}.start_end_date`).d('起止日期'),
-        name: 'start_end_date',
-        type: FieldType.string,
+        placeholder: '请选择',
+        lookupCode: 'SCM.DELIVERY_STATUS',
       },
       {
         label: intl.get(`${intlPrefix}.rfq_method`).d('询价方式'),
         name: 'rfq_method',
         type: FieldType.string,
+        lookupCode: 'SCM.DELIVERY_STATUS',
+        placeholder: '请选择',
       },
       {
         label: intl.get(`${intlPrefix}.current_round`).d('当前轮次'),
         name: 'current_round',
-        type: FieldType.string,
+        type: FieldType.number,
+        placeholder: '请输入',
       },
       {
         label: intl.get(`${intlPrefix}.receipt_status`).d('单据状态'),
         name: 'receipt_status',
         type: FieldType.string,
+        placeholder: '请选择',
+        lookupCode: 'SCM.SALES_TERRITORY',
       },
       {
         label: intl.get(`${intlPrefix}.supplier_response_status`).d('供应商参与状态'),
         name: 'supplier_response_status',
         type: FieldType.string,
+        placeholder: '请选择',
+        lookupCode: 'SCM.SALES_TERRITORY',
       },
       {
         label: intl.get(`${intlPrefix}.approval_status`).d('审批状态'),
         name: 'approval_status',
         type: FieldType.string,
+        placeholder: '请选择',
+        lookupCode: 'SCM.SALES_TERRITORY',
+      },
+      {
+        label: intl.get(`${intlPrefix}.start_end_date`).d('起止日期'),
+        name: 'start_end_date',
+        type: FieldType.date,
+        range: ['start', 'end'],
+        ignore: FieldIgnore.always,
+        defaultValue: {
+          start: moment().startOf('month').format(DEFAULT_DATE_FORMAT),
+          end: moment().endOf('month').format(DEFAULT_DATE_FORMAT),
+        }
+      },
+      {
+        name: 'scheduleDateFrom',
+        bind: 'start_end_date.start',
+        transformRequest: value => value? moment(value).format(DEFAULT_DATE_FORMAT): value,
+      },
+      {
+        name: 'scheduleDateTo',
+        bind: 'start_end_date.end',
+        transformRequest: value => value? moment(value).format(DEFAULT_DATE_FORMAT): value,
       },
     ],
     fields: [
