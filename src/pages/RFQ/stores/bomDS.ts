@@ -12,134 +12,93 @@ const intlPrefix = 'srm.rfq';
 const DetailDSConfig = (): DataSetProps => {
   return {
     // DataSet 不和后端交互时，自动新建一条数据，在表单场景下比较常见
+    autoQuery: true,
+    pageSize: 100,
     autoCreate: true,
     // 这里是与后端约定的，上传时用到的字段
     fields: [
       {
-        name: 'business_type',
+        name: 'material_code',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.business_type`).d('业务类型'),
+        label: intl.get(`${intlPrefix}.material_code`).d('物料编码'),
         required: true,
       },
       {
-        name: 'company',
+        name: 'material_name',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.company`).d('公司'),
+        label: intl.get(`${intlPrefix}.material_name`).d('物料名称'),
         required: true,
       },
       {
-        name: 'purchaser',
+        name: 'spec_description',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.purchaser`).d('采购员'),
+        label: intl.get(`${intlPrefix}.spec_description`).d('规格描述（品牌、规格、型号）'),
         required: true,
       },
       {
-        name: 'rfq_type',
+        name: 'pricing_unit',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.rfq_type`).d('询价类型'),
+        label: intl.get(`${intlPrefix}.pricing_unit`).d('定价单位'),
         required: true,
       },
       {
-        name: 'rfq_method',
+        name: 'demand_quantity',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.rfq_method`).d('询价方式'),
+        label: intl.get(`${intlPrefix}.demand_quantity`).d('需求数量'),
       },
       {
-        name: 'category',
+        name: 'cost_structure',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.category`).d('品类'),
+        label: intl.get(`${intlPrefix}.cost_structure`).d('成本结构'),
       },
       {
-        name: 'quotation_currency',
+        name: 'cost_structure_total',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.quotation_currency`).d('报价币种'),
+        label: intl.get(`${intlPrefix}.cost_structure_total`).d('成本结构总价'),
         required: true,
       },
       {
-        name: 'quotation_tax',
+        name: 'bom_version',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.quotation_tax`).d('是否含税报价'),
+        label: intl.get(`${intlPrefix}.bom_version`).d('BOM版本'),
         required: true,
       },
       {
-        name: 'tax_rate',
+        name: 'bom_quotation',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.tax_rate`).d('税率'),
+        label: intl.get(`${intlPrefix}.bom_quotation`).d('BOM报价'),
         required: true,
       },
       {
-        name: 'inquiry_stop_date',
+        name: 'bom_total_price',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.inquiry_stop_date`).d('询价截止时间'),
+        label: intl.get(`${intlPrefix}.bom_total_price`).d('BOM总价'),
         required: true,
       },
       {
-        name: 'price_start_date',
+        name: 'inquiry_remark',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.price_start_date`).d('价格有效期（开始）'),
+        label: intl.get(`${intlPrefix}.inquiry_remark`).d('询价备注'),
         required: true,
       },
       {
-        name: 'price_stop_date',
+        name: 'inquiry_attachment',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.price_stop_date`).d('价格有效期（结束）'),
+        label: intl.get(`${intlPrefix}.inquiry_attachment`).d('询价附件'),
         required: true,
       },
       {
-        name: 'seal_control',
+        name: 'latest_quotation',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.seal_control`).d('密封控制'),
+        label: intl.get(`${intlPrefix}.latest_quotation`).d('最近一次报价'),
         required: true,
       },
       {
-        name: 'purchasing_group',
+        name: 'lowest_historical_quotation',
         type: FieldType.string,
-        label: intl.get(`${intlPrefix}.purchasing_group`).d('采购组'),
+        label: intl.get(`${intlPrefix}.lowest_historical_quotation`).d('历史最低报价'),
         required: true,
       },
-      {
-        name: 'product_manager_approved_by',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.product_manager_approved_by`).d('产品经理审核人'),
-        required: true,
-      },
-      {
-        name: 'procurement_cc',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.procurement_cc`).d('采购履行抄送人'),
-      },
-      {
-        name: 'product_line',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.product_line`).d('产品线'),
-      },
-      {
-        name: 'project_number',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.project_number`).d('项目编号'),
-      },
-      {
-        name: 'project_mode',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.project_mode`).d('项目模式'),
-      },
-      {
-        name: 'inquiry_title',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.inquiry_title`).d('询价标题'),
-        required: true,
-      },
-      {
-        name: 'remarks',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.remarks`).d('备注'),
-      },
-      {
-        name: 'attachment',
-        type: FieldType.string,
-        label: intl.get(`${intlPrefix}.attachment`).d('附件上传'),
-      },
-
     ],
     transport: {
       create: ({data, params, dataSet}) => {
@@ -168,7 +127,7 @@ const DetailDSConfig = (): DataSetProps => {
       read: ({ dataSet, data }) => {
         return {
           params: data,  // query 参数
-          url: `${process.env.SRM_DEV_HOST}/demo/${data.id}`,
+          url: `${process.env.SRM_DEV_HOST}/rfq/bom`,
           method: 'GET',
         };
       },
