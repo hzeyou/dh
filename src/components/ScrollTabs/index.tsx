@@ -1,6 +1,20 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo, useContext, createContext } from 'react';
 import { Tabs } from 'choerodon-ui/pro';
 import styles from './index.less';
+
+/* ==================== Context ==================== */
+
+interface ScrollTabItem {
+  tab: string;
+  label: React.ReactNode;
+}
+
+interface ScrollTabsContextValue {
+  register: (item: ScrollTabItem) => void;
+  unregister: (tab: string) => void;
+}
+
+const ScrollTabsContext = createContext<ScrollTabsContextValue | null>(null);
 
 /* ==================== ScrollTab ==================== */
 
@@ -15,13 +29,22 @@ export interface ScrollTabProps {
 }
 
 /**
- * ScrollTab - 滚动区域面板，配合 ScrollTabs 使用
+ * ScrollTab - 滚动区域面板，可放在页面任意位置，通过 Context 自动注册到 ScrollTabs
  */
 function ScrollTab(props: ScrollTabProps) {
   const { tab, label, children, className, style } = props;
+  const ctx = useContext(ScrollTabsContext);
+
+  useEffect(() => {
+    if (!ctx) return;
+    ctx.register({ tab, label: label ?? tab });
+    return () => ctx.unregister(tab);
+  }, [tab, label, ctx]);
+
   const cls = className
     ? `${styles['scroll-tab']} ${className}`
     : styles['scroll-tab'];
+
   return (
     <div id={tab} className={cls} style={style}>
       <span>{label}</span>
@@ -34,12 +57,12 @@ function ScrollTab(props: ScrollTabProps) {
 
 export interface ScrollTabsProps {
   children: React.ReactNode;
-  /** IntersectionObserver 的 rootMargin，默认 '-20px 0px 0px 0px' */
+  /** IntersectionObserver 的 rootMargin，默认 '-90px 0px 0px 0px' */
   rootMargin?: string;
 }
 
 /**
- * ScrollTabs - 滚动联动 Tabs 组件（复合组件模式）
+ * ScrollTabs - 滚动联动 Tabs 组件（Context 模式，不要求嵌套）
  *
  * 用法：
  * ```tsx
@@ -47,39 +70,66 @@ export interface ScrollTabsProps {
  *   <ScrollTabs.ScrollTab tab="basic" label="基本信息">
  *     ...
  *   </ScrollTabs.ScrollTab>
+ *   <SomeOtherComponent />
  *   <ScrollTabs.ScrollTab tab="detail" label="明细">
  *     ...
  *   </ScrollTabs.ScrollTab>
  * </ScrollTabs>
  * ```
+ *
+ * ScrollTab 不需要是 ScrollTabs 的直接子元素，可以嵌套在任意层级中。
  */
 function ScrollTabs(props: ScrollTabsProps) {
   const { children, rootMargin = '-90px 0px 0px 0px' } = props;
 
-  // 从 children 中提取 ScrollTab 的 tab/label 信息
-  const tabItems = useMemo(() => {
-    const items: { tab: string; label: React.ReactNode }[] = [];
-    React.Children.forEach(children, (child) => {
-      if (React.isValidElement<ScrollTabProps>(child) && child.type === ScrollTab) {
-        items.push({
-          tab: child.props.tab,
-          label: child.props.label ?? child.props.tab,
-        });
-      }
-    });
-    return items;
-  }, [children]);
+  // 用 ref 存储注册顺序，用 state 触发渲染
+  const tabOrderRef = useRef<string[]>([]);
+  const [tabItems, setTabItems] = useState<ScrollTabItem[]>([]);
 
-  const [activeKey, setActiveKey] = useState(tabItems[0]?.tab);
+  const contextValue = useMemo<ScrollTabsContextValue>(() => ({
+    register: (item: ScrollTabItem) => {
+      // 保持注册顺序：如果已存在则更新 label，否则追加
+      setTabItems((prev) => {
+        const exists = prev.find((t) => t.tab === item.tab);
+        if (exists) {
+          return prev.map((t) => (t.tab === item.tab ? item : t));
+        }
+        if (!tabOrderRef.current.includes(item.tab)) {
+          tabOrderRef.current.push(item.tab);
+        }
+        return [...prev, item];
+      });
+    },
+    unregister: (tab: string) => {
+      tabOrderRef.current = tabOrderRef.current.filter((t) => t !== tab);
+      setTabItems((prev) => prev.filter((t) => t.tab !== tab));
+    },
+  }), []);
+
+  // 按注册顺序排序
+  const sortedItems = useMemo(() => {
+    const order = tabOrderRef.current;
+    return [...tabItems].sort((a, b) => order.indexOf(a.tab) - order.indexOf(b.tab));
+  }, [tabItems]);
+
+  const [activeKey, setActiveKey] = useState<string | undefined>();
   const containerRef = useRef<HTMLDivElement>(null);
-  // 点击 Tab 滚动期间，忽略 observer 的更新，防止高亮闪烁
   const isClickScrollingRef = useRef(false);
 
+  // 首个 tab 注册后设置默认 activeKey
   useEffect(() => {
+    if (!activeKey && sortedItems.length > 0) {
+      setActiveKey(sortedItems[0].tab);
+    }
+  }, [sortedItems, activeKey]);
+
+  useEffect(() => {
+    if (sortedItems.length === 0) return;
+
     const container = containerRef.current?.closest('.page-content');
     if (!container) return;
 
-    const targets = tabItems
+    const targets = sortedItems
       .map((item) => container.querySelector<HTMLElement>(`#${item.tab}`))
       .filter(Boolean) as HTMLElement[];
 
@@ -90,7 +140,6 @@ function ScrollTabs(props: ScrollTabsProps) {
         entries.forEach((entry) => {
           (entry.target as any)._isIntersecting = entry.isIntersecting;
         });
-        // 点击触发的滚动期间不更新 activeKey
         if (isClickScrollingRef.current) return;
         const first = targets.find((t) => (t as any)._isIntersecting);
         if (first?.id) {
@@ -102,7 +151,7 @@ function ScrollTabs(props: ScrollTabsProps) {
 
     targets.forEach((t) => observer.observe(t));
     return () => observer.disconnect();
-  }, [tabItems, rootMargin]);
+  }, [sortedItems, rootMargin]);
 
   const handleTabChange = useCallback((key: string) => {
     setActiveKey(key);
@@ -113,7 +162,6 @@ function ScrollTabs(props: ScrollTabsProps) {
       block: 'start',
       behavior: 'smooth',
     });
-    // 滚动结束后恢复 observer 更新
     const onScrollEnd = () => {
       isClickScrollingRef.current = false;
       container.removeEventListener('scrollend', onScrollEnd);
@@ -122,16 +170,16 @@ function ScrollTabs(props: ScrollTabsProps) {
   }, []);
 
   return (
-    <>
+    <ScrollTabsContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles['scroll-tabs-header']}>
         <Tabs activeKey={activeKey} onChange={handleTabChange}>
-          {tabItems.map((item) => (
+          {sortedItems.map((item) => (
             <Tabs.TabPane tab={item.label} key={item.tab} />
           ))}
         </Tabs>
       </div>
       {children}
-    </>
+    </ScrollTabsContext.Provider>
   );
 }
 

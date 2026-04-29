@@ -139,6 +139,29 @@ const DetailDSConfig = (): DataSetProps => {
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.attachment`).d('附件上传'),
       },
+      {
+        name: 'inquiry_requirement',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.inquiry_requirement`).d(''),  // 询价需求
+        required: true,
+      },
+      {
+        name: 'announcement_title',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.announcement_title`).d(''),  // 询价公告标题
+        placeholder: intl.get(`${intlPrefix}.announcement_title.placeholder`).d('请输入询价公告标题'),
+        required: true,
+      },
+      {
+        name: 'announcement_content',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.announcement_content`).d(''),
+      },
+      {
+        name: 'announcement_attachment',
+        type: FieldType.string,
+        label: intl.get(`${intlPrefix}.announcement_attachment`).d('询价公告附件'),
+      },
 
     ],
     transport: {

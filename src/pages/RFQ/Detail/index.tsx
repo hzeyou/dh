@@ -6,7 +6,7 @@ import { DetailProps } from '@/typings';
 import {
   Button,
   DataSet, DatePicker,
-  Form, Select, TextField, TextArea, Icon, Upload, Table,
+  Form, Select, TextField, TextArea, Icon, Upload, Table, RichText,
 } from 'choerodon-ui/pro';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 import {filterNullValueObject, getCurrentOrganizationId, intl} from 'utils/utils';
@@ -248,7 +248,30 @@ function Page(props: DetailProps) {
             ]} />
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id4" label={intl.get('srm.rfq.view.tab.kpi').d('询价要求')}>
-            <div style={{ height: '500px' }} />
+            <Form dataSet={detailDS} columns={4}>
+              <RichText
+                colSpan={4}
+                name="inquiry_requirement"
+                style={{ height: 'calc(100vh - 200px)' }}
+              />
+            </Form>
+          </ScrollTabs.ScrollTab>
+          <ScrollTabs.ScrollTab tab="id5" label={intl.get('srm.rfq.view.tab.kpi').d('询价公告')}>
+            <Form dataSet={detailDS} columns={4}>
+              <TextField name="announcement_title" colSpan={4} />
+              <RichText
+                colSpan={4}
+                name="announcement_content"
+                style={{ height: 'calc(100vh - 200px)' }}
+              />
+              <Upload
+                colSpan={4}
+                name="announcement_attachment"
+                action={`/kpi-board-import-datas/import`}
+                extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
+              >
+              </Upload>
+            </Form>
           </ScrollTabs.ScrollTab>
         </ScrollTabs>
       </Content>
