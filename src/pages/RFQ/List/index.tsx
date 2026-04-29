@@ -17,13 +17,15 @@ import {filterNullValueObject, getCurrentOrganizationId} from 'utils/utils';
 import {ListDSConfig} from '../stores/indexDS';
 import RFQMethodChangeModalOpen from '@/pages/RFQ/components/RFQMethodChangeModal';
 
+import WorkflowList from 'hzero-front-hwkf/lib/pages/personal-workflow/submitted/list';
+
 const intlPrefix = 'srm.rfq';
 
 const Index = (props: ListProps) => {
 
   const { history, listDS } = props;
 
-  console.log('组件 Index');
+  console.log('组件 List==', props);
 
   // useEffect(() => {
   //   if (history.action === 'REPLACE' && history.location.state.status === 1) {
@@ -242,6 +244,8 @@ const Index = (props: ListProps) => {
           queryBar={TableQueryBarType.professionalBar}
           queryBarProps={{ queryFieldsLimit: 4, }}
         />
+
+        {/*<WorkflowList location={props?.location}/>*/}
 
       </Content>
     </>

@@ -252,7 +252,7 @@ function Page(props: DetailProps) {
               <RichText
                 colSpan={4}
                 name="inquiry_requirement"
-                style={{ height: 'calc(100vh - 200px)' }}
+                style={{ height: '200px' }}
               />
             </Form>
           </ScrollTabs.ScrollTab>
@@ -262,7 +262,7 @@ function Page(props: DetailProps) {
               <RichText
                 colSpan={4}
                 name="announcement_content"
-                style={{ height: 'calc(100vh - 200px)' }}
+                style={{ height: '200px' }}
               />
               <Upload
                 colSpan={4}
