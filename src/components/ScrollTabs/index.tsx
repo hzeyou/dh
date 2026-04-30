@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo, useContext, createContext } from 'react';
 import { Tabs } from 'choerodon-ui/pro';
 import styles from './index.less';
+import useThemeColor from 'hzero-front-apaas/lib/hooks/useThemeColor';
 
 /* ==================== Context ==================== */
 
@@ -34,6 +35,7 @@ export interface ScrollTabProps {
 function ScrollTab(props: ScrollTabProps) {
   const { tab, label, children, className, style } = props;
   const ctx = useContext(ScrollTabsContext);
+  const themeColor = useThemeColor();
 
   useEffect(() => {
     if (!ctx) return;
@@ -47,7 +49,16 @@ function ScrollTab(props: ScrollTabProps) {
 
   return (
     <div id={tab} className={cls} style={style}>
-      <span className={styles['scroll-tab-label']}>{label}</span>
+      <div className={styles['scroll-tab-title']}>
+        <span
+          className={styles['scroll-tab-label']}
+          style={{
+            '--scroll-tab-primary-color': themeColor.primary,
+            '--scroll-tab-title-color': themeColor.titleColor1 } as React.CSSProperties}
+        >
+          {label}
+        </span>
+      </div>
       {children}
     </div>
   );

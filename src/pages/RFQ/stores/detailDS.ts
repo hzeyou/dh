@@ -151,6 +151,7 @@ const DetailDSConfig = (): DataSetProps => {
         label: intl.get(`${intlPrefix}.announcement_title`).d(''),  // 询价公告标题
         placeholder: intl.get(`${intlPrefix}.announcement_title.placeholder`).d('请输入询价公告标题'),
         required: true,
+        labelWidth: '0'
       },
       {
         name: 'announcement_content',

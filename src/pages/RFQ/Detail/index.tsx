@@ -58,7 +58,7 @@ function Page(props: DetailProps) {
 
   const supplierColumns: ColumnProps[] = useMemo(() => [
     { name: 'supplier_code', width: 150 },
-    { name: 'supplier_name', width: 200 },
+    { name: 'supplier_name' },
     { name: 'supplier_status', width: 120 },
     { name: 'buyer', width: 150 },
     { name: 'payment_terms', width: 150 },
@@ -258,21 +258,26 @@ function Page(props: DetailProps) {
             </Form>
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id5" label={intl.get('srm.rfq.view.tab.kpi').d('询价公告')}>
-            <Form dataSet={detailDS} columns={4}>
-              <TextField name="announcement_title" colSpan={4} />
-              <RichText
-                colSpan={4}
-                name="announcement_content"
-                style={{ height: '200px' }}
-              />
-              <Upload
-                colSpan={4}
-                name="announcement_attachment"
-                action={`/kpi-board-import-datas/import`}
-                extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
-              >
-              </Upload>
-            </Form>
+            <div className={styles['hidden-label']}>
+              <Form dataSet={detailDS} columns={4}>
+                <Form.Item label="" labelWidth={0} colSpan={4}>
+                  <TextField name="announcement_title"  />
+                </Form.Item>
+                <Form.Item label="" labelWidth={0} colSpan={4}>
+                  <RichText
+                    name="announcement_content"
+                    style={{ height: '200px' }}
+                  />
+                </Form.Item>
+                <Upload
+                  colSpan={4}
+                  name="announcement_attachment"
+                  action={`/kpi-board-import-datas/import`}
+                  extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
+                >
+                </Upload>
+              </Form>
+            </div>
           </ScrollTabs.ScrollTab>
         </ScrollTabs>
       </Content>
