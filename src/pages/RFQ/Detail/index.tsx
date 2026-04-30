@@ -32,7 +32,6 @@ function Page(props: DetailProps) {
     const _supplierDS = new DataSet(SupplierDSConfig());
     if (id) {
       _detailDS.query(undefined, { id });
-      _bomDS.query();
     } else {
       detailDS?.current?.set('dirty', false);
     }
@@ -102,6 +101,8 @@ function Page(props: DetailProps) {
       needPerControl: '1',
     });
   }
+
+  console.log('ddd==', detailDS?.dirty);
 
   return (
     <>
