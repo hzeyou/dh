@@ -1,7 +1,7 @@
 import { compose } from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import withProps from 'utils/withProps';
-import { Button, DataSet, DateTimePicker, Table } from 'choerodon-ui/pro';
+import {Button, DataSet, Table, Tabs} from 'choerodon-ui/pro';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { observer } from 'mobx-react';
 import intl from 'utils/intl';
@@ -12,28 +12,23 @@ import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
 import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import TitleCom from '@/pages/Demo/Index/TitleCom';
 import {AutoComplete} from 'choerodon-ui/pro';
 import {FieldType} from 'choerodon-ui/dataset/data-set/enum';
 import ExcelExportPro from 'components/ExcelExportPro';
 import { filterNullValueObject, getCurrentOrganizationId } from 'utils/utils';
 import PermissionButton from 'components/Permission/Button';
 import { ListDSConfig } from '../stores/indexDS';
-import {useUrlHistory} from 'components/UrlHistoryProvider';
 import {useEmailAutoComplete} from '@/hooks/useEmailAutoComplete';
+import WorkflowList from 'hzero-front-hwkf/lib/pages/personal-workflow/submitted/list';
+import styles from './index.less';
 
 const intlPrefix = 'srm.demo';
 
 const Index = (props: ListProps) => {
 
-  // const _useUrlHistory = useUrlHistory();
-  // const urlHistory = _useUrlHistory.urlHistory;
-
-  // console.log('urlHistory==', urlHistory);
-
   const { history, listDS } = props;
 
-  console.log('组件 Index');
+  console.log('组件 Demo');
 
   // useEffect(() => {
   //   if (history.action === 'REPLACE' && history.location.state.status === 1) {
@@ -210,61 +205,72 @@ const Index = (props: ListProps) => {
         </Button>*/}
       </Header>
       <Content>
-        <Table
-          dataSet={listDS}
-          columns={columns}
-          queryBar={TableQueryBarType.professionalBar}
-          queryBarProps={{
-            queryFieldsLimit: 2,
-            fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.view.purchaseCode`)
-              .d('模糊筛选...'),
-            dynamicFilterBar: {
-              searchText: 'condition_key',
-            },
-          }}
-          queryFields={{
-            email: <AutoComplete
-              onFocus={handleValueChange}
-              onInput={handleValueChange}
-              options={emailOptionDS}
+        <Tabs defaultActiveKey="t1">
+          <Tabs.TabPane tab="t1" title="用户">
+            <Table
+              dataSet={listDS}
+              columns={columns}
+              queryBar={TableQueryBarType.professionalBar}
+              queryBarProps={{
+                queryFieldsLimit: 2,
+                fuzzyQueryPlaceholder: intl
+                  .get(`${intlPrefix}.view.purchaseCode`)
+                  .d('模糊筛选...'),
+                dynamicFilterBar: {
+                  searchText: 'condition_key',
+                },
+              }}
+              queryFields={{
+                email: <AutoComplete
+                  onFocus={handleValueChange}
+                  onInput={handleValueChange}
+                  options={emailOptionDS}
+                />
+              }}
+              buttons={[
+                [TableButtonType.add, { children: <span>新增</span>, icon: undefined, color: ButtonColor.gray, funcType: FuncType.flat }],
+                <PermissionButton
+                  key="add-1"
+                  onClick={(event) => {
+                    listDS.create({}, 0);
+                  }}
+                  type="c7n-pro"
+                  // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+                >
+                  新增1
+                </PermissionButton>,
+                <PermissionButton
+                  key="add-2"
+                  disabled={!listDS.selected.length}
+                  onClick={(event) => {
+                    listDS['delete'](listDS.selected);
+                  }}
+                  type="c7n-pro"
+                  // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+                >
+                  删除
+                </PermissionButton>,
+                TableButtonType.query,
+                TableButtonType.save,
+                TableButtonType.delete,
+                TableButtonType.reset,
+                TableButtonType.expandAll,
+                TableButtonType.collapseAll,
+                TableButtonType.export,
+                toDataButton,
+                toJSONDataButton,
+                setQueryParamButton,
+              ]}
             />
-          }}
-          buttons={[
-            [TableButtonType.add, { children: <span>新增</span>, icon: undefined, color: ButtonColor.gray, funcType: FuncType.flat }],
-            <PermissionButton
-              key="add-1"
-              onClick={(event) => {
-                listDS.create({}, 0);
-              }}
-              type="c7n-pro"
-              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-            >
-              新增1
-            </PermissionButton>,
-            <PermissionButton
-              key="add-2"
-              disabled={!listDS.selected.length}
-              onClick={(event) => {
-                listDS['delete'](listDS.selected);
-              }}
-              type="c7n-pro"
-              // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-            >
-              删除
-            </PermissionButton>,
-            TableButtonType.query,
-            TableButtonType.save,
-            TableButtonType.delete,
-            TableButtonType.reset,
-            TableButtonType.expandAll,
-            TableButtonType.collapseAll,
-            TableButtonType.export,
-            toDataButton,
-            toJSONDataButton,
-            setQueryParamButton,
-          ]}
-        />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="t2" title="流程">
+
+            <div className={styles.WorkflowCon}>
+              <WorkflowList location={props.location}/>
+            </div>
+
+          </Tabs.TabPane>
+        </Tabs>
       </Content>
     </>
   );

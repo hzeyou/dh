@@ -146,6 +146,7 @@ function Page(props: DetailProps) {
               <TextArea name="remarks" colSpan={4} />
               <Upload
                 colSpan={4}
+                accept={['jpg', 'jpeg', 'png']}
                 name="attachment"
                 action={`/kpi-board-import-datas/import`}
                 extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}

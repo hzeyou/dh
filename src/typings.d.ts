@@ -5,6 +5,8 @@
 import { DataSet } from 'choerodon-ui/pro';
 
 interface ListProps {
+
+  location: Location;
   history: any;
   listDS: DataSet;
 }

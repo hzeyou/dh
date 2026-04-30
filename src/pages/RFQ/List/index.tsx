@@ -17,7 +17,6 @@ import {filterNullValueObject, getCurrentOrganizationId} from 'utils/utils';
 import {ListDSConfig} from '../stores/indexDS';
 import RFQMethodChangeModalOpen from '@/pages/RFQ/components/RFQMethodChangeModal';
 
-import WorkflowList from 'hzero-front-hwkf/lib/pages/personal-workflow/submitted/list';
 
 const intlPrefix = 'srm.rfq';
 
