@@ -47,7 +47,7 @@ function ScrollTab(props: ScrollTabProps) {
 
   return (
     <div id={tab} className={cls} style={style}>
-      <span>{label}</span>
+      <span className={styles['scroll-tab-label']}>{label}</span>
       {children}
     </div>
   );
