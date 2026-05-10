@@ -1,20 +1,19 @@
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import intl from 'utils/intl';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import { getCurrentOrganizationId } from 'utils/utils';
-import sexOptionDataSet from "@/pages/Demo/stores/sexOptionDataSet";
-import {DataSet} from "choerodon-ui/pro";
 
 const organizationId = getCurrentOrganizationId();
 
 const intlPrefix = 'srm.rfq';
 
 const DetailDSConfig = (): DataSetProps => {
+
   return {
     // DataSet 不和后端交互时，自动新建一条数据，在表单场景下比较常见
-    autoQuery: true,
-    pageSize: 100,
     autoCreate: true,
+    autoQuery: false,
+    pageSize: 100,
     // 这里是与后端约定的，上传时用到的字段
     fields: [
       {
@@ -22,18 +21,21 @@ const DetailDSConfig = (): DataSetProps => {
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.material_code`).d('物料编码'),
         required: true,
+        defaultValue: '-',
       },
       {
         name: 'material_name',
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.material_name`).d('物料名称'),
         required: true,
+        placeholder: '请输入',
       },
       {
         name: 'spec_description',
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.spec_description`).d('规格描述（品牌、规格、型号）'),
         required: true,
+        placeholder: '请输入',
       },
       {
         name: 'pricing_unit',
@@ -79,6 +81,7 @@ const DetailDSConfig = (): DataSetProps => {
         name: 'inquiry_remark',
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.inquiry_remark`).d('询价备注'),
+        bind: 'cost_struct_code.supplierName',
         required: true,
       },
       {
@@ -92,12 +95,28 @@ const DetailDSConfig = (): DataSetProps => {
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.latest_quotation`).d('最近一次报价'),
         required: true,
+        bind: 'cost_struct_code.supplierName',
       },
       {
         name: 'lowest_historical_quotation',
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.lowest_historical_quotation`).d('历史最低报价'),
         required: true,
+      },
+      {
+        name: 'bom_main_code',
+        type: FieldType.object,
+        lovCode: 'SCM.SUPPLIER',
+        ignore: FieldIgnore.always,
+        label: intl.get(`${intlPrefix}.bom_main_code`).d('来源物料主数据'),
+      },
+      {
+        name: 'cost_struct_code',
+        type: FieldType.object,
+        lovCode: 'SCM.SUPPLIER',
+        ignore: FieldIgnore.always,
+        label: intl.get(`${intlPrefix}.cost_struct_code`).d('引入成本结构'),
+
       },
     ],
     transport: {

@@ -2,11 +2,12 @@ import { compose } from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import { observer } from 'mobx-react';
 import { Header, Content } from 'components/Page';
+import RichTextEditor from 'components/RichTextEditor';
 import { DetailProps } from '@/typings';
 import {
   Button,
   DataSet, DatePicker,
-  Form, Select, TextField, TextArea, Icon, Upload, Table, RichText,
+  Form, Select, TextField, TextArea, Icon, Upload, Table, RichText, Lov, AutoComplete,
 } from 'choerodon-ui/pro';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 import {filterNullValueObject, getCurrentOrganizationId, intl} from 'utils/utils';
@@ -18,15 +19,19 @@ import { SupplierDSConfig } from '@/pages/RFQ/stores/supplierDS';
 import ScrollTabs from '@/components/ScrollTabs';
 import PermissionButton from 'components/Permission/Button';
 
-import styles from './index.less';
 import ExcelExportPro from 'components/ExcelExportPro';
+import { ColumnLock, TableButtonType } from 'choerodon-ui/pro/lib/table/enum';
+import { ViewMode } from 'choerodon-ui/pro/lib/lov/enum';
+import notification from 'utils/notification';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import styles from './index.less';
 
 const intlPrefix = 'srm.rfq';
 
 function Page(props: DetailProps) {
   const id = props.match.params.id;
 
-  const [detailDS, bomDS, supplierDS] = useMemo(() => {
+  const [detailDS, bomDS, supplierDS,] = useMemo(() => {
     const _detailDS = new DataSet(DetailDSConfig());
     const _bomDS = new DataSet(BomDSConfig());
     const _supplierDS = new DataSet(SupplierDSConfig());
@@ -35,19 +40,46 @@ function Page(props: DetailProps) {
     } else {
       detailDS?.current?.set('dirty', false);
     }
-    return [_detailDS, _bomDS, _supplierDS];
+    return [_detailDS, _bomDS, _supplierDS,];
   }, []);
 
   const bomColumns: ColumnProps[] = useMemo(() => [
-    { name: 'material_code', width: 150 },
-    { name: 'material_name', width: 150 },
-    { name: 'spec_description', width: 250 },
+    // renderer: ({ record }) => record?.get('material_code') || '-'
+    { name: 'material_code', width: 150,  },
+    { name: 'material_name', width: 150, editor: true, },
+    { name: 'spec_description', width: 250, editor: true, },
     { name: 'pricing_unit', width: 100 },
     { name: 'demand_quantity', width: 100 },
-    { name: 'cost_structure', width: 200 },
+    { name: 'cost_structure', width: 200, renderer: ({record}) => {
+      // 设置查询参数
+      record?.getField('cost_struct_code')?.set('lovPara', {a: 1});
+      return (
+        <Lov
+          clearButton={false}
+          record={record}
+          name="cost_struct_code"
+          mode={ViewMode.button}
+        >
+          使用
+        </Lov>
+      );
+    },
+    },
     { name: 'cost_structure_total', width: 130 },
     { name: 'bom_version', width: 100 },
-    { name: 'bom_quotation', width: 120 },
+    { name: 'bom_quotation', width: 120, renderer: ({record}) => {
+      return (
+        <Lov
+          clearButton={false}
+          record={record}
+          name="cost_struct_code"
+          mode={ViewMode.button}
+        >
+            使用
+        </Lov>
+      );
+    },
+    },
     { name: 'bom_total_price', width: 120 },
     { name: 'inquiry_remark', width: 200 },
     { name: 'inquiry_attachment', width: 150 },
@@ -102,7 +134,8 @@ function Page(props: DetailProps) {
     });
   }
 
-  console.log('ddd==', detailDS?.dirty);
+  console.log('detailDS==', detailDS?.dirty);
+  console.log('bomDS==', bomDS);
 
   return (
     <>
@@ -149,7 +182,7 @@ function Page(props: DetailProps) {
                 colSpan={4}
                 accept={['jpg', 'jpeg', 'png']}
                 name="attachment"
-                action={`/kpi-board-import-datas/import`}
+                action={'/kpi-board-import-datas/import'}
                 extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
               >
               </Upload>
@@ -157,24 +190,24 @@ function Page(props: DetailProps) {
             </Form>
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id2" label={intl.get('srm.rfq.view.tab.kpi').d('物料明细')}>
-            <Table key="user" pristine dataSet={bomDS} columns={bomColumns} buttons={[
+            <Table key="bom" dataSet={bomDS} columns={bomColumns} buttons={[
               <PermissionButton
                 key="btn-1"
-                disabled={!bomDS.selected.length}
-                onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
-                }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
+                <Lov
+                  dataSet={bomDS}
+                  name="bom_main_code"
+                  clearButton={false}
+                  mode={ViewMode.button}
+                >
                 来源物料主数据
+                </Lov>
               </PermissionButton>,
               <PermissionButton
                 key="btn-2"
-                disabled={!bomDS.selected.length}
-                onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
-                }}
+                onClick={(event) => bomDS.create({}, 0)}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
@@ -182,31 +215,55 @@ function Page(props: DetailProps) {
               </PermissionButton>,
               <PermissionButton
                 key="btn-3"
-                disabled={!bomDS.selected.length}
-                onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
-                }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
-                引入成本结构
+                <Lov
+                  dataSet={bomDS}
+                  name="cost_struct_code"
+                  clearButton={false}
+                  mode={ViewMode.button}
+                  onClick={(event) => {
+                    if (!bomDS.selected.length) {
+                      notification.error({ message: '请至少选择一条明细！' });
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  引入成本结构
+                </Lov>
               </PermissionButton>,
               <PermissionButton
                 key="add-4"
-                disabled={!bomDS.selected.length}
-                onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
-                }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
-                引入BOM
+                <Lov
+                  dataSet={bomDS}
+                  tableProps={{
+                    queryFieldsLimit: 2,
+                    queryFields: {
+                      supplierCode: (<div>123</div>)
+                    },
+                  }}
+                  name="cost_struct_code"
+                  clearButton={false}
+                  mode={ViewMode.button}
+                  onClick={(event) => {
+                    if (!bomDS.selected.length) {
+                      notification.error({ message: '请至少选择一条明细！' });
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  引入BOM
+                </Lov>
               </PermissionButton>,
               <PermissionButton
                 key="btn-5"
                 disabled={!bomDS.selected.length}
                 onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
+                  bomDS.delete(bomDS.selected);
                 }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
@@ -227,20 +284,35 @@ function Page(props: DetailProps) {
             <Table dataSet={supplierDS} columns={supplierColumns} buttons={[
               <PermissionButton
                 key="btn-1"
-                disabled={!bomDS.selected.length}
-                onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
-                }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
-                选择供应商
+                <Lov
+                  dataSet={supplierDS}
+                  name="lov_supplier_code"
+                  clearButton={false}
+                  mode={ViewMode.button}
+                  // onBeforeSelect={(...args) => {
+                  //   console.log('args==', args);
+                  //   return false;
+                  // }}
+                  onChange={(value, oldValue) => {
+                    console.log('onChange', supplierDS.current);
+                    // value.forEach((item) => supplierDS.create({lov_supplier_code: item}));
+                    // supplierDS.delete(supplierDS.current);
+                  }}
+                >
+                  选择供应商
+                </Lov>
               </PermissionButton>,
               <PermissionButton
                 key="btn-2"
-                disabled={!bomDS.selected.length}
                 onClick={(event) => {
-                  bomDS['delete'](bomDS.selected);
+                  if (!supplierDS.selected.length) {
+                    notification.error({ message: '请至少选择一条明细！' });
+                    return;
+                  }
+                  supplierDS.delete(supplierDS.selected);
                 }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
@@ -251,11 +323,7 @@ function Page(props: DetailProps) {
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id4" label={intl.get('srm.rfq.view.tab.kpi').d('询价要求')}>
             <Form dataSet={detailDS} columns={4}>
-              <RichText
-                colSpan={4}
-                name="inquiry_requirement"
-                style={{ height: '200px' }}
-              />
+              <RichTextEditor colSpan={4} name="inquiry_requirement" />
             </Form>
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id5" label={intl.get('srm.rfq.view.tab.kpi').d('询价公告')}>
@@ -265,15 +333,12 @@ function Page(props: DetailProps) {
                   <TextField name="announcement_title"  />
                 </Form.Item>
                 <Form.Item label="" labelWidth={0} colSpan={4}>
-                  <RichText
-                    name="announcement_content"
-                    style={{ height: '200px' }}
-                  />
+                  <RichTextEditor name="announcement_content" />
                 </Form.Item>
                 <Upload
                   colSpan={4}
                   name="announcement_attachment"
-                  action={`/kpi-board-import-datas/import`}
+                  action={'/kpi-board-import-datas/import'}
                   extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
                 >
                 </Upload>
