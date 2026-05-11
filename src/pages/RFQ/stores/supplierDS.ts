@@ -63,7 +63,7 @@ const SupplierDSConfig = (): DataSetProps => {
         lovCode: 'SCM.SUPPLIER',
         ignore: FieldIgnore.always,
         label: intl.get(`${intlPrefix}.lov_supplier_code`).d('选择供应商'),
-        multiple: true,
+        // multiple: true,
       },
     ],
     transport: {

@@ -48,7 +48,11 @@ const Index = (props: ListProps) => {
     // 刷新
     if (res === false) return;
 
+    console.log('listDS', listDS.toData());
+
     listDS.query(listDS.currentPage);
+
+
 
   }
 

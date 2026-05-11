@@ -20,27 +20,29 @@ import ScrollTabs from '@/components/ScrollTabs';
 import PermissionButton from 'components/Permission/Button';
 
 import ExcelExportPro from 'components/ExcelExportPro';
-import { ColumnLock, TableButtonType } from 'choerodon-ui/pro/lib/table/enum';
+import { ColumnLock, TableButtonType, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
 import { ViewMode } from 'choerodon-ui/pro/lib/lov/enum';
 import notification from 'utils/notification';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import styles from './index.less';
+import { LovSupplierDSConfig } from '@/pages/RFQ/stores/lovSupplierDS';
 
 const intlPrefix = 'srm.rfq';
 
 function Page(props: DetailProps) {
   const id = props.match.params.id;
 
-  const [detailDS, bomDS, supplierDS,] = useMemo(() => {
+  const [detailDS, bomDS, supplierDS, lovSupplierDS] = useMemo(() => {
     const _detailDS = new DataSet(DetailDSConfig());
     const _bomDS = new DataSet(BomDSConfig());
     const _supplierDS = new DataSet(SupplierDSConfig());
+    const _lovSupplierDS = new DataSet(LovSupplierDSConfig());
     if (id) {
       _detailDS.query(undefined, { id });
     } else {
       detailDS?.current?.set('dirty', false);
     }
-    return [_detailDS, _bomDS, _supplierDS,];
+    return [_detailDS, _bomDS, _supplierDS, _lovSupplierDS];
   }, []);
 
   const bomColumns: ColumnProps[] = useMemo(() => [
@@ -51,6 +53,7 @@ function Page(props: DetailProps) {
     { name: 'pricing_unit', width: 100 },
     { name: 'demand_quantity', width: 100 },
     { name: 'cost_structure', width: 200, renderer: ({record}) => {
+      if (!record) return;
       // 设置查询参数
       record?.getField('cost_struct_code')?.set('lovPara', {a: 1});
       return (
@@ -68,6 +71,7 @@ function Page(props: DetailProps) {
     { name: 'cost_structure_total', width: 130 },
     { name: 'bom_version', width: 100 },
     { name: 'bom_quotation', width: 120, renderer: ({record}) => {
+      if (!record) return;
       return (
         <Lov
           clearButton={false}
@@ -281,14 +285,14 @@ function Page(props: DetailProps) {
             ]} />
           </ScrollTabs.ScrollTab>
           <ScrollTabs.ScrollTab tab="id3" label={intl.get('srm.rfq.view.tab.kpi').d('供应商信息')}>
-            <Table dataSet={supplierDS} columns={supplierColumns} buttons={[
+            <Table queryBar={TableQueryBarType.filterBar} dataSet={supplierDS} columns={supplierColumns} buttons={[
               <PermissionButton
                 key="btn-1"
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
                 <Lov
-                  dataSet={supplierDS}
+                  dataSet={lovSupplierDS}
                   name="lov_supplier_code"
                   clearButton={false}
                   mode={ViewMode.button}
@@ -297,9 +301,7 @@ function Page(props: DetailProps) {
                   //   return false;
                   // }}
                   onChange={(value, oldValue) => {
-                    console.log('onChange', supplierDS.current);
-                    // value.forEach((item) => supplierDS.create({lov_supplier_code: item}));
-                    // supplierDS.delete(supplierDS.current);
+                    value.forEach((item) => supplierDS.create({lov_supplier_code: item}));
                   }}
                 >
                   选择供应商
@@ -307,12 +309,13 @@ function Page(props: DetailProps) {
               </PermissionButton>,
               <PermissionButton
                 key="btn-2"
-                onClick={(event) => {
+                onClick={async (event) => {
                   if (!supplierDS.selected.length) {
                     notification.error({ message: '请至少选择一条明细！' });
                     return;
                   }
-                  supplierDS.delete(supplierDS.selected);
+                  await supplierDS.delete(supplierDS.selected);
+                  lovSupplierDS.current?.set('lov_supplier_code', supplierDS.toData().map(v => v['lov_supplier_code']));
                 }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
