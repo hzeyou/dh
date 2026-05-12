@@ -26,7 +26,7 @@ interface TitleProps {
 const fontSizeMap = {
   [TitleLevel.LEVEL_1]: 16,
   [TitleLevel.LEVEL_2]: 14,
-}
+};
 
 const Title: React.FC<TitleProps> = (props) => {
 
@@ -54,6 +54,6 @@ const Title: React.FC<TitleProps> = (props) => {
       <div className={styles['pts-customer-title-right']}>{right}</div>
     </div>
   );
-}
+};
 
 export default Title;

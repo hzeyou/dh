@@ -1,7 +1,7 @@
 import {compose} from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import {observer} from 'mobx-react';
-import {Header, Content} from 'components/Page';
+import { Header, Content, ContentCard } from 'components/Page';
 import {DetailProps} from '@/typings';
 import {
   Button,
@@ -82,21 +82,23 @@ function Page(props: DetailProps) {
       </Header>
       <Content>
 
-        <Form dataSet={detailDS} columns={3}>
-          {isReadOnly ? (
-            <>
-              <Output name="name" />
-              <Output name="content" />
-            </>
-          ) : (
-            <>
-              <TextField name="name" />
-              <NumberField name="age" />
-              <EmailField name="email" />
-              <SelectBox name="gender"/>
-            </>
-          )}
-        </Form>
+        <ContentCard title={intl.get('hzero.common.view.baseInfo').d('基本信息')}>
+          <Form dataSet={detailDS} columns={3}>
+            {isReadOnly ? (
+              <>
+                <Output name="name" />
+                <Output name="content" />
+              </>
+            ) : (
+              <>
+                <TextField name="name" />
+                <NumberField name="age" />
+                <EmailField name="email" />
+                <SelectBox name="gender"/>
+              </>
+            )}
+          </Form>
+        </ContentCard>
 
       </Content>
     </>

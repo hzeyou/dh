@@ -5,6 +5,10 @@ import { ModalProps } from 'choerodon-ui/pro/lib/modal/Modal';
 // Modal 实例类型定义
 interface ModalInstance {
   close: () => void;
+  handleOk: (callback: () => void | boolean | Promise<void | boolean>) => void;
+  handleCancel: (
+    callback: () => void | boolean | Promise<void | boolean>,
+  ) => void;
   update: (props: Partial<ModalProps>) => void;
   props: ModalProps & { active?: boolean };
 }
@@ -19,9 +23,12 @@ interface OpenModalHelperOptions<T = Record<string, any>> {
   content: React.ComponentType<{ modal?: ModalInstance } & T>;
   drawer?: boolean;
   closable?: boolean;
-  onOk?: () => void | Promise<void>;
-  onCancel?: () => void | Promise<void>;
-  footer?: (okBtn: React.ReactElement, cancelBtn: React.ReactElement) => React.ReactElement;
+  onOk?: () => void | boolean | Promise<void | boolean>;
+  onCancel?: () => void | boolean | Promise<void | boolean>;
+  footer?: (
+    okBtn: React.ReactElement,
+    cancelBtn: React.ReactElement,
+  ) => React.ReactElement;
   modalProps?: Partial<ModalProps>;
   data?: T;
 }
@@ -73,13 +80,16 @@ interface OpenModalHelperOptions<T = Record<string, any>> {
  *   ),
  * });
  */
-export function openModalHelper<T = Record<string, any>>(options: OpenModalHelperOptions<T>) {
+export function openModalHelper<T = Record<string, any>>(
+  options: OpenModalHelperOptions<T>,
+) {
   const {
     title = '弹窗',
     content: ContentComponent,
     drawer = true,
     closable = true,
     data,
+    modalProps,
     ...other
   } = options;
 
@@ -98,9 +108,8 @@ export function openModalHelper<T = Record<string, any>>(options: OpenModalHelpe
     drawer,
     closable,
     ...other,
+    ...modalProps,
   });
 
   return modalInstance;
 }
-
-

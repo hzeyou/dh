@@ -242,6 +242,7 @@ const Index = (props: ListProps) => {
         </Tabs>
 
         <Table
+          autoHeight={true}
           dataSet={listDS}
           columns={columns}
           queryBar={TableQueryBarType.professionalBar}

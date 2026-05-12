@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback, useMemo, useContext, c
 import { Tabs } from 'choerodon-ui/pro';
 import styles from './index.less';
 import useThemeColor from 'hzero-front-apaas/lib/hooks/useThemeColor';
+import Title from '@/components/Title';
 
 /* ==================== Context ==================== */
 
@@ -50,14 +51,7 @@ function ScrollTab(props: ScrollTabProps) {
   return (
     <div id={tab} className={cls} style={style}>
       <div className={styles['scroll-tab-title']}>
-        <span
-          className={styles['scroll-tab-label']}
-          style={{
-            '--scroll-tab-primary-color': themeColor.primary,
-            '--scroll-tab-title-color': themeColor.titleColor1 } as React.CSSProperties}
-        >
-          {label}
-        </span>
+        <Title title={label}></Title>
       </div>
       {children}
     </div>

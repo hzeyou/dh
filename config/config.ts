@@ -11,9 +11,24 @@ export default extendParentConfig({
   },
   routes: [
     {
-      path: '/srm/supplier', // 供应商
+      path: '/srm/supplier/list',
       component: './Supplier',
       authorized: true,
+    },
+    {
+      path: '/srm/supplier/detail/:id',
+      component: './Supplier/Detail',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-type',
+      routes: [
+        {
+          path: '/srm/supplier-type/list',
+          component: './SupplierType',
+          authorized: true,
+        },
+      ],
     },
     {
       path: '/public/demo', // 供应商

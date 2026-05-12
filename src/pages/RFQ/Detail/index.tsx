@@ -187,7 +187,7 @@ function Page(props: DetailProps) {
                 accept={['jpg', 'jpeg', 'png']}
                 name="attachment"
                 action={'/kpi-board-import-datas/import'}
-                extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
+                extra={<div>请上传图片文件(jpg, jpeg, png...)</div>}
               >
               </Upload>
 
@@ -342,7 +342,7 @@ function Page(props: DetailProps) {
                   colSpan={4}
                   name="announcement_attachment"
                   action={'/kpi-board-import-datas/import'}
-                  extra={<p>请上传图片文件(jpg, jpeg, png...)</p>}
+                  extra={<div>请上传图片文件(jpg, jpeg, png...)</div>}
                 >
                 </Upload>
               </Form>
