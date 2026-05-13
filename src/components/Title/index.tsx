@@ -15,6 +15,7 @@ export enum TitleLevel {
 
 interface TitleProps {
   title: React.ReactNode;
+  id?: string;
   level?: TitleLevel;
   top?: number,
   bottom?: number,
@@ -35,7 +36,7 @@ const Title: React.FC<TitleProps> = (props) => {
   const iconHeight = fontSizeMap[level] + 2;
 
   return (
-    <div className={styles['pts-customer-title-wrapper']}>
+    <div className={styles['pts-customer-title-wrapper']} id={props.id}>
       <div className={styles['pts-customer-title']} style={{ marginTop: top, marginBottom: bottom }}>
         {!!icon ? icon : (
           <span
