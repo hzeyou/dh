@@ -1,42 +1,61 @@
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
+import Record from 'choerodon-ui/dataset/data-set/Record';
+import { CustomValidator } from 'choerodon-ui/dataset/validator/Validator';
 
 const intlPrefix = 'srm.supplier.model.supplier';
+
+const typeOptionsDS = new DataSet({data: [ {meaning: '邮件接收人', value: '1'}, {meaning: '防伪码收件人', value: '2'}, {meaning: '邮件抄送人', value: '3'}]});
+const mainOptionsDS = new DataSet({data: [ {meaning: '否', value: '0', disabled: false,}, {meaning: '是', value: '1', disabled: false,}]});
+
 
 export const contactDSConf = (): DataSetProps => ({
   autoCreate: true,
   fields: [
     {
-      name: 'field',
+      name: 'name',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorCode`).d('联系人'),
       required: true,
     },
     {
-      name: 'field1',
+      name: 'phone',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorTypeName`).d('联系人手机'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'email',
       type: FieldType.email,
       label: intl.get(`${intlPrefix}.vendorStatus`).d('联系人邮箱'),
       required: true,
     },
     {
-      name: 'field3',
+      name: 'type',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.isRegisterAudit`).d('联系人类型'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      required: true,
+      options: typeOptionsDS,
     },
     {
-      name: 'field4',
+      name: 'is_main',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('是否主要联系人'),
+      required: true,
+      options: mainOptionsDS,
+      validator: (value, name,dataSet: Record): boolean | string => {
+        let count = 0;
+        dataSet?.dataSet?.forEach(record => {
+          if (record.get('is_main') === '1') {
+            ++count;
+          }
+        });
+        if (count >= 2) return '主要联系人只能有一个';
+        return true;
+      },
     },
   ],
   transport: {

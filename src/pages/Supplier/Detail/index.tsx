@@ -169,14 +169,13 @@ function Detail(props: DetailProps) {
   }, []);
 
   const contactColumns:Array<ColumnProps> = [
-    { name: 'field', editor: true },
-    { name: 'field1', editor: true },
-    { name: 'field2', editor: true },
-    { name: 'field3', editor: true },
-    { name: 'field4', editor: true },
+    { name: 'name', editor: true },
+    { name: 'phone', editor: true },
+    { name: 'email', editor: true },
+    { name: 'type', editor: true, },
+    { name: 'is_main', editor: true },
     {
       header: intl.get('hzero.common.button.action').d('操作'),
-      name: 'field5',
       renderer: ({ record }) => {
         return (
           <a onClick={() => contactDS?.delete(record)}>
@@ -283,11 +282,11 @@ function Detail(props: DetailProps) {
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="contact" title="联系人">
-                <Table columns={contactColumns} dataSet={contactDS} />
+                <Table columns={contactColumns} dataSet={contactDS} buttons={[TableButtonType.add]} />
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="bank" title="银行信息">
-                <Table columns={bankColumns} dataSet={bankDS} />
+                <Table columns={bankColumns} dataSet={bankDS} buttons={[TableButtonType.add]} />
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="cert" title="证书资质信息">
