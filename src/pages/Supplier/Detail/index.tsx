@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {
   Button,
   DataSet,
@@ -13,19 +13,19 @@ import {
   TextArea,
   TextField,
 } from 'choerodon-ui/pro';
-import { observer } from 'mobx-react';
-import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
-import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
+import {observer} from 'mobx-react';
+import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
+import {ColumnProps} from 'choerodon-ui/pro/lib/table/Column';
 import {
   SelectionMode,
   TableButtonType,
 } from 'choerodon-ui/pro/lib/table/enum';
-import { Buttons } from 'choerodon-ui/pro/lib/table/Table';
-import { Record } from 'choerodon-ui/dataset';
-import { RecordStatus } from 'choerodon-ui/dataset/data-set/enum';
-import { isNil } from 'lodash';
+import {Buttons} from 'choerodon-ui/pro/lib/table/Table';
+import {Record} from 'choerodon-ui/dataset';
+import {RecordStatus} from 'choerodon-ui/dataset/data-set/enum';
+import {isNil} from 'lodash';
 
-import { getCurrentUserId, intl } from 'utils/utils';
+import {getCurrentUserId, intl} from 'utils/utils';
 import formatterCollections from 'utils/intl/formatterCollections';
 import notification from 'utils/notification';
 import {
@@ -37,15 +37,15 @@ import {
 } from 'components/Page';
 
 import Title from '@/components/Title';
-import { compose } from '@/utils/util';
-import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
-import { Tag } from 'choerodon-ui';
+import {compose} from '@/utils/util';
+import {RenderProps} from 'choerodon-ui/pro/lib/field/FormField';
+import {Tag} from 'choerodon-ui';
 import styles from '../index.less';
-import { Anchor } from 'hzero-ui';
-import { detailDSConf } from '@/pages/Supplier/stores/detailDS';
-import { contactDSConf } from '@/pages/Supplier/stores/contactDS';
-import { bankDSConf } from '@/pages/Supplier/stores/bankDS';
-import { certDSConf } from '@/pages/Supplier/stores/certDS';
+import {Anchor} from 'hzero-ui';
+import {detailDSConf} from '@/pages/Supplier/stores/detailDS';
+import {contactDSConf} from '@/pages/Supplier/stores/contactDS';
+import {bankDSConf} from '@/pages/Supplier/stores/bankDS';
+import {certDSConf} from '@/pages/Supplier/stores/certDS';
 
 interface DetailProps {
   history: any;
@@ -57,9 +57,9 @@ interface DetailProps {
 }
 
 function Detail(props: DetailProps) {
-  const { history, match } = props;
+  const {history, match} = props;
   const {
-    params: { actionHeaderId },
+    params: {actionHeaderId},
   } = match;
 
   // 是否为创建
@@ -80,154 +80,80 @@ function Detail(props: DetailProps) {
     return [_detailDS, _contactDS, _bankDS, _certDS];
   }, [actionHeaderId]);
 
-  // 删除
-  const handleDelete = async () => {
-    const modelProps = {
-      title: intl.get('spt.common.message.confirm.delete').d('是否确认删除？'),
-      onOk: async () => {
-        detailDS.current?.set('__update', !detailDS.current?.get('__update'));
-        detailDS.setState('action', 'ActionType.DELETE');
-        await detailDS.forceSubmit();
-        history.replace('/pts/action-item/list');
+  const contactColumns: Array<ColumnProps> = useMemo(() => [
+    {name: 'name', editor: true},
+    {name: 'phone', editor: true},
+    {name: 'email', editor: true},
+    {name: 'type', editor: true,},
+    {name: 'isMain', editor: true},
+    {
+      header: intl.get('hzero.common.button.action').d('操作'),
+      renderer: ({record}: RenderProps) => {
+        if (record == null) return;
+        return (
+          <a onClick={() => contactDS?.delete(record)}>
+            {intl.get('hzero.common.button.delete').d('删除')}
+          </a>
+        );
       },
-    };
+    },
+  ], []);
 
-    return Modal.confirm(modelProps);
-  };
+  const bankColumns: Array<ColumnProps> = useMemo(() => [
+    {name: 'sortCode', editor: true},
+    {name: 'swiftCode', editor: true},
+    {name: 'name', editor: true},
+    {name: 'country', editor: true},
+    {name: 'account', editor: true},
+    {name: 'host', editor: true},
+    {name: 'type', editor: true},
+    {name: 'address', editor: true},
+    {name: 'isTicket', editor: true},
+    {name: 'attachment', editor: true},
+    {
+      header: intl.get('hzero.common.button.action').d('操作'),
+      renderer: ({record}: RenderProps) => {
+        if (record == null) return;
+        return (
+          <a onClick={() => contactDS?.delete(record)}>
+            {intl.get('hzero.common.button.delete').d('删除')}
+          </a>
+        );
+      },
+    },
+  ], []);
 
-  // 编辑器是否可用
-  const lineEditor = (record: Record) => {
-    if (
-      record.status === RecordStatus.sync &&
-      ['N_COMPLETED', 'D_COMPLETED', 'CANCELLED'].includes(
-        record.get('milestoneStatus'),
-      )
-    ) {
-      // 保存后的已完成状态不可编辑
-      return false;
+  const certColumns: Array<ColumnProps> = useMemo(() => [
+    {name: 'type', editor: true},
+    {name: 'name', editor: true},
+    {name: 'number', editor: true},
+    {name: 'effectiveDate', editor: true},
+    {name: 'expiryDate', editor: true},
+    {name: 'remark', editor: true},
+    {name: 'attachment', editor: true},
+    {
+      header: intl.get('hzero.common.button.action').d('操作'),
+      renderer: ({record}: RenderProps) => {
+        if (record == null) return;
+        return (
+          <a onClick={() => contactDS?.delete(record)}>
+            {intl.get('hzero.common.button.delete').d('删除')}
+          </a>
+        );
+      },
+    },
+  ], []);
+
+  const save = async () => {
+    const base = await detailDS.validate();
+    const contact = await contactDS.validate();
+    const bank = await bankDS.validate();
+    if (base && contact && bank) {
+      contactDS.toJSONData();
+      bankDS.toJSONData();
+      await detailDS.submit();
     }
-    if (record.get('editFlag') === 0) return false;
-
-    return true;
   };
-
-  // line 表格列
-  const lineColumns: Array<ColumnProps> = [
-    { name: 'milestoneName', editor: lineEditor },
-    { name: 'milestoneStatus', editor: lineEditor },
-    { name: 'stageOwnerUserLov', editor: lineEditor },
-    { name: 'stageOwnerDeptName' },
-    { name: 'stageStartTime', editor: lineEditor },
-    { name: 'stageEndTime', editor: lineEditor },
-    { name: 'firstPlanFinishTime' },
-    { name: 'delayFlag' },
-    {
-      header: intl
-        .get('pts.indicatorDictionary.view.column.line.action')
-        .d('操作'),
-      width: 100,
-      renderer: ({ record }) => {
-        const actionLineId = record?.get('actionLineId');
-        return actionLineId && <div>123</div>;
-      },
-    },
-  ];
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // 行状态过滤器
-  const actionStatusOptionsFilter = (record: Record) => {
-    // 不能选择已完成状态，通过完成按钮完成，此时也不会翻译COMPLETED的meaning，后面需要翻译时，再处理
-    if (record.get('value') === 'COMPLETED') {
-      return false;
-    }
-    return true;
-  };
-
-  const executorDeptNamesRender = ({
-    record,
-  }: RenderProps): React.ReactNode => {
-    const executorDeptNames = record?.get('executorDeptNames');
-    const text = Array.isArray(executorDeptNames)
-      ? executorDeptNames.join(',')
-      : executorDeptNames;
-    if (!text) return text;
-    const set = new Set(text.split(','));
-    return Array.from(set).map(name => <Tag>{name}</Tag>);
-  };
-
-  const executorDeptNames = detailDS.current?.get('executorDeptNames');
-  const executorDeptNamesTempSet = new Set(
-    Array.isArray(executorDeptNames)
-      ? executorDeptNames
-      : (executorDeptNames || '').split(','),
-  );
-  const executorDeptNamesTemp = Array.from(executorDeptNamesTempSet);
-
-  useEffect(() => {
-    console.log('current=', containerRef.current);
-  }, []);
-
-  const contactColumns:Array<ColumnProps> = [
-    { name: 'name', editor: true },
-    { name: 'phone', editor: true },
-    { name: 'email', editor: true },
-    { name: 'type', editor: true, },
-    { name: 'is_main', editor: true },
-    {
-      header: intl.get('hzero.common.button.action').d('操作'),
-      renderer: ({ record }) => {
-        return (
-          <a onClick={() => contactDS?.delete(record)}>
-            {intl.get('hzero.common.button.delete').d('删除')}
-          </a>
-        );
-      },
-    },
-  ];
-
-  const bankColumns:Array<ColumnProps> = [
-    { name: 'field', editor: true },
-    { name: 'field1', editor: true },
-    { name: 'field2', editor: true },
-    { name: 'field3', editor: true },
-    { name: 'field4', editor: true },
-    { name: 'field5', editor: true },
-    { name: 'field6', editor: true },
-    { name: 'field7', editor: true },
-    { name: 'field8', editor: true },
-    { name: 'field9', editor: true },
-    {
-      header: intl.get('hzero.common.button.action').d('操作'),
-      renderer: ({ record }) => {
-        return (
-          <a onClick={() => contactDS?.delete(record)}>
-            {intl.get('hzero.common.button.delete').d('删除')}
-          </a>
-        );
-      },
-    },
-  ];
-
-  const certColumns:Array<ColumnProps> = [
-    { name: 'field', editor: true },
-    { name: 'field1', editor: true },
-    { name: 'field2', editor: true },
-    { name: 'field3', editor: true },
-    { name: 'field4', editor: true },
-    { name: 'field5', editor: true },
-    { name: 'field6', editor: true },
-    {
-      header: intl.get('hzero.common.button.action').d('操作'),
-      renderer: ({ record }) => {
-        return (
-          <a onClick={() => contactDS?.delete(record)}>
-            {intl.get('hzero.common.button.delete').d('删除')}
-          </a>
-        );
-      },
-    },
-  ];
 
   return (
     <>
@@ -236,7 +162,7 @@ function Detail(props: DetailProps) {
         backPath="/pts/action-item/list"
         isChange={detailDS.dirty}
       >
-        <Button icon="save" onClick={() => {}} color={ButtonColor.primary}>
+        <Button icon="save" onClick={save} color={ButtonColor.primary}>
           {intl.get('hzero.common.button.save').d('保存')}
         </Button>
       </Header>
@@ -251,56 +177,56 @@ function Detail(props: DetailProps) {
             >
               <Tabs.TabPane tab="base" title="基础信息">
                 <Form dataSet={detailDS} columns={4}>
-                  <Lov name="field" tableProps={{ queryFieldsLimit: 5 }} />
-                  <TextField name="field1" />
-                  <TextField name="field2" />
+                  <Lov name="field" tableProps={{queryFieldsLimit: 5}}/>
+                  <TextField name="field1"/>
+                  <TextField name="field2"/>
                   <div></div>
-                  <TextField name="field3" />
-                  <Lov name="field4" tableProps={{ queryFieldsLimit: 5 }} />
-                  <Lov name="field5" tableProps={{ queryFieldsLimit: 5 }} />
-                  <Select name="field6" />
-                  <Select name="field7" />
-                  <Select name="field8" />
-                  <TextField name="field9" />
-                  <TextField name="field10" />
-                  <NumberField name="field11" />
-                  <NumberField name="field12" />
-                  <DatePicker name="field13" />
-                  <DatePicker name="field14" />
-                  <TextField name="field15" />
-                  <Select name="field16" />
-                  <TextField name="field17" />
-                  <TextField name="field18" />
-                  <Select name="field19" />
-                  <TextField name="field20" />
-                  <TextField name="field21" />
-                  <TextField name="field22" />
-                  <TextField name="field23" />
-                  <TextArea name="field24" colSpan={3} />
-                  <Select name="field25" />
+                  <TextField name="field3"/>
+                  <Lov name="field4" tableProps={{queryFieldsLimit: 5}}/>
+                  <Lov name="field5" tableProps={{queryFieldsLimit: 5}}/>
+                  <Select name="field6"/>
+                  <Select name="field7"/>
+                  <Select name="field8"/>
+                  <TextField name="field9"/>
+                  <TextField name="field10"/>
+                  <NumberField name="field11"/>
+                  <NumberField name="field12"/>
+                  <DatePicker name="field13"/>
+                  <DatePicker name="field14"/>
+                  <TextField name="field15"/>
+                  <Select name="field16"/>
+                  <TextField name="field17"/>
+                  <TextField name="field18"/>
+                  <Select name="field19"/>
+                  <TextField name="field20"/>
+                  <TextField name="field21"/>
+                  <TextField name="field22"/>
+                  <TextField name="field23"/>
+                  <TextArea name="field24" colSpan={3}/>
+                  <Select name="field25"/>
                 </Form>
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="contact" title="联系人">
-                <Table columns={contactColumns} dataSet={contactDS} buttons={[TableButtonType.add]} />
+                <Table columns={contactColumns} dataSet={contactDS} buttons={[TableButtonType.add]}/>
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="bank" title="银行信息">
-                <Table columns={bankColumns} dataSet={bankDS} buttons={[TableButtonType.add]} />
+                <Table columns={bankColumns} dataSet={bankDS} buttons={[TableButtonType.add]}/>
               </Tabs.TabPane>
 
               <Tabs.TabPane tab="cert" title="证书资质信息">
-                <Table columns={certColumns} dataSet={certDS} />
+                <Table columns={certColumns} dataSet={certDS}/>
               </Tabs.TabPane>
 
             </Tabs>
           </ContentCard>
 
           <ContentCard title="列信息">
-            <div style={{ height: '300px' }}></div>
+            <div style={{height: '300px'}}></div>
           </ContentCard>
 
-          <div style={{ height: '300px' }}></div>
+          <div style={{height: '300px'}}></div>
         </ListItem>
 
         {/*<div ref={containerRef}></div>

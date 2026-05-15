@@ -4,7 +4,6 @@ import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 import Record from 'choerodon-ui/dataset/data-set/Record';
-import { CustomValidator } from 'choerodon-ui/dataset/validator/Validator';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
@@ -41,7 +40,7 @@ export const contactDSConf = (): DataSetProps => ({
       options: typeOptionsDS,
     },
     {
-      name: 'is_main',
+      name: 'isMain',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('是否主要联系人'),
       required: true,
@@ -49,7 +48,7 @@ export const contactDSConf = (): DataSetProps => ({
       validator: (value, name,dataSet: Record): boolean | string => {
         let count = 0;
         dataSet?.dataSet?.forEach(record => {
-          if (record.get('is_main') === '1') {
+          if (record.get('isMain') === '1') {
             ++count;
           }
         });
