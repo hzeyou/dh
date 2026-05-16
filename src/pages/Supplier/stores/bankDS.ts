@@ -11,7 +11,7 @@ const ticketOptionsDS = new DataSet({data: [ {meaning: '对公', value: '1'}, {m
 
 
 export const bankDSConf = (): DataSetProps => ({
-  autoCreate: true,
+  autoCreate: false,
   fields: [
     {
       name: 'sortCode',

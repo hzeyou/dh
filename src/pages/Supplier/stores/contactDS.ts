@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { DataToJSON, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 import Record from 'choerodon-ui/dataset/data-set/Record';
@@ -13,6 +13,7 @@ const mainOptionsDS = new DataSet({data: [ {meaning: '否', value: '0', disabled
 
 export const contactDSConf = (): DataSetProps => ({
   autoCreate: true,
+  dataToJSON: DataToJSON.normal,
   fields: [
     {
       name: 'name',

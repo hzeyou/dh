@@ -152,7 +152,7 @@ const Index = (props: ListProps) => {
 
   const toDataButton = (
     <Button onClick={() => {
-      // toData 转换成普通数据，不包含删除的数据
+      // toData 转换成普通数据，不包含删除的数据, 不带状态的数据
       setConsoleValue(listDS.toData());
       console.log(listDS.toData());
     }}>
@@ -162,7 +162,7 @@ const Index = (props: ListProps) => {
 
   const toJSONDataButton = (
     <Button onClick={() => {
-      // toJSONData 转换成用于提交的 json 数据
+      // toJSONData 转换成用于提交的 json 数据, 带有额外属性的数据, 比如 __id, _status
       setConsoleValue(listDS.toJSONData());
       console.log(listDS.toJSONData());
     }}>

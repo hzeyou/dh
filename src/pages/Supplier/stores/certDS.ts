@@ -7,7 +7,7 @@ import { intl } from 'utils/utils';
 const intlPrefix = 'srm.supplier.model.supplier';
 
 export const certDSConf = (): DataSetProps => ({
-  autoCreate: true,
+  autoCreate: false,
   fields: [
     {
       name: 'type',

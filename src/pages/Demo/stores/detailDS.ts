@@ -63,6 +63,7 @@ const DetailDSConfig = (): DataSetProps => {
             data: data[0],  // body 参数
             url: `${process.env.SRM_DEV_HOST}/demo/`,
             method: 'POST',
+            headers: {'ContentType': 'application/x-www-form-urlencoded'}
           };
         }
       },
