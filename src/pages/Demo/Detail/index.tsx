@@ -18,10 +18,13 @@ import {
   EmailField,
   SelectBox,
 } from 'choerodon-ui/pro';
+import { Steps } from 'choerodon-ui';
 import {ButtonColor} from 'choerodon-ui/pro/lib/button/enum';
 import {intl} from 'utils/utils';
 import React, {useMemo} from 'react';
 import {DetailDSConfig} from '@/pages/Demo/stores/detailDS';
+import { LabelLayout } from 'choerodon-ui/pro/lib/form/enum';
+import { Card } from 'hzero-ui';
 
 
 function Page(props: DetailProps) {
@@ -56,50 +59,85 @@ function Page(props: DetailProps) {
     history.back();
   };
 
-  const isReadOnly = false;
+  const isReadOnly = true;
 
   return (
     <>
       <Header
-        title={intl.get(`dd`).d('详情')}
+        title={intl.get('dd').d('详情')}
         backPath="/srm/demo/list"
-        stateData={{status: detailDS?.current?.getState('isSubmit')}}
+        stateData={{ status: detailDS?.current?.getState('isSubmit') }}
         isChange={detailDS?.dirty}
       >
-        <Button
-          icon="save"
-          onClick={handleSave}
-          color={ButtonColor.primary}
-        >
+        <Button icon="save" onClick={handleSave} color={ButtonColor.primary}>
           {intl.get('hzero.common.button.save').d('保存')}
         </Button>
-        <Button
-          icon="delete"
-          onClick={handleDelete}
-        >
+        <Button icon="delete" onClick={handleDelete}>
           {intl.get('hzero.common.button.delete').d('删除')}
         </Button>
       </Header>
       <Content>
+        <ContentCard
+          title={intl.get('hzero.common.view.baseInfo').d('基本信息')}
+        >
 
-        <ContentCard title={intl.get('hzero.common.view.baseInfo').d('基本信息')}>
-          <Form dataSet={detailDS} columns={3}>
+          <Form dataSet={detailDS}>
+            <Steps>
+              <Steps.Step
+                style={{maxWidth: '300px'}}
+                status="finish"
+                icon={<span></span>}
+                title={<Card type="inner" title="卡片标题">
+                  <Form.Item>
+                    <Output name="name" />
+                  </Form.Item>
+                </Card>}
+              ></Steps.Step>
+              <Steps.Step
+                style={{maxWidth: '300px'}}
+                icon={<span></span>}
+                status="finish"
+                title={<Card type="inner" title="卡片标题">
+                  <Form.Item>
+                    <Output name="name" />
+                  </Form.Item>
+                </Card>}
+              />
+              <Steps.Step
+                style={{maxWidth: '300px'}}
+                status="finish"
+                icon={<span></span>}
+                title={<Card type="inner" title="卡片标题">
+                  <Form.Item>
+                    <Output name="name" />
+                  </Form.Item>
+                </Card>}
+              />
+            </Steps>
+          </Form>
+
+          <Form
+            header="头部"
+            dataSet={detailDS}
+            columns={3}
+            labelLayout={LabelLayout.vertical}
+          >
             {isReadOnly ? (
               <>
+
                 <Output name="name" />
-                <Output name="content" />
+                <Output name="age" />
               </>
             ) : (
               <>
                 <TextField name="name" />
                 <NumberField name="age" />
                 <EmailField name="email" />
-                <SelectBox name="gender"/>
+                <SelectBox name="gender" />
               </>
             )}
           </Form>
         </ContentCard>
-
       </Content>
     </>
   );

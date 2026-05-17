@@ -21,6 +21,11 @@ export default extendParentConfig({
       authorized: true,
     },
     {
+      path: '/srm/Supplier-register/list',
+      component: './SupplierRegister',
+      authorized: true,
+    },
+    {
       path: '/srm/supplier-type',
       routes: [
         {
