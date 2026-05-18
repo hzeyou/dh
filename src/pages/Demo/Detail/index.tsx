@@ -138,6 +138,48 @@ function Page(props: DetailProps) {
             )}
           </Form>
         </ContentCard>
+
+        {/*<div ref={containerRef}></div>
+
+        {
+          containerRef.current ? (
+            <Anchor
+              affix={true}
+              showInkInFixed={true}
+              getContainer={() => containerRef.current?.closest('.page-content')}
+            >
+              <Anchor.Link href="#yellow" title="yellow" />
+              <Anchor.Link href="#red" title="red" />
+              <Anchor.Link href="#blue" title="blue" />
+            </Anchor>
+          ): (<div>123123</div>)
+        }
+
+        <Title
+          id="yellow"
+          title={intl
+            .get('pts.actionItem.view.message.detail.basicInfo')
+            .d('基本信息')}
+        />
+
+        <Title
+          id="red"
+          top={16}
+          title={intl
+            .get('pts.actionItem.view.message.detail.stageInfo')
+            .d('里程碑明细')}
+        />
+        <div style={{ height: '500px' }}></div>
+
+        <Title
+          id="blue"
+          top={16}
+          title={intl
+            .get('pts.actionItem.view.message.detail.stageInfo')
+            .d('123123')}
+        />
+        */}
+
       </Content>
     </>
   );

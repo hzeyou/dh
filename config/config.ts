@@ -25,6 +25,30 @@ export default extendParentConfig({
       component: './SupplierRegister',
       authorized: true,
     },
+
+    {
+      path: '/srm/supplier-business-change/list',
+      component: './SupplierBusinessChange',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-business-change/detail/:id',
+      component: './SupplierBusinessChange/Detail',
+      authorized: true,
+    },
+
+    {
+      path: '/srm/supplier-change/list',
+      component: './SupplierChange',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-change/detail/:id',
+      component: './SupplierChange/Detail',
+      authorized: true,
+    },
+
+
     {
       path: '/srm/supplier-type',
       routes: [
