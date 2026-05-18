@@ -3,12 +3,57 @@ import moment, { Moment } from 'moment';
 
 import request from 'utils/request';
 import notification from 'utils/notification';
+import {DataSet} from 'choerodon-ui/pro';
 
 /*
  * @description: 函数式编程工具 - 使用 reduce 实现
  */
 export const compose = (...fns) => (...args) =>
   fns.reduceRight((result, fn) => [fn(...result)], args)[0];
+
+
+export const LovSyncTable = {
+  add: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, fieldLov?: string) => {
+    const data = dsLov.current?.toData();
+    const list:Array<any> = data?.[fieldLov ?? fieldTable];
+
+    const table:Array<any> = dsTable?.toData();
+    const set = new Set();
+    table.forEach(item => {
+      const key = item[fieldTable]?.supplierId;
+      if (key) {
+        set.add(key);
+      }
+    });
+
+    list?.forEach?.(v => {
+      if (set.has(v.supplierId)) {
+        set.delete(v.supplierId);
+      } else {
+        dsTable.create({[fieldTable]: v});
+      }
+    });
+
+    Array.from(set).forEach((id) => {
+      const record = dsTable.find((record) => record.get(fieldTable)?.supplierId === id);
+      if (record) {
+        dsTable.remove(record);
+      }
+    });
+
+  },
+  delete: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, fieldLov?: string) => {
+    const list:Array<unknown> = [];
+    dsTable.toData().forEach((v: Record<string, any>) => {
+      const value:unknown = v[fieldLov ?? fieldTable];
+      if (value) {
+        list.push(value);
+      }
+    });
+    dsLov.current?.set('status', 'update');
+    dsLov.current?.set(fieldTable, list);
+  }
+};
 
 /**
  * @description request下载文件

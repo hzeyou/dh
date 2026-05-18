@@ -3,7 +3,9 @@ import intl from 'utils/intl';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import { getCurrentOrganizationId } from 'utils/utils';
 import sexOptionDataSet from "@/pages/Demo/stores/sexOptionDataSet";
-import {DataSet} from "choerodon-ui/pro";
+import {DataSet} from 'choerodon-ui/pro';
+import {LovSupplierDSConfig} from '@/pages/RFQ/stores/lovSupplierDS';
+import {LovSyncTable} from '@/utils/util';
 
 const organizationId = getCurrentOrganizationId();
 
@@ -88,6 +90,10 @@ const SupplierDSConfig = (): DataSetProps => {
     events: {
       load: ({dataSet}) => {
         console.log('加载完成', dataSet);
+      },
+      remove: ({dataSet}) => {
+        const lovDS = dataSet.getState('lovDS');
+        LovSyncTable.delete(dataSet, lovDS, 'lov_supplier_code');
       }
     }
   };

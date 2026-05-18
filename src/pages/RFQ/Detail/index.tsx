@@ -1,4 +1,4 @@
-import { compose } from '@/utils/util';
+import {compose, LovSyncTable} from '@/utils/util';
 import formatterCollections from 'utils/intl/formatterCollections';
 import { observer } from 'mobx-react';
 import { Header, Content } from 'components/Page';
@@ -37,6 +37,9 @@ function Page(props: DetailProps) {
     const _bomDS = new DataSet(BomDSConfig());
     const _supplierDS = new DataSet(SupplierDSConfig());
     const _lovSupplierDS = new DataSet(LovSupplierDSConfig());
+    _supplierDS.setState('lovDS', _lovSupplierDS);
+    _lovSupplierDS.setState('tableDS', _supplierDS);
+
     if (id) {
       _detailDS.query(undefined, { id });
     } else {
@@ -140,6 +143,7 @@ function Page(props: DetailProps) {
 
   console.log('detailDS==', detailDS?.dirty);
   console.log('bomDS==', bomDS);
+  console.log('supplierDS.toData==', supplierDS.toData());
 
   return (
     <>
@@ -296,12 +300,9 @@ function Page(props: DetailProps) {
                   name="lov_supplier_code"
                   clearButton={false}
                   mode={ViewMode.button}
-                  // onBeforeSelect={(...args) => {
-                  //   console.log('args==', args);
-                  //   return false;
-                  // }}
-                  onChange={(value, oldValue) => {
-                    value.forEach((item) => supplierDS.create({lov_supplier_code: item}));
+                  onChange={(value) => {
+                    LovSyncTable.add(supplierDS, lovSupplierDS, 'lov_supplier_code');
+                    // LovSyncTable.add(value, supplierDS, 'lov_supplier_code');
                   }}
                 >
                   选择供应商
@@ -315,7 +316,6 @@ function Page(props: DetailProps) {
                     return;
                   }
                   await supplierDS.delete(supplierDS.selected);
-                  lovSupplierDS.current?.set('lov_supplier_code', supplierDS.toData().map(v => v['lov_supplier_code']));
                 }}
                 type="c7n-pro"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}

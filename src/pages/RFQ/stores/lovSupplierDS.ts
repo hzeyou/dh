@@ -2,8 +2,7 @@ import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import intl from 'utils/intl';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import { getCurrentOrganizationId } from 'utils/utils';
-import sexOptionDataSet from "@/pages/Demo/stores/sexOptionDataSet";
-import {DataSet} from "choerodon-ui/pro";
+import {LovSyncTable} from '@/utils/util';
 
 const organizationId = getCurrentOrganizationId();
 
