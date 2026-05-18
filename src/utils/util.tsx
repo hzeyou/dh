@@ -13,7 +13,7 @@ export const compose = (...fns) => (...args) =>
 
 
 export const LovSyncTable = {
-  add: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, fieldLov?: string) => {
+  add: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, subField: string, fieldLov?: string) => {
     const data = dsLov.current?.toData();
     const list:Array<any> = data?.[fieldLov ?? fieldTable];
 

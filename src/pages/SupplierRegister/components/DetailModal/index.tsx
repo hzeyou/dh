@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   AutoComplete,
   CheckBox,
-  DataSet,
+  DataSet, EmailField,
   Form, NumberField, Output,
   Select, SelectBox,
   Spin,
@@ -45,8 +45,6 @@ function DetailModal({ id, modal, onSubmit }: any) {
 
   const isReadOnly = false;
 
-  const { emailOptionDS, handleValueChange } = useEmailAutoComplete();
-
   return (
     <>
       <Form dataSet={detailDS} columns={1}>
@@ -57,16 +55,12 @@ function DetailModal({ id, modal, onSubmit }: any) {
           </>
         ) : (
           <>
-            <TextField name="name" />
-            <NumberField name="age" />
-            {/*<EmailField name="email" />*/}
-            <AutoComplete
-              onFocus={handleValueChange}
-              onInput={handleValueChange}
-              options={emailOptionDS}
-              name="email"
-            />
-            <SelectBox name="gender"/>
+            <TextField name="field1" />
+            <TextField name="field2" />
+            <EmailField name="field3" />
+            <TextField name="field4" />
+            <TextField name="field5" />
+            <Select name="field6" />
           </>
         )}
       </Form>
@@ -74,7 +68,7 @@ function DetailModal({ id, modal, onSubmit }: any) {
   );
 }
 
-export default function open (options?) {
+export default function open (options?: any) {
   return openModalHelper({
     title: '新建',
     content: DetailModal,

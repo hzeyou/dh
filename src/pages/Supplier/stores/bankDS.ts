@@ -1,8 +1,9 @@
 import { AxiosRequestConfig } from 'axios';
 import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
+import { LovSyncTable } from '@/utils/util';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
@@ -18,6 +19,7 @@ export const bankDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorCode`).d('本地清算号（联行号）'),
       required: true,
+      bind: 'lovSortCode.supplierId',
     },
     {
       name: 'swiftCode',
@@ -70,7 +72,20 @@ export const bankDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('银行信息盖章附件'),
       required: true,
     },
+    {
+      name: 'lovSortCode',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('银行信息盖章附件'),
+      required: true,
+      ignore: FieldIgnore.always,
+    },
   ],
+  events: {
+    remove: ({dataSet}) => {
+      const lovDS = dataSet.getState('lovDS');
+      LovSyncTable.delete(dataSet, lovDS, 'lovSortCode');
+    }
+  },
   transport: {
     read: ({ dataSet }): AxiosRequestConfig => {
       const supplierId = dataSet?.getState('supplierId');

@@ -1,4 +1,4 @@
-import { TableButtonType } from 'choerodon-ui/pro/lib/table/enum';
+import { TableButtonType, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
 import { Table } from 'choerodon-ui/pro';
 import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
@@ -31,6 +31,7 @@ export default function Index({ ds }) {
 
   return (
     <Table
+      queryBar={TableQueryBarType.filterBar}
       columns={columns}
       dataSet={ds}
       buttons={[TableButtonType.add]}

@@ -1,4 +1,4 @@
-import { TableButtonType } from 'choerodon-ui/pro/lib/table/enum';
+import { TableButtonType, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
 import {DataSet, Lov, Table} from 'choerodon-ui/pro';
 import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
@@ -8,11 +8,13 @@ import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
 import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import {lovBankDSConf} from '@/pages/Supplier/stores/lovBankDS';
+import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 
 export default function Index({ ds }) {
 
   const lovBankDS = useMemo(() => {
     const _lovBankDS = new DataSet(lovBankDSConf());
+    ds.setState('lovDS', _lovBankDS);
     return _lovBankDS;
   }, [ds]);
 
@@ -48,24 +50,26 @@ export default function Index({ ds }) {
 
   return (
     <Table
+      queryBar={TableQueryBarType.filterBar}
       columns={columns}
       dataSet={ds}
       buttons={[
         <PermissionButton
           key="btn-1"
-          type="c7n-pro"
+          type="text"
           // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
         >
           <Lov
             dataSet={lovBankDS}
-            name="lov_supplier_code"
+            name="lovSortCode"
             clearButton={false}
+            funcType={FuncType.flat}
             mode={ViewMode.button}
-            onChange={(value) => {
-              LovSyncTable.delete(value, ds, 'lov_supplier_code');
+            onChange={() => {
+              LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
             }}
           >
-            选择供应商
+            境内银行联行号选择
           </Lov>
         </PermissionButton>,
         TableButtonType.add

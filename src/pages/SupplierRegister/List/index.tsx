@@ -10,7 +10,6 @@ import {
 } from 'choerodon-ui/pro/lib/table/enum';
 import { observer } from 'mobx-react';
 
-
 import { Header, Content } from 'components/Page';
 import ExcelExportPro from 'components/ExcelExportPro';
 import intl from 'utils/intl';
@@ -20,7 +19,7 @@ import withProps from 'utils/withProps';
 import { HG_PTS_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
 import { listDSConf } from '../stores/listDS';
-import {operatorRender} from 'hzero-front/lib/utils/renderer';
+import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { Record } from 'choerodon-ui/dataset';
 import openDetailModal from '../components/DetailModal';
 
@@ -32,12 +31,13 @@ interface ListProps {
 }
 
 function List(props: ListProps) {
-
   const { history, listDS } = props;
 
   // 新建
   function handleCreate() {
-    history.push('/srm/supplier/detail/create');
+    openDetailModal({
+      onSubmit: () => listDS.query(listDS.currentPage),
+    });
   }
 
   function handleEdit(record: Record) {
@@ -50,9 +50,12 @@ function List(props: ListProps) {
   // 表格列
   const columns: Array<ColumnProps> = useMemo(() => {
     return [
-      { name: 'vendorCode', width: 140, renderer: ({ value, record }) => (
+      {
+        name: 'vendorCode',
+        width: 140,
+        renderer: ({ value, record }) => (
           <a onClick={() => handleEdit(record as Record)}>{value}</a>
-        )
+        ),
       },
       { name: 'vendorTypeName', width: 180 },
       { name: 'vendorStatus', width: 120 },
@@ -68,8 +71,8 @@ function List(props: ListProps) {
         lock: ColumnLock.right,
         width: 200,
         align: ColumnAlign.center,
-        renderer: ({record}) => {
-          const operators:any = [
+        renderer: ({ record }) => {
+          const operators: any = [
             {
               key: 'action1', // key
               ele: (
@@ -96,11 +99,10 @@ function List(props: ListProps) {
                 </a>
               ), // 操作栏的按钮
               len: 4,
-            }
+            },
           ];
 
           return operatorRender(operators, record, { limit: 6 });
-
         },
       },
     ];
@@ -125,14 +127,13 @@ function List(props: ListProps) {
         </Button>
         <ExcelExportPro
           defaultSelectAll
-          modalProps={{closable: true}}
+          modalProps={{ closable: true }}
           requestUrl={`${HG_PTS_API_PREFIX}/action-headers/export`}
           queryParams={getExportQueryParams}
           exportAsync
         />
       </Header>
       <Content>
-
         <Table
           virtual
           virtualCell

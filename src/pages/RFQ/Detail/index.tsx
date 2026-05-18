@@ -9,7 +9,7 @@ import {
   DataSet, DatePicker,
   Form, Select, TextField, TextArea, Icon, Upload, Table, RichText, Lov, AutoComplete,
 } from 'choerodon-ui/pro';
-import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
+import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import {filterNullValueObject, getCurrentOrganizationId, intl} from 'utils/utils';
 import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
@@ -292,7 +292,7 @@ function Page(props: DetailProps) {
             <Table queryBar={TableQueryBarType.filterBar} dataSet={supplierDS} columns={supplierColumns} buttons={[
               <PermissionButton
                 key="btn-1"
-                type="c7n-pro"
+                type="text"
                 // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
               >
                 <Lov
@@ -300,8 +300,9 @@ function Page(props: DetailProps) {
                   name="lov_supplier_code"
                   clearButton={false}
                   mode={ViewMode.button}
+                  funcType={FuncType.flat}
                   onChange={(value) => {
-                    LovSyncTable.add(supplierDS, lovSupplierDS, 'lov_supplier_code');
+                    LovSyncTable.add(supplierDS, lovSupplierDS, 'lov_supplier_code', 'supplierId');
                     // LovSyncTable.add(value, supplierDS, 'lov_supplier_code');
                   }}
                 >
