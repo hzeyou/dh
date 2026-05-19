@@ -16,10 +16,12 @@ import {
 
 import { compose } from '@/utils/util';
 
-import { detailDSConf } from '@/pages/SupplierBusinessChange/stores/detailDS';
+import { detailDSConf } from '@/pages/SupplierAdmission/stores/detailDS';
 import { supplyScopeDSConf } from '@/pages/SupplierBusinessChange/stores/supplyScopeDS';
 import BusinessChange from '@/pages/SupplierBusinessChange/components/BusinessChange';
 import SupplyScopeList from '@/pages/SupplierBusinessChange/components/SupplyScopeList';
+import PhaseChange from '@/pages/SupplierAdmission/components/PhaseChange';
+import CompanyInfo from '@/pages/SupplierAdmission/components/CompanyInfo';
 
 interface DetailProps {
   history: any;
@@ -78,12 +80,22 @@ function Detail(props: DetailProps) {
       <ListContent>
         <ListItem>
 
-          <BusinessChange
+          <PhaseChange
             ds={detailDS}
             isCreate={isCreate}
           />
 
           <SupplyScopeList
+            ds={detailDS}
+            isCreate={isCreate}
+          />
+
+          <CompanyInfo
+            ds={detailDS}
+            isCreate={isCreate}
+          />
+
+          <CompanyInfo
             ds={detailDS}
             isCreate={isCreate}
           />

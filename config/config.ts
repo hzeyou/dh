@@ -48,6 +48,17 @@ export default extendParentConfig({
       authorized: true,
     },
 
+    {
+      path: '/srm/supplier-admission/list',
+      component: './SupplierAdmission',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-admission/detail/:id',
+      component: './SupplierAdmission/Detail',
+      authorized: true,
+    },
+
 
     {
       path: '/srm/supplier-type',
