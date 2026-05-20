@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
@@ -16,37 +15,23 @@ export const companyInfoDSConf = (): DataSetProps => ({
       type: FieldType.number,
     },
     {
-      name: 'field1',
+      name: 'subsidiaryId',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorCode`).d('公司'),
       required: true,
+      bind: 'companyInfo.companyId',
     },
     {
-      name: 'field2',
+      name: 'paymentTerms',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('付款条件'),
+      label: intl.get(`${intlPrefix}.paymentTerms`).d('付款条件'),
+      required: true,
+    },
+    {
+      name: 'companyInfo',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.paymentTerms`).d('公司信息'),
       required: true,
     },
   ],
-  transport: {
-    read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
-        method: 'get',
-      };
-    },
-    submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
-
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
-        data: data[0],
-      };
-    },
-  },
 });

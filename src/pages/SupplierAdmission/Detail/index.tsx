@@ -17,11 +17,15 @@ import {
 import { compose } from '@/utils/util';
 
 import { detailDSConf } from '@/pages/SupplierAdmission/stores/detailDS';
+import { agreementManagementDSConf } from '@/pages/SupplierAdmission/stores/agreementManagementDS';
+import { companyInfoDSConf } from '@/pages/SupplierAdmission/stores/companyInfoDS';
+import { siteInspectionDSConf } from '@/pages/SupplierAdmission/stores/siteInspectionDS';
 import { supplyScopeDSConf } from '@/pages/SupplierBusinessChange/stores/supplyScopeDS';
-import BusinessChange from '@/pages/SupplierBusinessChange/components/BusinessChange';
 import SupplyScopeList from '@/pages/SupplierBusinessChange/components/SupplyScopeList';
 import PhaseChange from '@/pages/SupplierAdmission/components/PhaseChange';
 import CompanyInfo from '@/pages/SupplierAdmission/components/CompanyInfo';
+import SiteInspection from '@/pages/SupplierAdmission/components/SiteInspection';
+import AgreementManagement from '@/pages/SupplierAdmission/components/AgreementManagement';
 
 interface DetailProps {
   history: any;
@@ -44,23 +48,25 @@ function Detail(props: DetailProps) {
   const isCreate: boolean = id === 'create';
 
   // 定义ds
-  const [detailDS, supplyScopeDS] = useMemo(() => {
+  const [detailDS, companyInfoDS, siteInspectionDS, agreementManagementDS] = useMemo(() => {
+
     const _detailDS = new DataSet(detailDSConf());
-    const _supplyScopeDS = new DataSet(supplyScopeDSConf());
+
+    const _companyInfoDS = new DataSet(companyInfoDSConf());
+    const _siteInspectionDS = new DataSet(siteInspectionDSConf());
+    const _agreementManagementDS = new DataSet(agreementManagementDSConf());
 
     if (!isCreate) {
       _detailDS.setQueryParameter('id', id);
       _detailDS.query();
     }
 
-    return [_detailDS, _supplyScopeDS];
+    return [_detailDS, _companyInfoDS, _siteInspectionDS, _agreementManagementDS];
   }, [id]);
 
   const save = async () => {
     const base = await detailDS.validate();
-    const supplyScope = await supplyScopeDS.validate();
-    if (base && supplyScope) {
-      detailDS.current?.set('certificateInfo', JSON.stringify(supplyScopeDS.toData()));
+    if (base) {
       const res = await detailDS.submit();
       console.log('res==', res);
     }
@@ -91,12 +97,17 @@ function Detail(props: DetailProps) {
           />
 
           <CompanyInfo
-            ds={detailDS}
+            ds={companyInfoDS}
             isCreate={isCreate}
           />
 
-          <CompanyInfo
-            ds={detailDS}
+          <SiteInspection
+            ds={siteInspectionDS}
+            isCreate={isCreate}
+          />
+
+          <AgreementManagement
+            ds={agreementManagementDS}
             isCreate={isCreate}
           />
 

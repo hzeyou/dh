@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
@@ -8,6 +8,13 @@ const intlPrefix = 'srm.supplier.model.supplier';
 const admissionRulePrefix = `${intlPrefix}.admissionRule`;
 const checkedValue = '是';
 const uncheckedValue = '否';
+
+const typeOptionsDS = new DataSet({
+  data: [
+    { meaning: '供应商准入', value: '1' },
+    { meaning: '品类扩充', value: '2' },
+  ],
+});
 
 export const detailDSConf = (): DataSetProps => ({
   autoCreate: true,
@@ -21,19 +28,23 @@ export const detailDSConf = (): DataSetProps => ({
     {
       name: 'field',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('准入及品类扩充单号'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('准入及品类扩充单号'),
+    },
+    {
+      name: 'supplierCode',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
+    },
+    {
+      name: 'supplierName',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
       required: true,
     },
     {
-      name: 'field1',
+      name: 'supplierTypeId',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商名称'),
-      required: true,
-    },
-    {
-      name: 'field2',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商类型'),
+      label: intl.get(`${intlPrefix}.supplierTypeId`).d('供应商类型'),
       required: true,
     },
     {
@@ -43,35 +54,54 @@ export const detailDSConf = (): DataSetProps => ({
       required: true,
     },
     {
-      name: 'field4',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('单据类型'),
+      name: 'type',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.type`).d('单据类型'),
+      options: typeOptionsDS,
     },
     {
-      name: 'field5',
+      name: 'developmentPurpose',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('开发供应商目的'),
+      label: intl.get(`${intlPrefix}.developmentPurpose`).d('开发供应商目的'),
     },
     {
-      name: 'field6',
+      name: 'supplierProfile',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('供应商基本情况描述'),
+      label: intl.get(`${intlPrefix}.supplierProfile`).d('供应商基本情况描述'),
     },
     {
-      name: 'field7',
+      name: 'factoryAuditBackground',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('供应商基本情况描述'),
+      label: intl.get(`${intlPrefix}.factoryAuditBackground`).d('审厂背景'),
     },
     {
-      name: 'field8',
+      name: 'remark',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('审厂背景'),
+      label: intl.get(`${intlPrefix}.remark`).d('备注'),
     },
     {
-      name: 'field9',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('备注'),
+      name: 'meetingMinutes',
+      type: FieldType.attachment,
+      label: intl.get(`${intlPrefix}.meetingMinutes`).d('供应商评审会议纪要'),
     },
+    {
+      name: 'attachment',
+      type: FieldType.attachment,
+      label: intl.get(`${intlPrefix}.attachment`).d('附件'),
+    },
+
+    {
+      name: 'inspectionInfo',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.inspectionInfo`).d('现场审核信息'),
+    },
+
+    {
+      name: 'agreementInfo',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.agreementInfo`).d('协议管理信息'),
+    },
+
   ],
   transport: {
     read: ({ dataSet }): AxiosRequestConfig => {
