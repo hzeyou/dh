@@ -20,12 +20,14 @@ import { detailDSConf } from '@/pages/SupplierAdmission/stores/detailDS';
 import { agreementManagementDSConf } from '@/pages/SupplierAdmission/stores/agreementManagementDS';
 import { companyInfoDSConf } from '@/pages/SupplierAdmission/stores/companyInfoDS';
 import { siteInspectionDSConf } from '@/pages/SupplierAdmission/stores/siteInspectionDS';
-import { supplyScopeDSConf } from '@/pages/SupplierBusinessChange/stores/supplyScopeDS';
-import SupplyScopeList from '@/pages/SupplierBusinessChange/components/SupplyScopeList';
+import { supplyScopeDSConf } from '@/pages/SupplierAdmission/stores/supplyScopeDS';
+import { certDSConf } from '@/stores/certDS';
+import SupplyScopeList from '@/pages/SupplierAdmission/components/SupplyScopeList';
 import PhaseChange from '@/pages/SupplierAdmission/components/PhaseChange';
 import CompanyInfo from '@/pages/SupplierAdmission/components/CompanyInfo';
 import SiteInspection from '@/pages/SupplierAdmission/components/SiteInspection';
 import AgreementManagement from '@/pages/SupplierAdmission/components/AgreementManagement';
+import CertInfo from '@/components/CertInfo';
 
 interface DetailProps {
   history: any;
@@ -42,17 +44,18 @@ function Detail(props: DetailProps) {
     params: { id },
   } = match;
 
-  console.log('actionHeaderId==', id);
-
   // 是否为创建
   const isCreate: boolean = id === 'create';
+  const isUpdate: boolean = id === 'update';
 
   // 定义ds
-  const [detailDS, companyInfoDS, siteInspectionDS, agreementManagementDS] = useMemo(() => {
+  const [detailDS, supplyScopeDS, companyInfoDS, certDS, siteInspectionDS, agreementManagementDS] = useMemo(() => {
 
     const _detailDS = new DataSet(detailDSConf());
 
+    const _supplyScopeDS = new DataSet(supplyScopeDSConf());
     const _companyInfoDS = new DataSet(companyInfoDSConf());
+    const _certDS = new DataSet(certDSConf());
     const _siteInspectionDS = new DataSet(siteInspectionDSConf());
     const _agreementManagementDS = new DataSet(agreementManagementDSConf());
 
@@ -61,7 +64,7 @@ function Detail(props: DetailProps) {
       _detailDS.query();
     }
 
-    return [_detailDS, _companyInfoDS, _siteInspectionDS, _agreementManagementDS];
+    return [_detailDS, _supplyScopeDS, _companyInfoDS, _certDS, _siteInspectionDS, _agreementManagementDS];
   }, [id]);
 
   const save = async () => {
@@ -71,6 +74,9 @@ function Detail(props: DetailProps) {
       console.log('res==', res);
     }
   };
+
+  const isSupplier = detailDS?.current?.get('type') === '1';
+  const isCategory = detailDS?.current?.get('type') === '2';
 
   return (
     <>
@@ -82,6 +88,13 @@ function Detail(props: DetailProps) {
         <Button icon="save" onClick={save} color={ButtonColor.primary}>
           {intl.get('hzero.common.button.save').d('保存')}
         </Button>
+        {
+          isUpdate ? (
+            <Button icon="save" onClick={save} color={ButtonColor.primary}>
+              {intl.get('hzero.common.button.save').d('提交')}
+            </Button>
+          ) : null
+        }
       </Header>
       <ListContent>
         <ListItem>
@@ -89,27 +102,43 @@ function Detail(props: DetailProps) {
           <PhaseChange
             ds={detailDS}
             isCreate={isCreate}
+            isUpdate={isUpdate}
           />
 
           <SupplyScopeList
-            ds={detailDS}
+            ds={supplyScopeDS}
             isCreate={isCreate}
           />
 
-          <CompanyInfo
-            ds={companyInfoDS}
-            isCreate={isCreate}
-          />
+          {
+            isSupplier ? (
+              <>
+                <CompanyInfo
+                  ds={companyInfoDS}
+                  isCreate={isCreate}
+                />
+                <ContentCard title="证书资质信息">
+                  <CertInfo ds={certDS} headColumns={[{ name: 'admissionRequirement', editor: true },]}/>
+                </ContentCard>
+              </>
+            ) : null
+          }
+
 
           <SiteInspection
             ds={siteInspectionDS}
             isCreate={isCreate}
           />
 
-          <AgreementManagement
-            ds={agreementManagementDS}
-            isCreate={isCreate}
-          />
+          {
+            isSupplier ? (
+              <AgreementManagement
+                ds={agreementManagementDS}
+                isCreate={isCreate}
+              />
+            ) : null
+          }
+
 
         </ListItem>
       </ListContent>

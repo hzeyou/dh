@@ -1,16 +1,20 @@
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-const admissionRulePrefix = `${intlPrefix}.admissionRule`;
-const checkedValue = '是';
-const uncheckedValue = '否';
+
+const optionsDS = new DataSet({
+  data: [
+    { meaning: '是', value: '1' },
+    { meaning: '否', value: '2' },
+  ],
+});
 
 export const siteInspectionDSConf = (): DataSetProps => ({
-  autoCreate: true,
+  autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
   fields: [
@@ -19,53 +23,54 @@ export const siteInspectionDSConf = (): DataSetProps => ({
       type: FieldType.number,
     },
     {
-      name: 'field1',
+      name: 'categoryCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('品类编码'),
+      label: intl.get(`${intlPrefix}.categoryCode`).d('品类编码'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'categoryName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('品类名称'),
+      label: intl.get(`${intlPrefix}.categoryName`).d('品类名称'),
       required: true,
     },
     {
-      name: 'field3',
+      name: 'auditFormNo',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('现场审核单'),
+      label: intl.get(`${intlPrefix}.auditFormNo`).d('现场审核单'),
       lookupCode: 'SRM.ACTION.STATUS',
       required: true,
     },
     {
-      name: 'field4',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('审核日期'),
+      name: 'auditDate',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.auditDate`).d('审核日期'),
     },
     {
-      name: 'field5',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('合格分数线'),
+      name: 'passingScore',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.passingScore`).d('合格分数线'),
     },
     {
-      name: 'field6',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('总评分'),
+      name: 'totalScore',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.totalScore`).d('总评分'),
     },
     {
-      name: 'field7',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('审核结果'),
+      name: 'auditResult',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.auditResult`).d('审核结果'),
     },
     {
-      name: 'field8',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('备注'),
+      name: 'remark',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.remark`).d('备注'),
     },
     {
-      name: 'field9',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('准入要求'),
+      name: 'admissionRequirement',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.admissionRequirement`).d('准入要求'),
+      options: optionsDS
     },
   ],
   transport: {
@@ -90,13 +95,6 @@ export const siteInspectionDSConf = (): DataSetProps => ({
     },
   },
   events: {
-    update: ({ record, name, value }) => {
-      if (name === 'isRegisterAudit' && value !== checkedValue) {
-        record.set('registerAuditRule', undefined);
-      }
-      if (name === 'isZiZhiAudit' && value !== checkedValue) {
-        record.set('ziZhiAuditRule', undefined);
-      }
-    },
+
   },
 });

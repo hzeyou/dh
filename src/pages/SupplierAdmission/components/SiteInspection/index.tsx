@@ -21,14 +21,15 @@ export default function Index({ ds, isCreate }) {
 
   const columns: Array<ColumnProps> = useMemo(
     () => [
-      { name: 'field1',  },
-      { name: 'field2',  },
-      { name: 'field3',  },
-      { name: 'field4',  },
-      { name: 'field5',  },
-      { name: 'field6', editor: true },
-      { name: 'field7', editor: true },
-      { name: 'field8', editor: true },
+      { name: 'categoryCode',  },
+      { name: 'categoryName',  },
+      { name: 'auditFormNo',  },
+      { name: 'auditDate',  },
+      { name: 'passingScore',  },
+      { name: 'totalScore', editor: true },
+      { name: 'auditResult', editor: true },
+      { name: 'remark', editor: true },
+      { name: 'admissionRequirement', editor: true },
       {
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {

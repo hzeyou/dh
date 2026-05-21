@@ -5,7 +5,7 @@ import styles from '@/pages/Supplier/index.less';
 import { LabelLayout } from 'choerodon-ui/pro/lib/form/enum';
 import { TableButtonType } from 'choerodon-ui/pro/lib/table/enum';
 import ContactInfo from '../ContactInfo';
-import CertInfo from '../CertInfo';
+import CertInfo from '@/components/CertInfo';
 import BankInfo from '../BankInfo';
 import SupplierBaseInfo from '../SupplierBaseInfo';
 

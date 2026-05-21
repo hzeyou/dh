@@ -7,64 +7,33 @@ import { LovSyncTable } from '@/utils/util';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
-const typeOptionsDS = new DataSet({data: [ {meaning: '对公', value: '1'}, {meaning: '对私', value: '2'}, ]});
-const ticketOptionsDS = new DataSet({data: [ {meaning: '对公', value: '1'}, {meaning: '对私', value: '2'}, ]});
-
 
 export const supplyScopeDSConf = (): DataSetProps => ({
   autoCreate: false,
   fields: [
     {
-      name: 'field1',
+      name: 'categoryId',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.categoryId`).d('品类编码'),
       required: true,
       bind: 'lovSortCode.supplierId',
     },
     {
-      name: 'field2',
+      name: 'categoryName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商名称'),
+      label: intl.get(`${intlPrefix}.categoryName`).d('品类名称'),
       required: true,
     },
     {
-      name: 'field3',
+      name: 'status',
       type: FieldType.email,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商类型'),
+      label: intl.get(`${intlPrefix}.status`).d('准入状态'),
       required: true,
     },
     {
-      name: 'field4',
+      name: 'categoryLevel',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('品类'),
-      lookupCode: 'SRM.ACTION.STATUS',
-    },
-    {
-      name: 'field5',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('供应商等级'),
-    },
-    {
-      name: 'field6',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('原因'),
-    },
-    {
-      name: 'field7',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('备注'),
-      options: typeOptionsDS,
-    },
-    {
-      name: 'field8',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('上传文件'),
-    },
-    {
-      name: 'lovSortCode',
-      type: FieldType.object,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('新建'),
-      ignore: FieldIgnore.always,
+      label: intl.get(`${intlPrefix}.categoryLevel`).d('供应商等级'),
     },
   ],
   events: {

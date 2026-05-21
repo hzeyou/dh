@@ -5,7 +5,7 @@ import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import { intl } from 'utils/utils';
 import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
 
-export default function Index({ ds }) {
+export default function Index({ ds, headColumns } = { ds: {}, headColumns: []}) {
 
   const columns: Array<ColumnProps> = useMemo(
     () => [
@@ -16,6 +16,7 @@ export default function Index({ ds }) {
       { name: 'expiryDate', editor: true },
       { name: 'remark', editor: true },
       { name: 'attachment', editor: true },
+      ...headColumns,
       {
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {

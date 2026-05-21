@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
@@ -26,32 +26,44 @@ export const detailDSConf = (): DataSetProps => ({
       type: FieldType.number,
     },
     {
-      name: 'field',
+      name: 'admissionCode',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.supplierCode`).d('准入及品类扩充单号'),
+    },
+    {
+      name: 'lovSupplierCode',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
+      lovCode: 'SCM.SUPPLIER',
+      textField: 'supplierShortName',
+      valueField: 'supplierCode',
+      ignore: FieldIgnore.always,
     },
     {
       name: 'supplierCode',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
+      bind: 'lovSupplierCode.supplierCode',
     },
     {
       name: 'supplierName',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
+      bind: 'lovSupplierCode.supplierName',
       required: true,
     },
     {
       name: 'supplierTypeId',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.supplierTypeId`).d('供应商类型'),
+      bind: 'lovSupplierCode.supplierType',
       required: true,
     },
     {
-      name: 'field3',
+      name: 'status',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorStatus`).d('当前生命周期阶段'),
-      required: true,
+      bind: 'lovSupplierCode.status',
     },
     {
       name: 'type',
@@ -103,6 +115,7 @@ export const detailDSConf = (): DataSetProps => ({
     },
 
   ],
+  data: [{lovSupplierCode: {supplierCode: '100073', supplierShortName: '麦丰'}}],
   transport: {
     read: ({ dataSet }): AxiosRequestConfig => {
       const supplierId = dataSet?.getState('supplierId');

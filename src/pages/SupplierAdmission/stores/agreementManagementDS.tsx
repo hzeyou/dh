@@ -1,13 +1,20 @@
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+const optionsDS = new DataSet({
+  data: [
+    { meaning: '是', value: '1' },
+    { meaning: '否', value: '2' },
+  ],
+});
+
 export const agreementManagementDSConf = (): DataSetProps => ({
-  autoCreate: true,
+  autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
   fields: [
@@ -16,28 +23,29 @@ export const agreementManagementDSConf = (): DataSetProps => ({
       type: FieldType.number,
     },
     {
-      name: 'field1',
+      name: 'agreementNo',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('协议单号'),
+      label: intl.get(`${intlPrefix}.agreementNo`).d('协议单号'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'agreementName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('协议名称'),
+      label: intl.get(`${intlPrefix}.agreementName`).d('协议名称'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'remark',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('备注'),
+      label: intl.get(`${intlPrefix}.remark`).d('备注'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'admissionRequirement',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('准入要求'),
+      label: intl.get(`${intlPrefix}.admissionRequirement`).d('准入要求'),
       required: true,
+      options: optionsDS
     },
   ],
   transport: {

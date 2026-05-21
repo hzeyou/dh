@@ -19,7 +19,7 @@ import { compose } from '@/utils/util';
 import { detailDSConf } from '@/pages/Supplier/stores/detailDS';
 import { contactDSConf } from '@/pages/Supplier/stores/contactDS';
 import { bankDSConf } from '@/pages/Supplier/stores/bankDS';
-import { certDSConf } from '@/pages/Supplier/stores/certDS';
+import { certDSConf } from '@/stores/certDS';
 import CompanyInfo from '@/pages/Supplier/components/CompanyInfo';
 import LifeCycleChangeLog from '@/pages/Supplier/components/LifeCycleChangeLog';
 import BusinessInfo from '@/pages/Supplier/components/BusinessInfo';

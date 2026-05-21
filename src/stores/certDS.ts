@@ -1,10 +1,17 @@
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
+
+const optionsDS = new DataSet({
+  data: [
+    { meaning: '是', value: '1' },
+    { meaning: '否', value: '2' },
+  ],
+});
 
 export const certDSConf = (): DataSetProps => ({
   autoCreate: false,
@@ -47,6 +54,12 @@ export const certDSConf = (): DataSetProps => ({
       name: 'attachment',
       type: FieldType.attachment,
       label: intl.get(`${intlPrefix}.attachment`).d('附件'),
+    },
+    {
+      name: 'admissionRequirement',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.attachment`).d('准入要求'),
+      options: optionsDS,
     },
   ],
   transport: {
