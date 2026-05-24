@@ -3,7 +3,7 @@ import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
-import { lovBankDSConf } from '@/pages/Supplier/stores/lovBankDS';
+import { lovBankDSConf } from '@/pages/Supplier/stores/bankLovDS';
 import { companyInfoDSConf } from '@/pages/SupplierAdmission/stores/companyInfoDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';

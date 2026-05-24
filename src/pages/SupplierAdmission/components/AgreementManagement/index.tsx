@@ -8,13 +8,13 @@ import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
 import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
-import { lovSupplyScopeDSConf } from '@/pages/SupplierBusinessChange/stores/lovSupplyScopeDS';
+import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/SupplyCategoryLovDS';
 import { ContentCard } from 'components/Page';
 
 export default function Index({ ds, isCreate }) {
 
   const lovBankDS = useMemo(() => {
-    const _lovBankDS = new DataSet(lovSupplyScopeDSConf());
+    const _lovBankDS = new DataSet(supplyCategoryLovDSConf());
     ds.setState('lovDS', _lovBankDS);
     return _lovBankDS;
   }, [ds]);

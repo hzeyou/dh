@@ -1,13 +1,13 @@
 import { AxiosRequestConfig } from 'axios';
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
+import { billTypeOptionsDS, exitTypeOptionsDS } from '@/utils/config';
+import Record from 'choerodon-ui/dataset/data-set/Record';
+import { Form } from 'choerodon-ui/dataset/interface';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-const admissionRulePrefix = `${intlPrefix}.admissionRule`;
-const checkedValue = '是';
-const uncheckedValue = '否';
 
 export const detailDSConf = (): DataSetProps => ({
   autoCreate: true,
@@ -19,47 +19,55 @@ export const detailDSConf = (): DataSetProps => ({
       type: FieldType.number,
     },
     {
-      name: 'field1',
+      name: 'changeCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商名称'),
-      required: true,
+      label: intl.get(`${intlPrefix}.vendorCode`).d('批量变更单号'),
     },
     {
-      name: 'field2',
+      name: 'type',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商类型'),
+      label: intl.get(`${intlPrefix}.type`).d('单据类型'),
       required: true,
+      options: billTypeOptionsDS,
     },
     {
-      name: 'field3',
+      name: 'exitType',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('邀请邮箱'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.exitType`).d('退出类型'),
       required: true,
+      options: exitTypeOptionsDS,
     },
     {
-      name: 'field4',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('供应商级别'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
+      name: 'startDate',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.startDate`).d('冻结开始日期'),
+      required: true,
+      bind: 'startEndDate.start',
     },
     {
-      name: 'field5',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('备注'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
+      name: 'endDate',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.endDate`).d('冻结结束日期'),
+      required: true,
+      bind: 'startEndDate.end',
     },
     {
-      name: 'field6',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('创建供应商账号'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
+      name: 'startEndDate',
+      type: FieldType.date,
+      label: intl.get(`${intlPrefix}.startEndDate`).d('冻结周期'),
+      ignore: FieldIgnore.always,
+      required: true,
+      range: ['start', 'end'],
+    },
+    {
+      name: 'remark',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.remark`).d('申请说明'),
+    },
+    {
+      name: 'applicant',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.applicant`).d('申请人'),
     },
   ],
   transport: {
@@ -71,26 +79,19 @@ export const detailDSConf = (): DataSetProps => ({
       };
     },
     submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
+
+      console.log('data==', data);
 
       return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
+        url: `${process.env.SRM_DEV_HOST}/srm/supplier`,
+        method: 'post',
         data: data[0],
       };
     },
   },
   events: {
-    update: ({ record, name, value }) => {
-      if (name === 'isRegisterAudit' && value !== checkedValue) {
-        record.set('registerAuditRule', undefined);
-      }
-      if (name === 'isZiZhiAudit' && value !== checkedValue) {
-        record.set('ziZhiAuditRule', undefined);
-      }
-    },
+    update({ dataSet, record, name, value, oldValue }) {
+      // record
+    }
   },
 });

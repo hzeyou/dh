@@ -1,33 +1,45 @@
 import React from 'react';
-import { DatePicker, Form, Lov, NumberField, Output, Select, TextArea, TextField } from 'choerodon-ui/pro';
+import {
+  Attachment,
+  DatePicker,
+  Form,
+  Lov,
+  NumberField,
+  Output,
+  Select,
+  TextArea,
+  TextField,
+} from 'choerodon-ui/pro';
 import { ContentCard } from 'components/Page';
 import { LabelLayout } from 'choerodon-ui/pro/lib/form/enum';
+import { observer } from 'mobx-react';
 
-export default function Index({ds, isCreate}) {
-
-
+function Index({ ds, isCreate }) {
 
   return (
-    <ContentCard title="基础信息">
-      <Form
-        dataSet={ds}
-        columns={2}
-        labelLayout={LabelLayout.vertical}
-      >
-        <Output name="shortName"/>
+    <ContentCard title="批量变更单">
+      <Form dataSet={ds} columns={3} labelLayout={LabelLayout.vertical}>
 
-        <Lov
-          name="supplierTypeId"
-          tableProps={{ queryFieldsLimit: 5 }}
-        />
+        <Output name="changeCode" />
 
+        <Select name="type" />
 
-        <Output name="shortName"/>
-        <TextField name="supplierName" />
+        {ds?.current?.get('type') === '1' ? (
+          <DatePicker name="startEndDate" />
+        ) : null}
+
+        {ds?.current?.get('type') === '3' ? (
+          <Select name="exitType" />
+        ) : null}
+
+        <Output name="applicant" newLine />
+
+        <TextArea name="remark" />
+
+        <Attachment name="attachment" newLine />
       </Form>
     </ContentCard>
-
   );
-
 }
 
+export default observer(Index);

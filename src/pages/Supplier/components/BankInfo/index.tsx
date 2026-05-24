@@ -7,13 +7,13 @@ import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
 import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
 import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
-import {lovBankDSConf} from '@/pages/Supplier/stores/lovBankDS';
+import {bankLovDSConf} from '@/pages/Supplier/stores/bankLovDS';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 
 export default function Index({ ds }) {
 
   const lovBankDS = useMemo(() => {
-    const _lovBankDS = new DataSet(lovBankDSConf());
+    const _lovBankDS = new DataSet(bankLovDSConf());
     ds.setState('lovDS', _lovBankDS);
     return _lovBankDS;
   }, [ds]);

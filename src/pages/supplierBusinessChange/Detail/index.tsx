@@ -17,9 +17,9 @@ import {
 import { compose } from '@/utils/util';
 
 import { detailDSConf } from '@/pages/SupplierBusinessChange/stores/detailDS';
-import { supplyScopeDSConf } from '@/pages/SupplierBusinessChange/stores/supplyScopeDS';
+import { supplyCategoryDSConf } from '@/pages/SupplierBusinessChange/stores/supplyCategoryDS';
 import BusinessChange from '@/pages/SupplierBusinessChange/components/BusinessChange';
-import SupplyScopeList from '@/pages/SupplierBusinessChange/components/SupplyScopeList';
+import SupplyCategoryList from '@/pages/SupplierBusinessChange/components/SupplyCategoryList';
 
 interface DetailProps {
   history: any;
@@ -36,29 +36,29 @@ function Detail(props: DetailProps) {
     params: { id },
   } = match;
 
-  console.log('actionHeaderId==', id);
-
   // 是否为创建
   const isCreate: boolean = id === 'create';
 
   // 定义ds
-  const [detailDS, supplyScopeDS] = useMemo(() => {
+  const [detailDS, supplyCategoryDS] = useMemo(() => {
     const _detailDS = new DataSet(detailDSConf());
-    const _supplyScopeDS = new DataSet(supplyScopeDSConf());
+    const _supplyCategoryDS = new DataSet(supplyCategoryDSConf());
 
     if (!isCreate) {
       _detailDS.setQueryParameter('id', id);
       _detailDS.query();
     }
 
-    return [_detailDS, _supplyScopeDS];
+    return [_detailDS, _supplyCategoryDS];
   }, [id]);
 
   const save = async () => {
     const base = await detailDS.validate();
-    const supplyScope = await supplyScopeDS.validate();
+    const supplyScope = await supplyCategoryDS.validate();
+    console.log('toData==', detailDS.toData());
+    console.log('base==', base, supplyScope);
     if (base && supplyScope) {
-      detailDS.current?.set('certificateInfo', JSON.stringify(supplyScopeDS.toData()));
+      detailDS.current?.set('certificateInfo', JSON.stringify(supplyCategoryDS.toData()));
       const res = await detailDS.submit();
       console.log('res==', res);
     }
@@ -83,10 +83,13 @@ function Detail(props: DetailProps) {
             isCreate={isCreate}
           />
 
-          <SupplyScopeList
-            ds={detailDS}
-            isCreate={isCreate}
-          />
+          <ContentCard title="供货品类清单">
+            <SupplyCategoryList
+              ds={supplyCategoryDS}
+              detailDS={detailDS}
+              isCreate={isCreate}
+            />
+          </ContentCard>
 
         </ListItem>
       </ListContent>

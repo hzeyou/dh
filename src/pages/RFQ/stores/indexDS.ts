@@ -42,8 +42,8 @@ const ListDSConfig = (): DataSetProps => {
         lookupCode: 'SCM.DELIVERY_STATUS',
       },
       {
-        label: intl.get(`${intlPrefix}.supplier_code`).d('供应商编码/名称'),
         name: 'supplier_code',
+        label: intl.get(`${intlPrefix}.supplier_code`).d('供应商编码/名称'),
         type: FieldType.string,
         placeholder: '请输入',
       },

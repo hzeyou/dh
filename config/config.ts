@@ -10,101 +10,14 @@ export default extendParentConfig({
     },
   },
   routes: [
-    {
-      path: '/srm/supplier/list',
-      component: './Supplier',
-      authorized: true,
-    },
-    {
-      path: '/srm/supplier/detail/:id',
-      component: './Supplier/Detail',
-      authorized: true,
-    },
-    {
-      path: '/srm/Supplier-register/list',
-      component: './SupplierRegister',
-      authorized: true,
-    },
 
-    {
-      path: '/srm/supplier-business-change/list',
-      component: './SupplierBusinessChange',
-      authorized: true,
-    },
-    {
-      path: '/srm/supplier-business-change/detail/:id',
-      component: './SupplierBusinessChange/Detail',
-      authorized: true,
-    },
-
-    {
-      path: '/srm/supplier-change/list',
-      component: './SupplierChange',
-      authorized: true,
-    },
-    {
-      path: '/srm/supplier-change/detail/:id',
-      component: './SupplierChange/Detail',
-      authorized: true,
-    },
-
-    {
-      path: '/srm/supplier-admission/list',
-      component: './SupplierAdmission',
-      authorized: true,
-    },
-    {
-      path: '/srm/supplier-admission/detail/:id',
-      component: './SupplierAdmission/Detail',
-      authorized: true,
-    },
-
-
-    {
-      path: '/srm/supplier-type',
-      routes: [
-        {
-          path: '/srm/supplier-type/list',
-          component: './SupplierType',
-          authorized: true,
-        },
-      ],
-    },
     {
       path: '/public/demo', // 供应商
       component: './Demo/Public',
       authorized: true,
       priority: 1,
     },
-    {
-      path: '/srm/purchase-order', // 供应商
-      routes: [
-        {
-          path: '/srm/purchase-order/list',
-          component: './PurchaseOrder/List',
-          authorized: true,
-        },
-        {
-          path: '/srm/purchase-order/detail/:purchaseId',
-          component: './PurchaseOrder/Detail',
-        },
-      ],
-    },
-    {
-      path: '/srm/rfq', // 询报价
-      routes: [
-        {
-          path: '/srm/rfq/list',
-          component: './RFQ/List',
-          authorized: true,
-        },
-        {
-          path: '/srm/rfq/detail',
-          component: './RFQ/Detail',
-          authorized: true,
-        },
-      ],
-    },
+
     {
       path: '/srm/demo', // 供应商
       routes: [
@@ -140,6 +53,103 @@ export default extendParentConfig({
         },
       ],
     },
+
+    {
+      path: '/srm/purchase-order/list',
+      component: './PurchaseOrder/List',
+      authorized: true,
+    },
+
+    {
+      path: '/srm/purchase-order/detail/:purchaseId',
+      component: './PurchaseOrder/Detail',
+    },
+
+
+    /** 供应商 start */
+    {
+      path: '/srm/supplier/list', // 采购端
+      component: './Supplier',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier/detail/:id', // 采购端
+      component: './Supplier/Detail',
+      authorized: true,
+    },
+    /** 供应商 end */
+
+    /** 供应商注册 start */
+    {
+      path: '/srm/Supplier-register/list', // 采购端
+      component: './SupplierRegister',
+      authorized: true,
+    },
+    /** 供应商注册 end */
+
+    /** 供应商业务变更 start */
+    {
+      path: '/srm/supplier-business-change/list', // 采购端
+      component: './SupplierBusinessChange',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-business-change/detail/:id', // 采购端
+      component: './SupplierBusinessChange/Detail',
+      authorized: true,
+    },
+    /** 供应商业务变更 end */
+
+
+    /** 供应商变更 start */
+    {
+      path: '/srm/supplier-change/list', // 采购端
+      component: './SupplierChange',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-change/detail/:id', // 采购端
+      component: './SupplierChange/Detail',
+      authorized: true,
+    },
+    /** 供应商变更 end */
+
+
+    /** 准入及品类扩充 start */
+    {
+      path: '/srm/supplier-admission/list', // 采购端
+      component: './SupplierAdmission',
+      authorized: true,
+    },
+    {
+      path: '/srm/supplier-admission/detail/:id', // 采购端
+      component: './SupplierAdmission/Detail',
+      authorized: true,
+    },
+    /** 准入及品类扩充 end */
+
+    /** 供应商类型 start */
+    {
+      path: '/srm/supplier-type/list',
+      component: './SupplierType',
+      authorized: true,
+    },
+    /** 供应商类型 end */
+
+
+
+    /** 询报价 */
+    {
+      path: '/srm/rfq/list', // 采购端
+      component: './RFQ/List',
+      authorized: true,
+    },
+    {
+      path: '/srm/rfq/detail', // 采购端
+      component: './RFQ/Detail',
+      authorized: true,
+    },
+
   ],
   hash: true,
   hzeroMicro: {

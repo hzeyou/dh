@@ -3,18 +3,17 @@ import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
-import { lovBankDSConf } from '@/pages/Supplier/stores/lovBankDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
 
-export const lovSupplyScopeDSConf = (): DataSetProps => ({
+export const supplyCategoryLovDSConf = (): DataSetProps => ({
   autoCreate: false,
   fields: [
     {
-      name: 'lovSupplyCode',
+      name: 'supplyCodeLov',
       type: FieldType.object,
-      label: intl.get(`${intlPrefix}.lovSortCode`).d('本地清算号（联行号）'),
+      label: intl.get(`${intlPrefix}.lovSortCode`).d('新建'),
       multiple: true,
       lovCode: 'SCM.SUPPLIER',
       ignore: FieldIgnore.always,

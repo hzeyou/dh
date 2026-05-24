@@ -3,7 +3,7 @@ import { Button, DataSet } from 'choerodon-ui/pro';
 import { observer } from 'mobx-react';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 
-import { getCurrentUserId, intl } from 'utils/utils';
+import { getCurrentUserId, intl, getCurrentTenant, getCurrentUser } from 'utils/utils';
 import formatterCollections from 'utils/intl/formatterCollections';
 
 import {
@@ -43,6 +43,9 @@ function Detail(props: DetailProps) {
   const {
     params: { id },
   } = match;
+
+  console.log('getCurrentTenant==', getCurrentTenant());
+  console.log('getCurrentUser==', getCurrentUser());
 
   // 是否为创建
   const isCreate: boolean = id === 'create';

@@ -7,7 +7,7 @@ import { intl } from 'utils/utils';
 const intlPrefix = 'srm.supplier.model.supplier';
 
 
-export const lovBankDSConf = (): DataSetProps => ({
+export const bankLovDSConf = (): DataSetProps => ({
   autoCreate: false,
   fields: [
     {
