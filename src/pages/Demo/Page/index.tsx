@@ -45,11 +45,11 @@ const Index = (props: ListProps) => {
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
       // history.push('/srm/demo/detail');
-      DetailOpen({ data: {onSubmit: queryFn}});
+      DetailOpen({ onSubmit: queryFn});
       return;
     }
     const id = record?.get('id');
-    DetailOpen({data: {id, onSubmit: queryFn}});
+    DetailOpen({data: {id,}, onSubmit: queryFn});
   }
 
   async function delItem(record) {

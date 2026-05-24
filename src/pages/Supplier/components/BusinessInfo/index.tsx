@@ -32,7 +32,7 @@ export default function Index({detailDS, contactDS, bankDS, certDS, isCreate}) {
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="cert" title="证书资质信息" forceRender>
-          <CertInfo ds={certDS}/>
+          <CertInfo ds={certDS} headColumns={[]}/>
         </Tabs.TabPane>
       </Tabs>
     </ContentCard>

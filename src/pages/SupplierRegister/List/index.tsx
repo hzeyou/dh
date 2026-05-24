@@ -42,7 +42,7 @@ function List(props: ListProps) {
 
   function handleEdit(record: Record) {
     openDetailModal({
-      record,
+      id: record.get('registrationId'),
       onSubmit: () => listDS.query(listDS.currentPage),
     });
   }
@@ -51,21 +51,20 @@ function List(props: ListProps) {
   const columns: Array<ColumnProps> = useMemo(() => {
     return [
       {
-        name: 'vendorCode',
+        name: 'supplierCode',
         width: 140,
         renderer: ({ value, record }) => (
           <a onClick={() => handleEdit(record as Record)}>{value}</a>
         ),
       },
-      { name: 'vendorTypeName', width: 180 },
-      { name: 'vendorStatus', width: 120 },
-      { name: 'vendorErpCode', width: 140 },
-      { name: 'isRegisterAudit', width: 120 },
-      { name: 'isZiZhiAudit', width: 120 },
-      { name: 'isXieYi', width: 120 },
-      { name: 'isXianChangAudit', width: 120 },
-      { name: 'isXianChangAudit1', width: 120 },
-      { name: 'isXianChangAudit2', width: 120 },
+      { name: 'statusMeaning', width: 180 },
+      { name: 'supplierName', width: 200 },
+      { name: 'supplierCode', width: 140 },
+      { name: 'levelMeaning', width: 120 },
+      { name: 'email', width: 120 },
+      { name: 'remark', width: 120 },
+      { name: 'inviterCode', width: 120 },
+      { name: 'creationDateStr', width: 200 },
       {
         header: intl.get('hzero.common.button.action').d('操作'),
         lock: ColumnLock.right,
@@ -76,7 +75,7 @@ function List(props: ListProps) {
             {
               key: 'action1', // key
               ele: (
-                <a onClick={() => {}}>
+                <a onClick={() => handleEdit(record as Record)}>
                   {intl.get('hzero.common.button.change').d('编辑')}
                 </a>
               ), // 操作栏的按钮
@@ -140,16 +139,16 @@ function List(props: ListProps) {
           dataSet={listDS}
           columns={columns}
           searchCode="srm.supplier.list.table"
-          queryBar={TableQueryBarType.filterBar}
+          queryBar={TableQueryBarType.professionalBar}
           queryFields={{}}
-          queryBarProps={{
+          /*queryBarProps={{
             fuzzyQueryPlaceholder: intl
               .get(`${intlPrefix}.vendorCode`)
               .d('类型编码'),
             dynamicFilterBar: {
               searchText: 'vendorCode',
             },
-          }}
+          }}*/
           autoHeight={{ type: TableAutoHeightType.minHeight, diff: 88 }}
         />
       </Content>

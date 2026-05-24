@@ -88,7 +88,6 @@ export function openModalHelper<T = Record<string, any>>(
     content: ContentComponent,
     drawer = true,
     closable = true,
-    data,
     modalProps,
     ...other
   } = options;
@@ -99,7 +98,7 @@ export function openModalHelper<T = Record<string, any>>(
       return null;
     }
     // 将 data 扁平化到 ContentComponent 上
-    return <ContentComponent modal={modal} {...(data as T)} />;
+    return <ContentComponent modal={modal} {...(other as T)} />;
   };
 
   const modalInstance = Modal.open({

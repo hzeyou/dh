@@ -7,6 +7,8 @@ import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+import { getCurrentOrganizationId } from 'utils/utils';
+
 export const listDSConf = (): DataSetProps => ({
   selection: false,
   pageSize: 20,
@@ -14,75 +16,76 @@ export const listDSConf = (): DataSetProps => ({
   autoQuery: true,
   queryFields: [
     {
-      name: 'field',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
-      name: 'field1',
+      name: 'supplierName',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商名称'),
     },
     {
-      name: 'field2',
+      name: 'status',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.typeName`).d('状态'),
+      lookupCode: 'SRM.SUPPLIERS_STATUS',
     },
   ],
   fields: [
     {
-      name: 'field',
+      name: 'registrationCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('注册单号'),
+      label: intl.get(`${intlPrefix}.registrationCode`).d('注册单号'),
     },
     {
-      name: 'field1',
+      name: 'statusMeaning',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('状态'),
+      label: intl.get(`${intlPrefix}.statusMeaning`).d('状态'),
     },
     {
-      name: 'field2',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商名称'),
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
       lookupCode: 'SRM.ACTION.STATUS',
     },
     {
-      name: 'field3',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
       lookupCode: 'SRM.ACTION.STATUS',
     },
     {
-      name: 'field4',
+      name: 'levelMeaning',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商级别'),
+      label: intl.get(`${intlPrefix}.levelMeaning`).d('供应商级别'),
+    },
+    {
+      name: 'email',
+      type: FieldType.email,
+      label: intl.get(`${intlPrefix}.email`).d('供应商邮箱'),
+    },
+    {
+      name: 'remark',
+      type: FieldType.email,
+      label: intl.get(`${intlPrefix}.remark`).d('备注'),
+    },
+    {
+      name: 'inviterCode',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.inviterCode`).d('邀请人'),
       lookupCode: 'SRM.ACTION.STATUS',
     },
     {
-      name: 'field5',
+      name: 'creationDateStr',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商邮箱'),
-      lookupCode: 'SRM.ACTION.STATUS',
-    },
-    {
-      name: 'field6',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('邀请人'),
-      lookupCode: 'SRM.ACTION.STATUS',
-    },
-    {
-      name: 'field7',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('邀请时间'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.creationDateStr`).d('邀请时间'),
     },
   ],
   transport: {
     read: ({ data }): AxiosRequestConfig => {
       return {
-        // url: `${HG_SRM_API_PREFIX}/supplier`,
-        url: `${process.env.SRM_DEV_HOST}/api/srm/supplier`,
+        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations`,
         method: 'get',
         data,
       };

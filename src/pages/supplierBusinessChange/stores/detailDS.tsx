@@ -34,21 +34,23 @@ export const detailDSConf = (): DataSetProps => ({
       name: 'exitType',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.exitType`).d('退出类型'),
-      required: true,
       options: exitTypeOptionsDS,
+      dynamicProps: {
+        required: ({ dataSet, record, name }) => {
+          return record?.get('type') === '3';
+        }
+      },
     },
     {
       name: 'startDate',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.startDate`).d('冻结开始日期'),
-      required: true,
       bind: 'startEndDate.start',
     },
     {
       name: 'endDate',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.endDate`).d('冻结结束日期'),
-      required: true,
       bind: 'startEndDate.end',
     },
     {
@@ -56,8 +58,12 @@ export const detailDSConf = (): DataSetProps => ({
       type: FieldType.date,
       label: intl.get(`${intlPrefix}.startEndDate`).d('冻结周期'),
       ignore: FieldIgnore.always,
-      required: true,
       range: ['start', 'end'],
+      dynamicProps: {
+        required: ({ dataSet, record, name }) => {
+          return record?.get('type') === '1';
+        }
+      },
     },
     {
       name: 'remark',
@@ -83,15 +89,10 @@ export const detailDSConf = (): DataSetProps => ({
       console.log('data==', data);
 
       return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier`,
-        method: 'post',
-        data: data[0],
+        // url: `${process.env.SRM_DEV_HOST}/srm/supplier`,
+        // method: 'post',
+        // data: data[0],
       };
     },
-  },
-  events: {
-    update({ dataSet, record, name, value, oldValue }) {
-      // record
-    }
   },
 });

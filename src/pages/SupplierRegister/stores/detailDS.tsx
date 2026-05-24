@@ -1,96 +1,85 @@
 import { AxiosRequestConfig } from 'axios';
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { DataToJSON, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
-import { intl } from 'utils/utils';
+import { getCurrentOrganizationId, intl } from 'utils/utils';
+import Record from 'choerodon-ui/dataset/data-set/Record';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-const admissionRulePrefix = `${intlPrefix}.admissionRule`;
-const checkedValue = '是';
-const uncheckedValue = '否';
 
 export const detailDSConf = (): DataSetProps => ({
   autoCreate: true,
   primaryKey: 'id',
   idField: 'id',
+  dataToJSON: DataToJSON.normal,
   fields: [
     {
       name: 'id',
       type: FieldType.number,
     },
     {
-      name: 'field1',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商名称'),
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
       required: true,
     },
     {
-      name: 'field2',
+      name: 'typeId',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商类型'),
+      label: intl.get(`${intlPrefix}.typeId`).d('供应商类型'),
+      required: true,
+      lookupCode: 'SRM.SUPPLIERS_CREATE_TYPE',
+    },
+    {
+      name: 'email',
+      type: FieldType.email,
+      label: intl.get(`${intlPrefix}.email`).d('邀请邮箱'),
       required: true,
     },
     {
-      name: 'field3',
+      name: 'level',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('邀请邮箱'),
-      lookupCode: 'SRM.ACTION.STATUS',
-      required: true,
+      label: intl.get(`${intlPrefix}.level`).d('供应商级别'),
+      multiple: true,
+      lookupCode: 'SRM.SUPPLIER_LEVEL',
+      transformRequest: (value: any, record: Record) => {
+        return value?.join(',');
+      },
+      transformResponse: (value: any, record: Record) => {
+        return value?.split(',');
+      }
     },
     {
-      name: 'field4',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('供应商级别'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
+      name: 'remark',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.remark`).d('备注'),
     },
     {
-      name: 'field5',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('备注'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
-    },
-    {
-      name: 'field6',
-      type: FieldType.boolean,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('创建供应商账号'),
-      trueValue: checkedValue,
-      falseValue: uncheckedValue,
-      defaultValue: uncheckedValue,
+      name: 'accountCreatedFlag',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.accountCreatedFlag`).d('创建供应商账号'),
+      lookupCode: 'SRM.ACCOUNT_CREATED_FLAG',
     },
   ],
   transport: {
-    read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
+    read: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
+        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/${data.id}`,
         method: 'get',
       };
     },
     submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
-
       return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
+        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/save`,
+        method: 'post',
         data: data[0],
       };
     },
-  },
-  events: {
-    update: ({ record, name, value }) => {
-      if (name === 'isRegisterAudit' && value !== checkedValue) {
-        record.set('registerAuditRule', undefined);
-      }
-      if (name === 'isZiZhiAudit' && value !== checkedValue) {
-        record.set('ziZhiAuditRule', undefined);
-      }
-    },
+    exports: ({ dataSet, data }): AxiosRequestConfig => {
+      return {
+        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/export`,
+        method: 'get',
+      };
+    }
   },
 });

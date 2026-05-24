@@ -81,7 +81,7 @@ export default extendParentConfig({
 
     /** 供应商注册 start */
     {
-      path: '/srm/Supplier-register/list', // 采购端
+      path: '/srm/supplier-register/list', // 采购端
       component: './SupplierRegister',
       authorized: true,
     },

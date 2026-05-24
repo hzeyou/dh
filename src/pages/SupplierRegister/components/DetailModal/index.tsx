@@ -2,9 +2,13 @@ import React, { useMemo } from 'react';
 import {
   AutoComplete,
   CheckBox,
-  DataSet, EmailField,
-  Form, NumberField, Output,
-  Select, SelectBox,
+  DataSet,
+  EmailField,
+  Form,
+  NumberField,
+  Output,
+  Select,
+  SelectBox,
   Spin,
   TextField,
 } from 'choerodon-ui/pro';
@@ -16,7 +20,6 @@ import { detailDSConf } from '../../stores/detailDS';
 import { useEmailAutoComplete } from '@/hooks/useEmailAutoComplete';
 
 function DetailModal({ id, modal, onSubmit }: any) {
-  console.log('modal==', modal);
 
   const detailDS = useMemo(() => {
     const _detailDS = new DataSet(detailDSConf());
@@ -50,17 +53,22 @@ function DetailModal({ id, modal, onSubmit }: any) {
       <Form dataSet={detailDS} columns={1}>
         {isReadOnly ? (
           <>
-            <Output name="name" />
-            <Output name="content" />
+            <Output name="supplierName" />
+            <Output name="typeId" />
+            <Output name="email" />
+            <Output name="level" />
+            <Output name="level" />
+            <Output name="remark" />
+            <Output name="accountCreatedFlag" />
           </>
         ) : (
           <>
-            <TextField name="field1" />
-            <TextField name="field2" />
-            <EmailField name="field3" />
-            <TextField name="field4" />
-            <TextField name="field5" />
-            <Select name="field6" />
+            <TextField name="supplierName" />
+            <Select name="typeId" />
+            <EmailField name="email" />
+            <Select name="level" />
+            <TextField name="remark" />
+            <Select name="accountCreatedFlag" />
           </>
         )}
       </Form>
@@ -68,9 +76,9 @@ function DetailModal({ id, modal, onSubmit }: any) {
   );
 }
 
-export default function open (options?: any) {
+export default function open(options?: any) {
   return openModalHelper({
-    title: '新建',
+    title: options?.id ? '编辑' : '新建',
     content: DetailModal,
     ...options,
   });
