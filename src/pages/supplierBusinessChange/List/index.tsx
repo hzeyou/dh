@@ -115,7 +115,7 @@ function List(props: ListProps) {
 
   return (
     <>
-      <Header title={intl.get('srm.supplier.view.title').d('供应商类型')}>
+      <Header title={intl.get('srm.supplier.view.title').d('供应商业务变更')}>
         <Button icon="add" color={ButtonColor.primary} onClick={handleCreate}>
           {intl.get('hzero.common.button.create').d('新建')}
         </Button>
@@ -138,10 +138,10 @@ function List(props: ListProps) {
           queryFields={{}}
           queryBarProps={{
             fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.vendorCode`)
-              .d('类型编码'),
+              .get(`${intlPrefix}.changeId`)
+              .d('业务变更单'),
             dynamicFilterBar: {
-              searchText: 'vendorCode',
+              searchText: 'changeId',
             },
           }}
           autoHeight={{ type: TableAutoHeightType.minHeight, diff: 88 }}

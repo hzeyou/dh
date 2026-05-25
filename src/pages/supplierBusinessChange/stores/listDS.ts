@@ -14,11 +14,11 @@ export const listDSConf = (): DataSetProps => ({
   autoQueryAfterSubmit: false,
   autoQuery: true,
   queryFields: [
-    {
-      name: 'changeId',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.changeId`).d('业务变更单'),
-    },
+    // {
+    //   name: 'changeId',
+    //   type: FieldType.string,
+    //   label: intl.get(`${intlPrefix}.changeId`).d('业务变更单'),
+    // },
     {
       name: 'type',
       type: FieldType.string,
