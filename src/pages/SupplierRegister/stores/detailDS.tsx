@@ -2,8 +2,9 @@ import { AxiosRequestConfig } from 'axios';
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { DataToJSON, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
-import { getCurrentOrganizationId, intl } from 'utils/utils';
+import { intl } from 'utils/utils';
 import Record from 'choerodon-ui/dataset/data-set/Record';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
@@ -67,20 +68,20 @@ export const detailDSConf = (): DataSetProps => ({
   transport: {
     read: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/${data.id}`,
+        url: `${HG_SRM_API_PREFIX}/supplier-registrations/${data.id}`,
         method: 'get',
       };
     },
     submit: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/save`,
+        url: `${HG_SRM_API_PREFIX}/supplier-registrations/save`,
         method: 'post',
         data: data[0],
       };
     },
     exports: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/export`,
+        url: `${HG_SRM_API_PREFIX}/supplier-registrations/export`,
         method: 'get',
       };
     }

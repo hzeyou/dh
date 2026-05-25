@@ -11,12 +11,10 @@ import {
 import { observer } from 'mobx-react';
 
 import { Header, Content } from 'components/Page';
-import ExcelExportPro from 'components/ExcelExportPro';
+import PermissionButton from 'components/Permission/Button';
 import intl from 'utils/intl';
 import formatterCollections from 'utils/intl/formatterCollections';
-import { filterNullValueObject } from 'utils/utils';
 import withProps from 'utils/withProps';
-import { HG_PTS_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
 import { listDSConf } from '../stores/listDS';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
@@ -36,8 +34,13 @@ function List(props: ListProps) {
   // 新建
   function handleCreate() {
     openDetailModal({
-      data: { onSubmit: () => listDS.query(listDS.currentPage), }
+      data: { onSubmit: () => listDS.query(listDS.currentPage) },
     });
+  }
+
+  // 导出
+  function handleExports() {
+    listDS.export();
   }
 
   function handleEdit(record: Record) {
@@ -45,7 +48,7 @@ function List(props: ListProps) {
       data: {
         id: record.get('registrationId'),
         onSubmit: () => listDS.query(listDS.currentPage),
-      }
+      },
     });
   }
 
@@ -109,30 +112,27 @@ function List(props: ListProps) {
     ];
   }, []);
 
-  // 导出参数
-  function getExportQueryParams() {
-    const formData = listDS.queryDataSet?.current?.toJSONData() || {};
-    return filterNullValueObject(formData);
-  }
-
-  // const onChange = async (activeKey: string) => {
-  //   setStatus(activeKey);
-  //   await listDS.query(1, {status: activeKey});
-  // };
-
   return (
     <>
       <Header title={intl.get('srm.supplier.view.title').d('供应商类型')}>
-        <Button icon="add" color={ButtonColor.primary} onClick={handleCreate}>
+        <PermissionButton
+          icon="add"
+          type={ButtonColor.primary}
+          onClick={handleCreate}
+          // TODO 需要配置权限
+          // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+        >
           {intl.get('hzero.common.button.create').d('新建')}
-        </Button>
-        <ExcelExportPro
-          defaultSelectAll
-          modalProps={{ closable: true }}
-          requestUrl={`${HG_PTS_API_PREFIX}/action-headers/export`}
-          queryParams={getExportQueryParams}
-          exportAsync
-        />
+        </PermissionButton>
+        <PermissionButton
+          icon="launch"
+          color={ButtonColor.default}
+          onClick={handleExports}
+          // TODO 需要配置权限
+          // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+        >
+          {intl.get('hzero.common.button.exports').d('导出')}
+        </PermissionButton>
       </Header>
       <Content>
         <Table

@@ -7,7 +7,7 @@ import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
-import { getCurrentOrganizationId } from 'utils/utils';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 
 export const listDSConf = (): DataSetProps => ({
   selection: false,
@@ -85,7 +85,14 @@ export const listDSConf = (): DataSetProps => ({
   transport: {
     read: ({ data }): AxiosRequestConfig => {
       return {
-        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations`,
+        url: `${HG_SRM_API_PREFIX}/supplier-registrations`,
+        method: 'get',
+        data,
+      };
+    },
+    exports: ({ data }): AxiosRequestConfig => {
+      return {
+        url: `${HG_SRM_API_PREFIX}/supplier-registrations/export`,
         method: 'get',
         data,
       };
