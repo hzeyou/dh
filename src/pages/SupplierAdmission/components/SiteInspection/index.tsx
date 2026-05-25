@@ -8,7 +8,7 @@ import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
 import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
-import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/SupplyCategoryLovDS';
+import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/supplyCategoryLovDS';
 import { ContentCard } from 'components/Page';
 
 export default function Index({ ds, isCreate }) {

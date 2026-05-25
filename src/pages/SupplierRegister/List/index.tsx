@@ -139,16 +139,16 @@ function List(props: ListProps) {
           dataSet={listDS}
           columns={columns}
           searchCode="srm.supplier.list.table"
-          queryBar={TableQueryBarType.professionalBar}
+          queryBar={TableQueryBarType.filterBar}
           queryFields={{}}
-          /*queryBarProps={{
+          queryBarProps={{
             fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.vendorCode`)
-              .d('类型编码'),
+              .get(`${intlPrefix}.vendorTypeName`)
+              .d('供应商名称'),
             dynamicFilterBar: {
-              searchText: 'vendorCode',
+              searchText: 'vendorTypeName',
             },
-          }}*/
+          }}
           autoHeight={{ type: TableAutoHeightType.minHeight, diff: 88 }}
         />
       </Content>

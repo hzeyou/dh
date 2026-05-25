@@ -28,7 +28,7 @@ export const detailDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.typeId`).d('供应商类型'),
       required: true,
-      lookupCode: 'SRM.SUPPLIERS_CREATE_TYPE',
+      lookupCode: 'SRM.SUPPLIERS_TYPE',
     },
     {
       name: 'email',
@@ -42,6 +42,7 @@ export const detailDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.level`).d('供应商级别'),
       multiple: true,
       lookupCode: 'SRM.SUPPLIER_LEVEL',
+      required: true,
       transformRequest: (value: any, record: Record) => {
         return value?.join(',');
       },
@@ -59,6 +60,8 @@ export const detailDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.accountCreatedFlag`).d('创建供应商账号'),
       lookupCode: 'SRM.ACCOUNT_CREATED_FLAG',
+      required: true,
+      defaultValue: '0',
     },
   ],
   transport: {

@@ -80,6 +80,7 @@ export default function open(options?: any) {
   return openModalHelper({
     title: options?.id ? '编辑' : '新建',
     content: DetailModal,
+    drawer: false,
     ...options,
   });
 }
