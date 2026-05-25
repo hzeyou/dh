@@ -5,6 +5,7 @@ export default {
     'process.env': {
       // 这里修改成网关服务器后端地址
       SRM_DEV_HOST: 'http://localhost:8000',
+      SRM_HOST: 'https://test-hzero-gateway.imiracle.tech',
     },
   },
   // proxy: {

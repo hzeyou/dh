@@ -36,14 +36,16 @@ function List(props: ListProps) {
   // 新建
   function handleCreate() {
     openDetailModal({
-      onSubmit: () => listDS.query(listDS.currentPage),
+      data: { onSubmit: () => listDS.query(listDS.currentPage), }
     });
   }
 
   function handleEdit(record: Record) {
     openDetailModal({
-      id: record.get('registrationId'),
-      onSubmit: () => listDS.query(listDS.currentPage),
+      data: {
+        id: record.get('registrationId'),
+        onSubmit: () => listDS.query(listDS.currentPage),
+      }
     });
   }
 

@@ -62,9 +62,9 @@ export const listDSConf = (): DataSetProps => ({
   ],
   fields: [
     {
-      name: 'vendorCode',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
       name: 'vendorTypeName',
@@ -112,7 +112,7 @@ export const listDSConf = (): DataSetProps => ({
     read: ({ data }): AxiosRequestConfig => {
       return {
         // url: `${HG_SRM_API_PREFIX}/supplier`,
-        url: `${process.env.SRM_DEV_HOST}/api/srm/supplier`,
+        url: `${process.env.SRM_HOST}/v1/{tenantId}/suppliers`,
         method: 'get',
         data,
       };

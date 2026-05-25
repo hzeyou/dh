@@ -85,7 +85,7 @@ export const listDSConf = (): DataSetProps => ({
   transport: {
     read: ({ data }): AxiosRequestConfig => {
       return {
-        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations`,
+        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations`,
         method: 'get',
         data,
       };

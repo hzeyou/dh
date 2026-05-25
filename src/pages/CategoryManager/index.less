@@ -1,0 +1,89 @@
+.category-manager-layout {
+  gap: 8px;
+  min-height: 0;
+}
+
+.category-tree-panel {
+  flex: 0 0 264px;
+  width: 264px;
+  min-width: 264px;
+  max-width: 264px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-list-panel {
+  min-width: 0;
+  padding: 0 16px 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-tree-header,
+.category-list-header {
+  height: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e8e8e8;
+  color: #22242a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.category-tree-header {
+  padding: 0 8px 0 16px;
+}
+
+.category-list-header {
+  padding: 0;
+}
+
+.category-tree-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 8px 16px;
+}
+
+.category-tree-node {
+  display: inline-flex;
+  align-items: center;
+  max-width: 214px;
+  vertical-align: middle;
+}
+
+.category-tree-node-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-tree-node-stopped {
+  color: #8c8c8c;
+}
+
+.status-enabled {
+  color: #1f7a3f;
+}
+
+.status-stopped {
+  color: #8c8c8c;
+}
+
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.table-actions a {
+  cursor: pointer;
+}

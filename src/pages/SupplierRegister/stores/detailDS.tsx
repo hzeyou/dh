@@ -67,20 +67,20 @@ export const detailDSConf = (): DataSetProps => ({
   transport: {
     read: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/${data.id}`,
+        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/${data.id}`,
         method: 'get',
       };
     },
     submit: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/save`,
+        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/save`,
         method: 'post',
         data: data[0],
       };
     },
     exports: ({ dataSet, data }): AxiosRequestConfig => {
       return {
-        url: `https://test-hzero-gateway.imiracle.tech/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/export`,
+        url: `${process.env.SRM_HOST}/hsrm/v1/${getCurrentOrganizationId()}/supplier-registrations/export`,
         method: 'get',
       };
     }

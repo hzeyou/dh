@@ -138,7 +138,7 @@ export default extendParentConfig({
 
 
 
-    /** 询报价 */
+    /** 询报价 start */
     {
       path: '/srm/rfq/list', // 采购端
       component: './RFQ/List',
@@ -149,6 +149,17 @@ export default extendParentConfig({
       component: './RFQ/Detail',
       authorized: true,
     },
+    /** 询报价 end */
+
+
+    /** 品类管理 start */
+    {
+      path: '/srm/category-manager/list',
+      component: './CategoryManager',
+      authorized: true,
+    },
+    /** 品类管理 end */
+
 
   ],
   hash: true,
