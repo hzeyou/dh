@@ -154,8 +154,8 @@ export default extendParentConfig({
 
     /** 品类管理 start */
     {
-      path: '/srm/category-manager/list',
-      component: './CategoryManager',
+      path: '/srm/category-manage/list',
+      component: './CategoryManage',
       authorized: true,
     },
     /** 品类管理 end */

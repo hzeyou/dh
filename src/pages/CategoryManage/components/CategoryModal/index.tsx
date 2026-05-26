@@ -2,9 +2,10 @@ import React from 'react';
 import {
   DataSet,
   Form,
+  NumberField,
   Output,
-  Select,
   Spin,
+  Switch,
   TextArea,
   TextField,
   TreeSelect,
@@ -22,12 +23,13 @@ import {
   CATEGORY_LEVEL,
   CATEGORY_STATUS,
   createCategoryOptionDS,
-  detailDSConf,
   getCategoryRows,
   getCodeSuffix,
   getHierarchyByParent,
   getLevelMeaning,
-} from '../../stores/listDS';
+  getStatusMeaning,
+} from '../../stores/commonDS';
+import { detailDSConf } from '../../stores/detailDS';
 
 interface OpenCategoryModalProps {
   record?: C7nRecord | null;
@@ -52,7 +54,7 @@ function buildOptionData(treeDS: DataSet) {
     [CATEGORY_LEVEL.L1, CATEGORY_LEVEL.L2].includes(item.level),
   );
   const parentMap = parentRows.reduce((result, item) => {
-    result[item.categoryId] = item;
+    result[item.id] = item;
     return result;
   }, {});
 
@@ -87,19 +89,15 @@ function validateLocalUnique(dataSet: DataSet, treeDS: DataSet) {
     return false;
   }
 
-  const categoryId = current.get('categoryId');
+  const id = current.get('id');
   const level = current.get('level');
   const parentId = current.get('parentId');
-  const categoryName = current.get('categoryName');
-  const categoryCode =
-    current.get('categoryCode') ||
-    buildCategoryCode(current.get('codePrefix'), level);
+  const name = current.get('name');
+  const code =
+    current.get('code') || buildCategoryCode(current.get('codePrefix'), level);
   const rows = getCategoryRows(treeDS);
 
-  const hasSameCode = rows.some(
-    item =>
-      item.categoryCode === categoryCode && item.categoryId !== categoryId,
-  );
+  const hasSameCode = rows.some(item => item.code === code && item.id !== id);
   if (hasSameCode) {
     notification.warning({
       message: intl
@@ -113,13 +111,13 @@ function validateLocalUnique(dataSet: DataSet, treeDS: DataSet) {
   }
 
   const hasSameName = rows.some(item => {
-    if (item.categoryId === categoryId || item.level !== level) {
+    if (item.id === id || item.level !== level) {
       return false;
     }
     if (level === CATEGORY_LEVEL.L1) {
-      return item.categoryName === categoryName;
+      return item.name === name;
     }
-    return item.parentId === parentId && item.categoryName === categoryName;
+    return item.parentId === parentId && item.name === name;
   });
 
   if (hasSameName) {
@@ -147,7 +145,6 @@ function validateLocalUnique(dataSet: DataSet, treeDS: DataSet) {
 
 function CategoryModal(props: CategoryModalProps) {
   const { dataSet, mode, createSource } = props;
-  console.log('props==', props);
   const current = dataSet.current;
   const level = current?.get('level');
   const isCreate = mode === 'create';
@@ -162,7 +159,7 @@ function CategoryModal(props: CategoryModalProps) {
 
   return (
     <Spin dataSet={dataSet}>
-      <Form dataSet={dataSet} columns={2} labelWidth={120}>
+      <Form dataSet={dataSet} columns={1} labelWidth={120}>
         {isToolbarCreate && (
           <TreeSelect
             name="parentId"
@@ -181,11 +178,17 @@ function CategoryModal(props: CategoryModalProps) {
         {isCreate ? (
           <TextField name="codePrefix" addonAfter={codeSuffix} />
         ) : (
-          <Output name="categoryCode" />
+          <Output name="code" />
         )}
-        <TextField name="categoryName" />
-        <Select name="status" />
-        <TextArea name="description" colSpan={2} rows={4} />
+        <TextField name="name" />
+        <NumberField name="sort" min={0} step={1} />
+        <Switch
+          name="status"
+          unCheckedChildren={getStatusMeaning(CATEGORY_STATUS.stopped)}
+        >
+          {getStatusMeaning(CATEGORY_STATUS.enabled)}
+        </Switch>
+        <TextArea name="bizDesc" rows={4} />
       </Form>
     </Spin>
   );
@@ -205,16 +208,15 @@ export default function openCategoryModal(options: OpenCategoryModalProps) {
   dataSet.setState('mode', mode);
   dataSet.setState('createSource', createSource);
   dataSet.setState('parentMap', parentMap);
+  dataSet.getField('codePrefix')?.set('required', mode === 'create');
   dataSet.getField('parentId')?.setOptions(createCategoryOptionDS(parentRows));
 
   if (record) {
-    const data = getRecordData(record);
-    dataSet.loadData([
-      {
-        ...data,
-        codeSuffix: getCodeSuffix(data.level),
-      },
-    ]);
+    dataSet.setQueryParameter('id', record.get('id'));
+    dataSet.query().then(() => {
+      const current = dataSet.current;
+      current?.set('codeSuffix', getCodeSuffix(current.get('level')));
+    });
   } else {
     const initialData = parentRecord
       ? buildChildInitialData(parentRecord)

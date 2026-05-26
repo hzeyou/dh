@@ -90,12 +90,13 @@ export const listDSConf = (): DataSetProps => ({
         data,
       };
     },
-    exports: ({ data }): AxiosRequestConfig => {
-      return {
-        url: `${HG_SRM_API_PREFIX}/supplier-registrations/export`,
-        method: 'get',
-        data,
-      };
-    },
+    // TODO 表格导出不成功
+    // exports: ({ data }): AxiosRequestConfig => {
+    //   return {
+    //     url: `${HG_SRM_API_PREFIX}/supplier-registrations/export`,
+    //     method: 'get',
+    //     data,
+    //   };
+    // },
   },
 });

@@ -1,17 +1,33 @@
-.category-manager-layout {
+.category-manager-wrap {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.category-manager-content {
   gap: 8px;
   min-height: 0;
+  overflow: hidden;
 }
 
 .category-tree-panel {
   flex: 0 0 264px;
+  box-sizing: border-box;
   width: 264px;
   min-width: 264px;
   max-width: 264px;
+  height: 100%;
   padding: 0;
-  overflow: hidden;
+  background-color: #fff;
+  overflow: visible;
   display: flex;
   flex-direction: column;
+}
+
+.category-tree-panel-collapsed {
+  flex: 0 0 28px;
+  width: 28px;
+  min-width: 28px;
+  max-width: 28px;
 }
 
 .category-list-panel {
@@ -36,7 +52,55 @@
 }
 
 .category-tree-header {
+  position: relative;
   padding: 0 8px 0 16px;
+}
+
+.category-tree-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.category-tree-nav {
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  z-index: 2;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.category-tree-nav-icon,
+.category-tree-nav {
+  display: flex;
+  align-items: center;
+}
+
+.category-tree-nav img,
+.category-tree-nav-icon img {
+  display: block;
+}
+
+.category-tree-collapsed-nav {
+  width: 28px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background: #f2f2f2;
+  cursor: pointer;
+}
+
+.category-tree-collapsed-nav .category-tree-nav-icon {
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.category-tree-nav-title {
+  display: inline;
+  margin: 8px 0 4px 4px;
+  color: #22242a;
+  font-size: 12px;
+  letter-spacing: 3px;
+  writing-mode: vertical-lr;
 }
 
 .category-list-header {

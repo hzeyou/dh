@@ -12,6 +12,7 @@ import { observer } from 'mobx-react';
 
 import { Header, Content } from 'components/Page';
 import PermissionButton from 'components/Permission/Button';
+import ExcelExportPro from 'components/ExcelExportPro';
 import intl from 'utils/intl';
 import formatterCollections from 'utils/intl/formatterCollections';
 import withProps from 'utils/withProps';
@@ -20,6 +21,8 @@ import { listDSConf } from '../stores/listDS';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { Record } from 'choerodon-ui/dataset';
 import openDetailModal from '../components/DetailModal';
+import { getCurrentOrganizationId } from 'utils/utils';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
@@ -124,15 +127,20 @@ function List(props: ListProps) {
         >
           {intl.get('hzero.common.button.create').d('新建')}
         </PermissionButton>
+
         <PermissionButton
-          icon="launch"
-          color={ButtonColor.default}
-          onClick={handleExports}
+          type="text"
           // TODO 需要配置权限
           // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
         >
-          {intl.get('hzero.common.button.exports').d('导出')}
+          <ExcelExportPro
+            defaultSelectAll
+            requestUrl={`${HG_SRM_API_PREFIX}/supplier-registrations/export`}
+            modalProps={{closable: true}}
+            exportAsync
+          />
         </PermissionButton>
+
       </Header>
       <Content>
         <Table

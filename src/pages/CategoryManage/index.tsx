@@ -12,7 +12,7 @@ import {
 import { NodeRenderer } from 'choerodon-ui/pro/lib/tree/util';
 import { observer } from 'mobx-react';
 
-import { Header, ListContent, ListItem } from 'components/Page';
+import { Content, Header, ListContent, ListItem } from 'components/Page';
 import formatterCollections from 'utils/intl/formatterCollections';
 import intl from 'utils/intl';
 import notification from 'utils/notification';
@@ -21,6 +21,8 @@ import { getResponse } from 'utils/utils';
 import withProps from 'utils/withProps';
 
 import { compose } from '@/utils/util';
+import navFlod from 'hzero-front/lib/assets/page-icons/navFlod.svg';
+import navOpen from 'hzero-front/lib/assets/page-icons/navOpen.svg';
 import openCategoryModal from './components/CategoryModal';
 import {
   CATEGORY_API_PREFIX,
@@ -43,6 +45,10 @@ interface CategoryManagerProps {
 function CategoryManager(props: CategoryManagerProps) {
   const { listDS, treeDS } = props;
   const [selectedRecord, setSelectedRecord] = useState<C7nRecord | null>(null);
+  const [treeCollapsed, setTreeCollapsed] = useState(false);
+  const listTitle =
+    selectedRecord?.get('name') ||
+    intl.get('srm.categoryManager.view.list.allTitle').d('全部目录');
 
   useEffect(() => {
     treeDS.query();
@@ -55,8 +61,7 @@ function CategoryManager(props: CategoryManagerProps) {
   }
 
   function queryListByNode(record?: C7nRecord | null) {
-    listDS.setState('selectedCategoryId', record?.get('categoryId'));
-    listDS.setState('selectedLevel', record?.get('level'));
+    listDS.setState('currentId', record?.get('id'));
     listDS.query(1);
   }
 
@@ -70,6 +75,10 @@ function CategoryManager(props: CategoryManagerProps) {
     treeDS.unSelectAll();
     setSelectedRecord(null);
     queryListByNode(null);
+  }
+
+  function handleToggleTreePanel() {
+    setTreeCollapsed(value => !value);
   }
 
   function handleCreate(parentRecord?: C7nRecord | null) {
@@ -101,8 +110,8 @@ function CategoryManager(props: CategoryManagerProps) {
   }
 
   function getChildren(record: C7nRecord) {
-    const categoryId = record.get('categoryId');
-    return getCategoryRows(treeDS).filter(item => item.parentId === categoryId);
+    const id = record.get('id');
+    return getCategoryRows(treeDS).filter(item => item.parentId === id);
   }
 
   function hasChildren(record: C7nRecord) {
@@ -174,11 +183,11 @@ function CategoryManager(props: CategoryManagerProps) {
     record: C7nRecord,
     action: 'enable' | 'stop' | 'delete',
   ) {
-    const categoryId = record.get('categoryId');
+    const id = record.get('id');
     const url =
       action === 'delete'
-        ? `${CATEGORY_API_PREFIX}/${categoryId}`
-        : `${CATEGORY_API_PREFIX}/${categoryId}/${action}`;
+        ? `${CATEGORY_API_PREFIX}/${id}`
+        : `${CATEGORY_API_PREFIX}/${id}/${action}`;
     const res = await request(url, {
       method: action === 'delete' ? 'DELETE' : 'PUT',
     });
@@ -198,19 +207,22 @@ function CategoryManager(props: CategoryManagerProps) {
   function handleToggleStatus(record: C7nRecord) {
     const enabled = record.get('status') === CATEGORY_STATUS.enabled;
     const action = enabled ? 'stop' : 'enable';
+    let confirmTitle = intl
+      .get('srm.categoryManager.view.message.confirmEnable')
+      .d('是否确认启用该目录？');
+
+    if (enabled) {
+      confirmTitle = intl
+        .get('srm.categoryManager.view.message.confirmStop')
+        .d('是否确认停用该目录？');
+    }
 
     if (enabled && !checkStopConstraint(record)) {
       return;
     }
 
     Modal.confirm({
-      title: enabled
-        ? intl
-          .get('srm.categoryManager.view.message.confirmStop')
-          .d('是否确认停用该目录？')
-        : intl
-          .get('srm.categoryManager.view.message.confirmEnable')
-          .d('是否确认启用该目录？'),
+      title: confirmTitle,
       onOk: () => executeCategoryAction(record, action),
     });
   }
@@ -240,7 +252,7 @@ function CategoryManager(props: CategoryManagerProps) {
         ].join(' ')}
       >
         <span className={styles['category-tree-node-name']}>
-          {record?.get('categoryName')}
+          {record?.get('name')}
         </span>
       </span>
     );
@@ -253,14 +265,16 @@ function CategoryManager(props: CategoryManagerProps) {
       sortable: true,
       renderer: ({ value }) => getLevelMeaning(value),
     },
-    { name: 'categoryCode', width: 180, sortable: true },
-    { name: 'categoryName', width: 180, sortable: true },
-    { name: 'parentName', width: 160 },
+    { name: 'code', width: 180, sortable: true },
+    { name: 'name', width: 180, sortable: true },
+    { name: 'sort', width: 100, sortable: true },
+    { name: 'l1Name', width: 160 },
+    { name: 'l2Name', width: 160 },
     {
       name: 'status',
       width: 100,
       sortable: true,
-      renderer: ({ value }) => (
+      renderer: ({ value, record }) => (
         <span
           className={
             value === CATEGORY_STATUS.enabled
@@ -268,12 +282,11 @@ function CategoryManager(props: CategoryManagerProps) {
               : styles['status-stopped']
           }
         >
-          {getStatusMeaning(value)}
+          {record?.get('statusName') || getStatusMeaning(value)}
         </span>
       ),
     },
-    { name: 'description', width: 260 },
-    { name: 'createdByName', width: 120 },
+    { name: 'bizDesc', width: 260 },
     {
       header: intl.get('hzero.common.button.action').d('操作'),
       width: 260,
@@ -324,58 +337,90 @@ function CategoryManager(props: CategoryManagerProps) {
           {intl.get('hzero.common.button.create').d('新建')}
         </Button>
       </Header>
-      <ListContent className={styles['category-manager-layout']}>
-        <ListItem className={styles['category-tree-panel']}>
-          <div className={styles['category-tree-header']}>
-            <span>
-              {intl.get('srm.categoryManager.view.tree.title').d('目录树')}
-            </span>
-            <div>
-              <Button
-                icon="refresh"
-                funcType={FuncType.flat}
-                loading={treeDS.status === 'loading'}
-                onClick={() => treeDS.query()}
-              />
-              <Button funcType={FuncType.flat} onClick={handleClearTreeSelect}>
-                {intl.get('hzero.common.button.all').d('全部')}
-              </Button>
+      <ListContent
+        wrapperClassName={styles['category-manager-wrap']}
+        className={styles['category-manager-content']}
+      >
+        <div
+          className={[
+            styles['category-tree-panel'],
+            treeCollapsed ? styles['category-tree-panel-collapsed'] : '',
+          ].join(' ')}
+        >
+          {treeCollapsed ? (
+            <div
+              className={styles['category-tree-collapsed-nav']}
+              onClick={handleToggleTreePanel}
+            >
+              <div className={styles['category-tree-nav-icon']}>
+                <img src={navOpen} alt="" />
+              </div>
+              <div className={styles['category-tree-nav-title']}>
+                {intl.get('srm.categoryManager.view.tree.title').d('目录树')}
+              </div>
             </div>
-          </div>
-          <div className={styles['category-tree-body']}>
-            <Tree
-              dataSet={treeDS}
-              titleField="categoryName"
-              renderer={treeNodeRenderer}
-              showLine={{ showLeafIcon: false }}
-              defaultExpandAll
-              onSelect={handleTreeSelect}
+          ) : (
+            <>
+              <div className={styles['category-tree-header']}>
+                <span>
+                  {intl.get('srm.categoryManager.view.tree.title').d('目录树')}
+                </span>
+                <div className={styles['category-tree-header-actions']}>
+                  <Button
+                    icon="refresh"
+                    funcType={FuncType.flat}
+                    loading={treeDS.status === 'loading'}
+                    onClick={() => treeDS.query()}
+                  />
+                  <Button
+                    funcType={FuncType.flat}
+                    onClick={handleClearTreeSelect}
+                  >
+                    {intl.get('hzero.common.button.all').d('全部')}
+                  </Button>
+                  <div
+                    className={styles['category-tree-nav']}
+                    onClick={handleToggleTreePanel}
+                  >
+                    <img src={navFlod} alt="" />
+                  </div>
+                </div>
+              </div>
+              <div className={styles['category-tree-body']}>
+                <Tree
+                  dataSet={treeDS}
+                  titleField="name"
+                  renderer={treeNodeRenderer}
+                  showLine={{ showLeafIcon: false }}
+                  defaultExpandAll
+                  onSelect={handleTreeSelect}
+                />
+              </div>
+            </>
+          )}
+        </div>
+        <ListItem>
+          <Content>
+            <h2>{listTitle}</h2>
+            <Table
+              virtual
+              virtualCell
+              dataSet={listDS}
+              columns={columns}
+              searchCode="srm.categoryManager.list.table"
+              queryBar={TableQueryBarType.filterBar}
+              queryFields={{}}
+              queryBarProps={{
+                fuzzyQueryPlaceholder: intl
+                  .get('srm.categoryManager.name')
+                  .d('目录名称'),
+                dynamicFilterBar: {
+                  searchText: 'name',
+                },
+              }}
+              autoHeight={{ type: TableAutoHeightType.minHeight, diff: 81 }}
             />
-          </div>
-        </ListItem>
-        <ListItem className={styles['category-list-panel']}>
-          <div className={styles['category-list-header']}>
-            <span>
-              {selectedRecord
-                ? selectedRecord.get('categoryName')
-                : intl
-                  .get('srm.categoryManager.view.list.allTitle')
-                  .d('全部目录')}
-            </span>
-          </div>
-          <Table
-            virtual
-            virtualCell
-            dataSet={listDS}
-            columns={columns}
-            searchCode="srm.categoryManager.list.table"
-            queryBar={TableQueryBarType.filterBar}
-            queryFields={{}}
-            queryBarProps={{
-              queryFieldsLimit: 4,
-            }}
-            autoHeight={{ type: TableAutoHeightType.minHeight, diff: 81 }}
-          />
+          </Content>
         </ListItem>
       </ListContent>
     </>
