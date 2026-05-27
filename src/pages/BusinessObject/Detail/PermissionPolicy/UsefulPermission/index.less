@@ -1,0 +1,39 @@
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  height: 100%;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    .search {
+      margin-bottom: 16px;
+      width: 200px;
+    }
+  }
+
+  .content {
+    height: calc(100% - 28px - 16px);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    :global {
+      .c7n-card {
+        margin: 0 0 12px 0 !important;
+      }
+    }
+  }
+}
+
+.help-tooltip {
+  :global {
+    .c7n-pro-tooltip-popup-inner {
+      max-width: none !important;
+    }
+  }
+}

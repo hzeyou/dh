@@ -1,0 +1,43 @@
+@cardMargin: 24px;
+
+.card-wrapper {
+  width: 100%;
+  margin-bottom: 16px;
+
+  .line {
+    width: calc(100% + 2 * (@cardMargin + 2px));
+    position: relative;
+    left: -@cardMargin;
+    background: rgb(230, 230, 230);
+    margin: 8px 0 0 0;
+  }
+
+  .title-wrapper {
+    .title {
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .img {
+      margin-left: 4px;
+    }
+    .title-wrapper-span {
+      background: rgba(255, 240, 240, 1);
+      color: #F23A50;
+      font-size: 12px;
+      line-height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+      padding: 0 3px;
+      > i {
+        margin: -2px 3px 0 0;
+      }
+    }
+  }
+
+  .operations {
+    > a:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+}

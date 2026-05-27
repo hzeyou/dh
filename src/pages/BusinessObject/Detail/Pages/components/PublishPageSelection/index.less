@@ -1,0 +1,40 @@
+// 树形结构选择样式
+.tree-contain {
+  // height: 26vh;
+  min-height: 160px;
+  max-height: 500px;
+  .tree-select-hidden {
+    :global {
+      span.c7n-tree-checkbox {
+        display: none !important;
+      }
+    }
+  }
+  .titleIcon {
+    position: relative;
+    :global {
+      .icon {
+        vertical-align: sub;
+        color: #5a6677;
+        margin-right: 0.05rem;
+      }
+    }
+
+    .publishedIcon {
+      position: absolute;
+      bottom: -3px;
+      right: 5px;
+      z-index: 5;
+    }
+  }
+  :global {
+    .c7n-tree-checkbox-checked .c7n-tree-checkbox-inner,
+    .c7n-tree-checkbox-indeterminate .c7n-tree-checkbox-inner {
+      background-color: #012492;
+      border-color: #012492;
+    }
+    .c7n-tree-node-selected {
+      background-color: #fff !important;
+    }
+  }
+}

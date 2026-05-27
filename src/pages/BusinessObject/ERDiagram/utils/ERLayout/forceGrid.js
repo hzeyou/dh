@@ -1,0 +1,118 @@
+// @ts-nocheck
+/* eslint-disable */
+import Grid from "./grid";
+export default function layout(data, options) {
+  if (!data.nodes || data.nodes.length === 0) return data;
+  const width = options.width,
+    height = options.height,
+    nodeMinGap = options.nodeMinGap;
+
+  // 2. 网格布局
+  let CELL_W = 10000;
+  let CELL_H = 10000;
+  data.nodes.forEach(node => {
+    const nodeWidth = node.size[0] || 50;
+    const nodeHeight = node.size[1] || 50;
+    CELL_W = Math.min(nodeWidth, CELL_W);
+    CELL_H = Math.min(nodeHeight, CELL_H);
+  });
+  let grid = new Grid();
+  grid.init(width, height, {
+    CELL_H,
+    CELL_W
+  });
+  data.nodes.forEach(d => {
+    const gridpoint = grid.occupyNearest(d);
+    if (gridpoint) {
+      gridpoint.node = {
+        id: d.id,
+        size: d.size
+      };
+      d.x = gridpoint.x;
+      d.y = gridpoint.y;
+      d.dx = gridpoint.dx;
+      d.dy = gridpoint.dy;
+    }
+  });
+  // 横纵比调整
+  const minX = Math.min(...data.nodes.map(node => node.dx || 0));
+  const maxX = Math.max(...data.nodes.map(node => node.dx || 0));
+  const minY = Math.min(...data.nodes.map(node => node.dy || 0));
+  const maxY = Math.max(...data.nodes.map(node => node.dy || 0));
+  if (maxX - minX < maxY - minY) {
+    const newGrid = new Grid();
+    newGrid.init(height / CELL_H * CELL_W, width / CELL_W * CELL_H, {
+      CELL_H,
+      CELL_W
+    });
+    data.nodes.forEach(node => {
+      if (node.dx === undefined || node.dy === undefined) return;
+      newGrid.cells[node.dy][node.dx].node = {
+        id: node.id,
+        size: node.size
+      };
+      newGrid.cells[node.dy][node.dx].occupied = true;
+      node.x = newGrid.cells[node.dy][node.dx].x;
+      node.y = newGrid.cells[node.dy][node.dx].y;
+      const tmp = node.dx;
+      node.dx = node.dy;
+      node.dy = tmp;
+    });
+    grid = newGrid;
+  }
+
+  // 加入节点size
+  for (let i = 0; i < data.nodes.length; i++) {
+    //  节点宽度大于网格宽度，则往当前网格的右边插入列
+    const node = data.nodes[i];
+    const result = grid.findGridByNodeId(node.id);
+    if (!result) throw new Error('can not find node cell');
+    const column = result.column,
+      row = result.row;
+    if (node.size[0] + nodeMinGap > CELL_W) {
+      const addGridSize = Math.ceil((node.size[0] + nodeMinGap) / CELL_W) - 1;
+      let realAdd = addGridSize;
+      // 优化，假设同一列，不同行存在两个size为2的节点，遍历到第一个节点的时候，会往右插入两列，遍历到第二个节点，又往右插入。就会导致多余的网格
+      for (let j = 0; j < addGridSize; j++) {
+        const hasColumn = grid.additionColumn.indexOf(column + j + 1) > -1;
+        if (hasColumn && !grid.cells[column + j + 1][row].node) {
+          realAdd--;
+        } else {
+          break;
+        }
+      }
+      grid.insertColumn(column, realAdd);
+    }
+    // 节点高度大于网格宽度，则往当前网格的下边插入行
+    if (node.size[1] + nodeMinGap > CELL_H) {
+      const addGridSize = Math.ceil((node.size[1] + nodeMinGap) / CELL_H) - 1;
+      let realAdd = addGridSize;
+      for (let j = 0; j < addGridSize; j++) {
+        const hasColumn = grid.additionRow.indexOf(row + j + 1) > -1;
+        if (hasColumn && !grid.cells[column][row + j + 1].node) {
+          realAdd--;
+        } else {
+          break;
+        }
+      }
+      grid.insertRow(row, realAdd);
+    }
+  }
+
+  // 同步节点坐标
+  for (let i = 0; i < grid.columnNum; i++) {
+    for (let j = 0; j < grid.rowNum; j++) {
+      const cell = grid.cells[i][j];
+      if (cell.node) {
+        const node = data.nodes.find(node => {
+          var _cell$node;
+          return node.id === (cell === null || cell === void 0 ? void 0 : (_cell$node = cell.node) === null || _cell$node === void 0 ? void 0 : _cell$node.id);
+        });
+        if (node) {
+          node.x = cell.x + node.size[0] / 2;
+          node.y = cell.y + node.size[1] / 2;
+        }
+      }
+    }
+  }
+}

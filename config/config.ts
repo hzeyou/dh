@@ -160,6 +160,12 @@ export default extendParentConfig({
     },
     /** 品类管理 end */
 
+    //
+    // {
+    //   path: '/srm/business-object/field/create',
+    //   component: './BusinessObject/Detail',
+    //   authorized: true,
+    // },
 
   ],
   hash: true,

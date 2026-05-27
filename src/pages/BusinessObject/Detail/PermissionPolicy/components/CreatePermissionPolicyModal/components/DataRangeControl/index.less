@@ -1,0 +1,168 @@
+.data-range-control {
+  position: relative;
+  padding: 16px 0;
+  background: #f9f9f9;
+  border-radius: 2px;
+
+  // &::before {
+  //   content: '';
+  //   display: block;
+  //   position: absolute;
+  //   top: 0;
+  //   left: 210px;
+  //   transform: translateY(-85%);
+  //   border: 16px solid transparent;
+  //   border-bottom-color: #f9f9f9;
+  // }
+
+  & > div {
+    padding: 0 16px;
+  }
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+
+    & > strong {
+      font-size: 14px;
+      color: #22242a;
+    }
+
+    & > a {
+      display: inline-flex;
+      align-items: center;
+
+      & > i {
+        margin-top: 1px;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .form-body {
+    // max-height: 130px;
+    // overflow: auto;
+
+    .readonly-item {
+      width: 50%;
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      padding-right: 8px;
+
+      &:nth-child(n + 3) {
+        margin-top: 16px;
+      }
+
+      * {
+        white-space: nowrap !important;
+      }
+
+      .ellipsis-box {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+
+        .drill {
+          color: #262626;
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .form-body-label {
+      display: grid;
+      grid-template-columns: 16px repeat(4, 1fr) 16px;
+      column-gap: 8px;
+      text-align: left;
+      margin-bottom: 12px;
+
+      > span:first-child {
+        margin-left: 24px;
+      }
+    }
+    
+    .field-wrapper {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.condition-config {
+  display: grid;
+  grid-template-columns: 16px repeat(4, 1fr) 16px;
+  column-gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  width: 100%;
+
+  & > span {
+    padding: 0;
+  }
+
+  // & > span:first-child {
+  //   width: 16px;
+  //   height: 16px;
+  //   line-height: 16px;
+  //   text-align: center;
+  //   border-radius: 2px;
+  // }
+}
+.condition-config-template {
+  grid-template-columns: 16px repeat(1, 1fr) 16px;
+}
+
+.condition-readonly {
+  display: grid;
+  grid-template-columns: 16px repeat(4, 1fr) 16px;
+  column-gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+
+  & > span {
+    padding: 0;
+  }
+
+  // & > span:first-child {
+  //   width: 16px;
+  //   height: 16px;
+  //   line-height: 16px;
+  //   text-align: center;
+  //   border-radius: 2px;
+  // }
+}
+
+.logic-formula-form {
+  :global {
+    .c7n-pro-field-label {
+      padding-left: 0 !important;
+    }
+  }
+}
+
+
+.leftFieldNameStyle {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid rgb(232, 232, 232);
+  padding: 0 7px;
+  line-height: 28px;
+  width: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  > span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: calc(100% - 30px);
+  }
+  > i {
+    margin-top: 7px;
+    cursor: pointer;
+  }
+}

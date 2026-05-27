@@ -1,0 +1,49 @@
+.editor-wrapper {
+  border: 1px solid #e0e0e0;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+
+  // 禁用状态
+  &.disabled {
+    :global {
+      .view-lines {
+        background: #f5f5f5;
+        position: absolute;
+        font-family: Menlo, Monaco, 'Courier New', monospace;
+        font-weight: normal;
+        font-size: 12px;
+        font-feature-settings: 'liga' 0, 'calt' 0;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+
+      .margin-view-overlays {
+        background: #f5f5f5;
+        position: absolute;
+        width: 62px;
+        font-family: Menlo, Monaco, 'Courier New', monospace;
+        font-weight: normal;
+        font-size: 12px;
+        font-feature-settings: 'liga' 0, 'calt' 0;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+
+      .minimap-decorations-layer {
+        background: #f5f5f5;
+        position: absolute;
+        left: 0;
+        height: 180px;
+      }
+    }
+  }
+
+  .data-check-icon-page {
+    position: absolute;
+    right: 21px;
+    top: 158px;
+    display: inline-block;
+    cursor: pointer;
+  }
+}

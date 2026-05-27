@@ -1,0 +1,96 @@
+@title: #1e1e1e;
+
+.spin-wrapper {
+  height: 100%;
+
+  > div {
+    height: 100%;
+  }
+}
+
+.content-right {
+  flex: 1;
+  min-height: 100%;
+  background: #fff;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .button-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  
+  .fixed-type {
+    position: fixed;
+    top: 94px;
+    height: 60px;
+    width: calc(100% - 447px);
+    background: #fff;
+    z-index: 103;
+  }
+  .fixed-type-hasGG {
+    top: 134px;
+    .button-wrapper {
+      top: 150px;
+    }
+  }
+  .fixed-type-span {
+    height: 50px;
+    width: 100%;
+  }
+  .button-wrapper {
+    position: fixed;
+    top: 110px;
+    right: 24px;
+  }
+
+  :global {
+    .c7n-pro-field-label.c7n-pro-field-label.c7n-pro-field-label + td .c7n-pro-field-wrapper {
+      padding-right: 20px;
+    }
+
+    .c7n-pro-output-invalid {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .c7n-pro-radio-wrapper {
+      margin-right: 24px;
+    }
+  }
+}
+
+.component-example {
+  position: absolute;
+  padding: 16px;
+  right: 21px;
+  top: 64px;
+  width: 326px;
+  background: #f6f6f6;
+  border: none;
+  color: #333;
+  font-weight: 400;
+
+  & > section {
+    margin-bottom: 24px;
+
+    .example-label-wrapper {
+      display: flex;
+
+      & > span {
+        display: flex;
+        align-items: center;
+        height: 28px;
+        padding-right: 6px;
+      }
+    }
+  }
+
+  p {
+    margin-bottom: 8px;
+    color: #7c859b;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,35 @@
+@operateWidth: 40px;
+
+.wrapper {
+  display: flex;
+  height: 500px;
+  margin-top: 16px;
+
+  .left {
+    width: calc((100% - @operateWidth) / 2);
+  }
+
+  .operate {
+    width: @operateWidth;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      > button:last-child {
+        margin-left: 0 !important;
+        margin-top: 6px;
+      }
+    }
+  }
+
+  .right {
+    width: calc((100% - @operateWidth) / 2);
+  }
+}

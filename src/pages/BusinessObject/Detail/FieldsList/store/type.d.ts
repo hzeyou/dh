@@ -1,0 +1,30 @@
+export interface IBaseInfoData {
+    creationDate: string;
+    lastUpdateDate: string;
+    objectVersionNumber: number;
+    _token: string;
+    businessObjectId: string;
+    domainId: string;
+    businessObjectCode: string;
+    businessObjectName: string;
+    physicalModelId: string;
+    physicalModelName: string;
+    sourceType: string;
+    enabledFlag: boolean;
+    autoCreateFlag: boolean;
+    customPrimaryKeyCode: string;
+    publishStatus: string;
+    tenantId: number;
+    businessObjectType: string;
+    businessObjectCategory: string;
+    sharedFlag: boolean;
+    domainCode: string;
+    createName: string;
+    updateName: string;
+    skipResetPhysicalSyncFlag: boolean;
+    flexFieldEnabledFlag: boolean;
+    extendTableEnabledFlag: boolean;
+    extendFieldCreatedFlag: boolean;
+    showApiFlag: boolean;
+    extendsTableId?: string;
+}

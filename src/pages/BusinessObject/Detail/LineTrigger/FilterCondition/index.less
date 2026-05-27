@@ -1,0 +1,146 @@
+.config-content {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 16px 16px;
+  margin-top: 12px;
+
+  .config-head {
+    display: flex;
+    span {
+      flex: 1;
+      text-align: left;
+      margin-right: 10px;
+      &:nth-child(1) {
+        width: 16px;
+        flex: inherit;
+        margin-right: 0;
+      }
+      &:nth-child(7) {
+        width: 35px;
+        flex: inherit;
+        margin-right: 0;
+      }
+      &:nth-child(3),
+      &:nth-child(6) {
+        flex: 2;
+      }
+    }
+  }
+
+  .option-condition {
+    display: flex;
+    margin-top: 12px;
+    position: relative;
+    .option-item {
+      flex: 1;
+      text-align: left;
+      margin-right: 10px;
+      &:nth-child(1) {
+        width: 16px;
+        flex: inherit;
+        margin-right: 0;
+        line-height: 28px;
+      }
+      &:nth-child(7) {
+        width: 35px;
+        flex: inherit;
+        margin-right: 0;
+      }
+      &:nth-child(3),
+      &:nth-child(6) {
+        flex: 2;
+      }
+    }
+
+    .delete-button {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+.config-content-rel {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 20px;
+  font-weight: 400;
+  .trigger-opportunity-label {
+    margin-right: 12px;
+  }
+}
+
+.export-template-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.export-template-span-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  text-align: left;
+  line-height: 20px;
+  font-weight: 400;
+  margin-right: 20px;
+}
+
+.button-error {
+  :global {
+    .c7n-pro-input {
+      border-color: rgb(242, 58, 80) !important;
+    }
+
+    .c7n-pro-input-suffix {
+      border-left: 1px solid rgb(242, 58, 80) !important;
+
+      i {
+        color: rgb(242, 58, 80) !important;
+      }
+    }
+  }
+}
+
+.export-template-expression-detail {
+  display: flex;
+
+  .left-nav {
+    width: 200px;
+
+    .express-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      cursor: pointer;
+
+      span {
+        font-size: 12px;
+        color: rgb(140, 140, 140);
+        flex: 1;
+      }
+
+      &:hover {
+        span {
+          color: rgb(7, 63, 247);
+        }
+      }
+    }
+
+    .express-item-active {
+      background: #ebf0fb;
+
+      span {
+        font-size: 12px;
+        color: #0840f8;
+        text-align: left;
+        line-height: 18px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .right-detail {
+    flex: 1;
+  }
+}

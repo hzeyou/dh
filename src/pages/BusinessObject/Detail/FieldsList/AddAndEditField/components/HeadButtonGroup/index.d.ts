@@ -1,0 +1,22 @@
+import React from 'react';
+declare const _default: React.FunctionComponent<{
+    handleCancel: any;
+    isApiModelType: any;
+    physicalModelType: any;
+    deleteFlag: any;
+    detailData: any;
+    handleDelete: any;
+    isEditMode: any;
+    readOnlyFlag: any;
+    handleSave: any;
+    isExtensionField: any;
+    isFromDomain: any;
+    predefineDisabled: any;
+    saveButtonShowFlag: any;
+    boSourceType: any;
+    businessObjectCategory: any;
+    middleDisabled: any;
+    componentType: any;
+    baseInfoDS: any;
+}>;
+export default _default;

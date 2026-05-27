@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > h3 {
+    font-weight: 600;
+    font-size: 16px;
+    color: #1e1e1e;
+  }
+
+  :global {
+    .c7n-tabs {
+      height: 100%;
+
+      .c7n-tabs-nav-wrap,
+      .c7n-tabs-bar,
+      .c7n-tabs-extra-content {
+        height: 0 !important;
+      }
+
+      .c7n-tabs-content {
+        height: calc(100% - 42px);
+      }
+    }
+  }
+}

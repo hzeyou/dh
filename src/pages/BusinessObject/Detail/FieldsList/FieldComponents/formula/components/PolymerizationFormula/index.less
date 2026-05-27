@@ -1,0 +1,54 @@
+.formula-name-title {
+  display: flex;
+  align-items: center;
+
+  .sb-first-for-margin-add {
+    margin-right: 4px;
+  }
+
+  .sb-last-for-margin-dismiss {
+    margin-left: -4px;
+  }
+}
+
+.item-wrapper {
+  padding: 0 4px 12px;
+
+  .expression-form {
+    border: 1px solid #e5e5e5;
+    background-color: #f0f0f0;
+  }
+
+  .polymerization-condition table {
+    background-color: #f9f9f9;
+
+    tr {
+      background-color: #f9f9f9 !important;
+
+      th {
+        visibility: hidden;
+
+        > * {
+          visibility: visible;
+        }
+      }
+
+      td:nth-child(2),
+      td:nth-child(3) {
+        position: relative;
+
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 1px;
+          height: 60%;
+          background-color: #d8d8d8;
+        }
+      }
+    }
+  }
+}
