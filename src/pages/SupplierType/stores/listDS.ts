@@ -1,99 +1,85 @@
-// import { HG_SRM_API_PREFIX } from '@/utils/config';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-const admissionRulePrefix = `${intlPrefix}.admissionRule`;
+
+
 
 export const listDSConf = (): DataSetProps => ({
   selection: false,
-  primaryKey: 'id',
-  idField: 'id',
+  autoQuery: true,
+  primaryKey: 'typeId',
+  idField: 'typeId',
   pageSize: 20,
   autoQueryAfterSubmit: false,
   queryFields: [
     {
-      name: 'vendorCode',
+      name: 'sapCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('类型编码'),
+      label: intl.get(`${intlPrefix}.sap_code`).d('类型编码'),
     },
     {
-      name: 'vendorTypeName',
+      name: 'typeName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('类型名称'),
+      label: intl.get(`${intlPrefix}.type_name`).d('类型名称'),
     },
     {
-      name: 'vendorStatus',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      name: 'status',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.status`).d('状态'),
+      lookupCode: 'SRM.SUPPLIER_TYPE_STATUS',
     },
   ],
   fields: [
     {
-      name: 'id',
+      name: 'typeId',
       type: FieldType.number,
     },
     {
-      name: 'vendorCode',
+      name: 'sapCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('类型编码'),
+      label: intl.get(`${intlPrefix}.sap_code`).d('类型编码'),
     },
     {
-      name: 'vendorTypeName',
+      name: 'typeName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('类型名称'),
+      label: intl.get(`${intlPrefix}.type_name`).d('类型名称'),
     },
     {
-      name: 'vendorStatus',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      name: 'status',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.status`).d('状态'),
+      lookupCode: 'SRM.SUPPLIER_TYPE_STATUS',
     },
     {
-      name: 'isRegisterAudit',
+      name: 'registrationReviewMeaning',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('注册审核'),
+      label: intl.get(`${intlPrefix}.registration_review`).d('注册审核'),
     },
     {
-      name: 'registerAuditRule',
+      name: 'agreementMeaning',
       type: FieldType.string,
-      label: intl
-        .get(`${admissionRulePrefix}.registerAuditRule`)
-        .d('注册审核方式'),
-      lookupCode: 'SRM.REGISTRATION_REVIEW',
+      label: intl.get(`${intlPrefix}.agreement`).d('协议管理'),
     },
     {
-      name: 'isZiZhiAudit',
+      name: 'onsiteAuditMeaning',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('资质审核'),
+      label: intl.get(`${intlPrefix}.onsite_audit`).d('现场审核'),
     },
     {
-      name: 'ziZhiAuditRule',
+      name: 'certificateMeaning',
       type: FieldType.string,
-      label: intl.get(`${admissionRulePrefix}.ziZhiAuditRule`).d('资质证书'),
-      lookupCode: 'SRM.REGISTRATION_REVIEW',
-      multiple: ',',
-    },
-    {
-      name: 'isXieYi',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('协议管理'),
-    },
-    {
-      name: 'isXianChangAudit',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXianChangAudit`).d('线上审核'),
-    },
+      label: intl.get(`${intlPrefix}.certificate`).d('资质证书'),
+    }
   ],
   transport: {
     read: ({ data }): AxiosRequestConfig => {
       return {
-        // url: `${HG_SRM_API_PREFIX}/supplier`,
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier`,
+        url: `${HG_SRM_API_PREFIX}/supplier-types`,
         method: 'get',
         data,
       };

@@ -4,14 +4,12 @@ import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import { intl } from 'utils/utils';
 import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
-import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
-import {LovSyncTable} from '@/utils/util';
-import PermissionButton from 'components/Permission/Button';
-import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/supplyCategoryLovDS';
 import { ContentCard } from 'components/Page';
 
-export default function Index({ ds, isCreate }) {
+export default function Index({ ds, isCreate, isUpdate }) {
+
+  const isEditor = isCreate || isUpdate;
 
   const lovBankDS = useMemo(() => {
     const _lovBankDS = new DataSet(supplyCategoryLovDSConf());
@@ -21,11 +19,12 @@ export default function Index({ ds, isCreate }) {
 
   const columns: Array<ColumnProps> = useMemo(
     () => [
-      { name: 'categoryId', editor: true, },
+      // { name: 'categoryId', editor: isEditor, },
+      { name: 'categoryLov', editor: isEditor, },
       { name: 'categoryName',  },
       { name: 'status',  },
-      { name: 'categoryLevel', editor: true,  },
-      {
+      { name: 'categoryLevel', editor: isEditor,  },
+      ...(isEditor ? [{
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {
           if (record == null) return;
@@ -35,7 +34,7 @@ export default function Index({ ds, isCreate }) {
             </a>
           );
         },
-      },
+      },] : []),
     ],
     [],
   );
@@ -47,24 +46,24 @@ export default function Index({ ds, isCreate }) {
         columns={columns}
         dataSet={ds}
         buttons={[
-          <PermissionButton
-            key="btn-1"
-            type="text"
-            // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-          >
-            <Lov
-              dataSet={lovBankDS}
-              name="lovSortCode"
-              clearButton={false}
-              funcType={FuncType.flat}
-              mode={ViewMode.button}
-              onChange={() => {
-                LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
-              }}
-            >
-              新建
-            </Lov>
-          </PermissionButton>,
+          // <PermissionButton
+          //   key="btn-1"
+          //   type="text"
+          //   // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+          // >
+          //   <Lov
+          //     dataSet={lovBankDS}
+          //     name="lovSortCode"
+          //     clearButton={false}
+          //     funcType={FuncType.flat}
+          //     mode={ViewMode.button}
+          //     onChange={() => {
+          //       LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
+          //     }}
+          //   >
+          //     新建
+          //   </Lov>
+          // </PermissionButton>,
           TableButtonType.add
         ]}
       />

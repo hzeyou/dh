@@ -1,41 +1,57 @@
-import { TableButtonType, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
-import {DataSet, Lov, Table} from 'choerodon-ui/pro';
+import {
+  TableButtonType,
+  TableQueryBarType,
+} from 'choerodon-ui/pro/lib/table/enum';
+import { DataSet, Lov, Table } from 'choerodon-ui/pro';
 import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import { intl } from 'utils/utils';
 import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
-import {ViewMode} from 'choerodon-ui/pro/lib/lov/enum';
-import {LovSyncTable} from '@/utils/util';
+import { ViewMode } from 'choerodon-ui/pro/lib/lov/enum';
+import { LovSyncTable } from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/supplyCategoryLovDS';
 import { ContentCard } from 'components/Page';
+import Record from 'choerodon-ui/dataset/data-set/Record';
 
-export default function Index({ ds, isCreate }) {
-
+export default function Index({ ds, isCreate, isUpdate }) {
   const lovBankDS = useMemo(() => {
     const _lovBankDS = new DataSet(supplyCategoryLovDSConf());
     ds.setState('lovDS', _lovBankDS);
     return _lovBankDS;
   }, [ds]);
 
+  const isEditor = isCreate || isUpdate;
+
   const columns: Array<ColumnProps> = useMemo(
     () => [
-      { name: 'agreementNo',  },
-      { name: 'agreementName',  },
-      { name: 'remark',  },
-      { name: 'admissionRequirement',  },
-      {
+      { name: 'agreementNo' },
+      { name: 'agreementName' },
+      { name: 'remark', editor: isEditor },
+      { name: 'admissionRequirement', editor: isEditor },
+      ...(isEditor ? [{
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {
           if (record == null) return;
           return (
-            <a onClick={() => ds?.delete(record)}>
-              {intl.get('hzero.common.button.delete').d('删除')}
-            </a>
+            <>
+              <a onClick={() => ds?.delete(record)}>
+                {intl.get('hzero.common.button.delete').d('删除')}
+              </a>
+              <Lov
+                record={record as Record}
+                name="agreementLov"
+                clearButton={false}
+                funcType={FuncType.flat}
+                mode={ViewMode.button}
+              >
+                选择单据
+              </Lov>
+            </>
           );
         },
-      },
+      },] : []),
     ],
     [],
   );
@@ -47,29 +63,27 @@ export default function Index({ ds, isCreate }) {
         columns={columns}
         dataSet={ds}
         buttons={[
-          <PermissionButton
-            key="btn-1"
-            type="text"
-            // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
-          >
-            <Lov
-              dataSet={lovBankDS}
-              name="lovSortCode"
-              clearButton={false}
-              funcType={FuncType.flat}
-              mode={ViewMode.button}
-              onChange={() => {
-                LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
-              }}
-            >
-              新建
-            </Lov>
-          </PermissionButton>,
-          TableButtonType.add
+          // <PermissionButton
+          //   key="btn-1"
+          //   type="text"
+          //   // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+          // >
+          //   <Lov
+          //     dataSet={lovBankDS}
+          //     name="lovSortCode"
+          //     clearButton={false}
+          //     funcType={FuncType.flat}
+          //     mode={ViewMode.button}
+          //     onChange={() => {
+          //       LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
+          //     }}
+          //   >
+          //     新建
+          //   </Lov>
+          // </PermissionButton>,
+          TableButtonType.add,
         ]}
       />
     </ContentCard>
-
   );
-
 }

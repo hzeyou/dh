@@ -17,12 +17,12 @@ import intl from 'utils/intl';
 import formatterCollections from 'utils/intl/formatterCollections';
 import { filterNullValueObject } from 'utils/utils';
 import withProps from 'utils/withProps';
-import { HG_PTS_API_PREFIX } from '@/utils/config';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
 import openSupplierTypeModal from '../components/SupplierTypeModal';
 import { listDSConf } from '../stores/listDS';
 
-const intlPrefix = 'srm.supplier.model.supplier';
+const intlPrefix = 'srm.supplierType.model';
 
 interface ListProps {
   listDS: DataSet;
@@ -35,25 +35,24 @@ function List(props: ListProps) {
   function handleEdit(record: Record | null) {
     openSupplierTypeModal({
       record,
-      onSubmit: () => listDS.query(listDS.currentPage),
+      onSubmit: () => {
+        listDS.query(listDS.currentPage);
+      },
     });
   }
 
   // 表格列
   const columns: Array<ColumnProps> = [
     {
-      name: 'vendorCode',
+      name: 'sapCode',
       width: 140,
-      renderer: ({ value, record }) => (
-        <a onClick={() => handleEdit(record as Record)}>{value}</a>
-      ),
     },
-    { name: 'vendorTypeName', width: 180 },
-    { name: 'vendorStatus', width: 120 },
-    { name: 'isRegisterAudit', width: 120 },
-    { name: 'isZiZhiAudit', width: 120 },
-    { name: 'isXieYi', width: 120 },
-    { name: 'isXianChangAudit', width: 120 },
+    { name: 'typeName', width: 180 },
+    { name: 'status', width: 120 },
+    { name: 'registrationReviewMeaning', width: 120, align: ColumnAlign.center, },
+    { name: 'certificateMeaning', width: 120, align: ColumnAlign.center, },
+    { name: 'agreementMeaning', width: 120, align: ColumnAlign.center, },
+    { name: 'onsiteAuditMeaning', width: 120, align: ColumnAlign.center, },
     {
       header: intl.get('hzero.common.button.action').d('操作'),
       lock: ColumnLock.right,
@@ -73,11 +72,6 @@ function List(props: ListProps) {
     return filterNullValueObject(formData);
   }
 
-  // didMount
-  useEffect(() => {
-    listDS.query(listDS.currentPage);
-  }, []);
-
   return (
     <>
       <Header title={intl.get('srm.supplier.view.title').d('供应商类型')}>
@@ -88,11 +82,10 @@ function List(props: ListProps) {
         >
           {intl.get('hzero.common.button.create').d('新建')}
         </Button>
-        {/* todo ExcelExportPro url替换 */}
         <ExcelExportPro
           defaultSelectAll
           modalProps={{ closable: true }}
-          requestUrl={`${HG_PTS_API_PREFIX}/action-headers/export`}
+          requestUrl={`${HG_SRM_API_PREFIX}/supplier-types/export`}
           queryParams={getExportQueryParams}
           exportAsync
         />
@@ -108,12 +101,10 @@ function List(props: ListProps) {
           queryFields={{}}
           queryBarProps={{
             queryFieldsLimit: 3,
-            fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.vendorCode`)
-              .d('类型编码'),
-            dynamicFilterBar: {
-              searchText: 'vendorCode',
-            },
+            // fuzzyQueryPlaceholder: intl.get(`${intlPrefix}.status`).d('状态'),
+            // dynamicFilterBar: {
+            //   searchText: 'status',
+            // },
           }}
           autoHeight={{ type: TableAutoHeightType.minHeight, diff: 33 }}
         />
@@ -124,7 +115,7 @@ function List(props: ListProps) {
 
 export default compose(
   formatterCollections({
-    code: ['srm.supplier'],
+    code: ['srm.supplierType'],
   }),
   withProps(() => {
     const listDS = new DataSet(listDSConf());

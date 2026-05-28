@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
@@ -17,6 +17,7 @@ export const agreementManagementDSConf = (): DataSetProps => ({
   autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
+  selection: false,
   fields: [
     {
       name: 'id',
@@ -27,12 +28,14 @@ export const agreementManagementDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.agreementNo`).d('协议单号'),
       required: true,
+      bind: 'agreementLov.supplierId',
     },
     {
       name: 'agreementName',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.agreementName`).d('协议名称'),
       required: true,
+      bind: 'agreementLov.supplierId',
     },
     {
       name: 'remark',
@@ -46,6 +49,14 @@ export const agreementManagementDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.admissionRequirement`).d('准入要求'),
       required: true,
       options: optionsDS
+    },
+    {
+      name: 'agreementLov',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.agreementNo`).d('选择单据'),
+      required: true,
+      lovCode: 'SCM.SUPPLIER',
+      ignore: FieldIgnore.always,
     },
   ],
   transport: {

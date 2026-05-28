@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
@@ -17,6 +17,7 @@ export const siteInspectionDSConf = (): DataSetProps => ({
   autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
+  selection: false,
   fields: [
     {
       name: 'id',
@@ -27,19 +28,19 @@ export const siteInspectionDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.categoryCode`).d('品类编码'),
       required: true,
+      bind: 'categoryLov.supplierId',
     },
     {
       name: 'categoryName',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.categoryName`).d('品类名称'),
       required: true,
+      bind: 'categoryLov.supplierName',
     },
     {
       name: 'auditFormNo',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.auditFormNo`).d('现场审核单'),
-      lookupCode: 'SRM.ACTION.STATUS',
-      required: true,
     },
     {
       name: 'auditDate',
@@ -70,7 +71,16 @@ export const siteInspectionDSConf = (): DataSetProps => ({
       name: 'admissionRequirement',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.admissionRequirement`).d('准入要求'),
+      required: true,
       options: optionsDS
+    },
+    {
+      name: 'categoryLov',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.categoryId`).d('品类编码'),
+      required: true,
+      lovCode: 'SCM.SUPPLIER',
+      ignore: FieldIgnore.always,
     },
   ],
   transport: {

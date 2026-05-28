@@ -3,7 +3,7 @@ import { Attachment, DatePicker, Form, Lov, NumberField, Output, Select, TextAre
 import { ContentCard } from 'components/Page';
 import { LabelLayout } from 'choerodon-ui/pro/lib/form/enum';
 
-export default function Index({ds, isCreate, isUpdate}) {
+export default function Index({ds, isCreate, isUpdate, isView}) {
 
   const isSupplier = ds?.current?.get('type') === '1';
 
@@ -16,42 +16,79 @@ export default function Index({ds, isCreate, isUpdate}) {
       >
 
         {
-          isUpdate ? (
-            <Output name="admissionCode"/>
-          ) : null
-        }
-
-        <Lov name="lovSupplierCode"/>
-
-        <Output name="supplierName"/>
-
-        <Output name="supplierTypeId"/>
-
-        {
-          isSupplier ? (
-            <Output name="status"/>
-          ) : null
-        }
-
-        <Select name="type" newLine/>
-
-        {
-          isSupplier ? (
+          isView && (
             <>
-              <TextField name="developmentPurpose"/>
+              <Output name="assessmentCode"/>
+              <Output name="supplierCode"/>
+              <Output name="supplierName"/>
+              <Output name="supplierTypeId"/>
+              <Output name="status"/>
 
-              <TextField name="supplierProfile"/>
+              <Output name="type" newLine/>
 
-              <TextField name="factoryAuditBackground"/>
+              {
+                isSupplier && (
+                  <>
+                    <Output name="developmentPurpose"/>
+                    <Output name="supplierProfile"/>
+                    <Output name="factoryAuditBackground"/>
+                  </>
+                )
+              }
+
+              <Output name="remark" newLine/>
+
+              <Output name="meetingMinutes" newLine/>
+
+              <Output name="attachment" newLine/>
+
             </>
-          ) : null
+          )
         }
 
-        <TextField name="remark" newLine/>
+        {
+          (isCreate || isUpdate) && (
+            <>
+              {
+                isUpdate ? (
+                  <Output name="assessmentCode"/>
+                ) : null
+              }
 
-        <Attachment name="meetingMinutes" newLine/>
+              <Lov name="supplierCodeLov"/>
 
-        <Attachment name="attachment" newLine/>
+              <Output name="supplierName"/>
+
+              <Output name="supplierTypeId"/>
+
+              {
+                isSupplier ? (
+                  <Output name="status"/>
+                ) : null
+              }
+
+              <Select name="type" newLine/>
+
+              {
+                isSupplier ? (
+                  <>
+                    <TextField name="developmentPurpose"/>
+
+                    <TextField name="supplierProfile"/>
+
+                    <TextField name="factoryAuditBackground"/>
+                  </>
+                ) : null
+              }
+
+              <TextField name="remark" newLine/>
+
+              <Attachment name="meetingMinutes" newLine/>
+
+              <Attachment name="attachment" newLine/>
+            </>
+          )
+        }
 
       </Form>
     </ContentCard>

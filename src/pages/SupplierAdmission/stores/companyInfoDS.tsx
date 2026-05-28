@@ -1,14 +1,15 @@
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
 export const companyInfoDSConf = (): DataSetProps => ({
-  autoCreate: true,
+  autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
+  selection: false,
   fields: [
     {
       name: 'id',
@@ -19,7 +20,7 @@ export const companyInfoDSConf = (): DataSetProps => ({
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.vendorCode`).d('公司'),
       required: true,
-      bind: 'companyInfo.companyId',
+      bind: 'subsidiaryLov.supplierId',
     },
     {
       name: 'paymentTerms',
@@ -27,11 +28,19 @@ export const companyInfoDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.paymentTerms`).d('付款条件'),
       required: true,
     },
+    // {
+    //   name: 'companyInfo',
+    //   type: FieldType.object,
+    //   label: intl.get(`${intlPrefix}.paymentTerms`).d('公司信息'),
+    //   required: true,
+    // },
     {
-      name: 'companyInfo',
+      name: 'subsidiaryLov',
       type: FieldType.object,
-      label: intl.get(`${intlPrefix}.paymentTerms`).d('公司信息'),
+      label: intl.get(`${intlPrefix}.vendorCode`).d('公司'),
       required: true,
+      lovCode: 'SCM.SUPPLIER',
+      ignore: FieldIgnore.always,
     },
   ],
 });

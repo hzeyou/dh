@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Spin, DataSet, Table, Tabs } from 'choerodon-ui/pro';
+import React, { useMemo } from 'react';
+import { Button, DataSet, Table } from 'choerodon-ui/pro';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {
@@ -16,16 +16,21 @@ import intl from 'utils/intl';
 import formatterCollections from 'utils/intl/formatterCollections';
 import { filterNullValueObject } from 'utils/utils';
 import withProps from 'utils/withProps';
-import { HG_PTS_API_PREFIX } from '@/utils/config';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
-import { listDSConf } from '../stores/listDS';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { Record } from 'choerodon-ui/dataset';
+import { listDSConf } from '../stores/listDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
+const newStatusList = [0, '0', 'NEW', 'new', 'DRAFT', 'draft', '新建'];
+
+interface HistoryLike {
+  push(path: string): void;
+}
 
 interface ListProps {
-  history: any;
+  history: HistoryLike;
   listDS: DataSet;
 }
 
@@ -34,67 +39,85 @@ function List(props: ListProps) {
 
   // 新建
   function handleCreate() {
-
+    history.push('/srm/supplier-admission/detail/create');
   }
 
-  function handleEdit(record: Record) {
+  function handleEdit(record: Record, type: string) {
+    history.push(
+      `/srm/supplier-admission/detail/${type}/${record.get('assessmentId')}`,
+    );
+  }
 
+  async function handleDelete(record: Record) {
+    const res = await listDS.delete(
+      record,
+      intl.get('hzero.common.message.confirm.delete').d('是否确认删除？'),
+    );
+
+    if (res === false) return;
+
+    await listDS.query(listDS.currentPage);
+  }
+
+  function isNewStatus(record?: Record) {
+    if (!record) return false;
+    return (
+      newStatusList.includes(record.get('status')) ||
+      newStatusList.includes(record.get('statusMeaning'))
+    );
   }
 
   // 表格列
   const columns: Array<ColumnProps> = useMemo(() => {
     return [
       {
-        name: 'vendorCode',
-        width: 140,
+        name: 'assessmentCode',
+        width: 180,
         renderer: ({ value, record }) => (
-          <a onClick={() => handleEdit(record as Record)}>{value}</a>
+          <a onClick={() => handleEdit(record as Record, 'view')}>{value}</a>
         ),
       },
-      { name: 'vendorTypeName', width: 180 },
-      { name: 'vendorStatus', width: 120 },
-      { name: 'vendorErpCode', width: 140 },
-      { name: 'isRegisterAudit', width: 120 },
-      { name: 'isZiZhiAudit', width: 120 },
-      { name: 'isXieYi', width: 120 },
-      { name: 'isXianChangAudit', width: 120 },
-      { name: 'isXianChangAudit1', width: 120 },
-      { name: 'isXianChangAudit2', width: 120 },
+      { name: 'assessmentTypeMeaning', width: 140 },
+      { name: 'supplierTypeMeaning', width: 140 },
+      { name: 'statusMeaning', width: 120 },
+      { name: 'supplierCode', width: 140 },
+      { name: 'supplierName', width: 200 },
+      { name: 'exportCreatedBy', width: 120 },
+      { name: 'exportCreationDate', width: 180 },
       {
         header: intl.get('hzero.common.button.action').d('操作'),
         lock: ColumnLock.right,
         width: 200,
         align: ColumnAlign.center,
         renderer: ({ record }) => {
-          const operators: any = [
+          const currentRecord = record as Record;
+          const operators: Array<{
+            key: string;
+            ele: React.ReactNode;
+            len: number;
+          }> = [
             {
-              key: 'action1', // key
+              key: 'edit',
               ele: (
-                <a onClick={() => {}}>
-                  {intl.get('hzero.common.button.change').d('编辑')}
+                <a onClick={() => handleEdit(currentRecord, 'update')}>
+                  {intl.get('hzero.common.button.edit').d('编辑')}
                 </a>
-              ), // 操作栏的按钮
+              ),
               len: 2,
             },
-            {
-              key: 'action2', // key
-              ele: (
-                <a onClick={() => {}}>
-                  {intl.get('hzero.common.button.change').d('重发')}
-                </a>
-              ), // 操作栏的按钮
-              len: 4,
-            },
-            {
-              key: 'action3', // key
-              ele: (
-                <a onClick={() => {}}>
-                  {intl.get('hzero.common.button.change').d('关闭')}
-                </a>
-              ), // 操作栏的按钮
-              len: 4,
-            },
           ];
+
+          if (isNewStatus(currentRecord)) {
+            operators.push({
+              key: 'delete',
+              ele: (
+                <a onClick={() => handleDelete(currentRecord)}>
+                  {intl.get('hzero.common.button.delete').d('删除')}
+                </a>
+              ),
+              len: 2,
+            });
+          }
 
           return operatorRender(operators, record, { limit: 6 });
         },
@@ -108,21 +131,20 @@ function List(props: ListProps) {
     return filterNullValueObject(formData);
   }
 
-  // const onChange = async (activeKey: string) => {
-  //   setStatus(activeKey);
-  //   await listDS.query(1, {status: activeKey});
-  // };
-
   return (
     <>
-      <Header title={intl.get('srm.supplier.view.title').d('供应商类型')}>
+      <Header
+        title={intl
+          .get('srm.supplier.view.title.supplierAdmission')
+          .d('准入及品类扩充')}
+      >
         <Button icon="add" color={ButtonColor.primary} onClick={handleCreate}>
           {intl.get('hzero.common.button.create').d('新建')}
         </Button>
         <ExcelExportPro
           defaultSelectAll
           modalProps={{ closable: true }}
-          requestUrl={`${HG_PTS_API_PREFIX}/action-headers/export`}
+          requestUrl={`${HG_SRM_API_PREFIX}/supplier-assessments/export`}
           queryParams={getExportQueryParams}
           exportAsync
         />
@@ -138,10 +160,10 @@ function List(props: ListProps) {
           queryFields={{}}
           queryBarProps={{
             fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.vendorCode`)
-              .d('类型编码'),
+              .get(`${intlPrefix}.supplierName`)
+              .d('供应商名称'),
             dynamicFilterBar: {
-              searchText: 'vendorCode',
+              searchText: 'supplierName',
             },
           }}
           autoHeight={{ type: TableAutoHeightType.minHeight, diff: 88 }}

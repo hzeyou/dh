@@ -15,13 +15,13 @@ const optionsDS = new DataSet({
 
 export const certDSConf = (): DataSetProps => ({
   autoCreate: false,
+  selection: false,
   fields: [
     {
       name: 'type',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.type`).d('证书类型'),
       required: true,
-      lookupCode: 'SRM.ACTION.STATUS',
     },
     {
       name: 'name',
@@ -62,25 +62,4 @@ export const certDSConf = (): DataSetProps => ({
       options: optionsDS,
     },
   ],
-  transport: {
-    read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
-        method: 'get',
-      };
-    },
-    submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
-
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
-        data: data[0],
-      };
-    },
-  },
 });

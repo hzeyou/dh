@@ -11,7 +11,11 @@ import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import { supplyCategoryLovDSConf } from '@/pages/SupplierBusinessChange/stores/supplyCategoryLovDS';
 import { ContentCard } from 'components/Page';
 
-export default function Index({ ds, isCreate }) {
+export default function Index({ ds, detailDS, isCreate, isUpdate, isView }) {
+
+  const isEditor = isCreate || isUpdate;
+
+  const isCategory = detailDS?.current?.get('type') === '2' && isEditor;
 
   const lovBankDS = useMemo(() => {
     const _lovBankDS = new DataSet(supplyCategoryLovDSConf());
@@ -21,16 +25,17 @@ export default function Index({ ds, isCreate }) {
 
   const columns: Array<ColumnProps> = useMemo(
     () => [
-      { name: 'categoryCode',  },
-      { name: 'categoryName',  },
+      { name: 'categoryLov', editor: isCategory },
+      // { name: 'categoryId', editor: isCategory },
+      { name: 'categoryName', editor: isCategory },
       { name: 'auditFormNo',  },
       { name: 'auditDate',  },
       { name: 'passingScore',  },
-      { name: 'totalScore', editor: true },
-      { name: 'auditResult', editor: true },
-      { name: 'remark', editor: true },
-      { name: 'admissionRequirement', editor: true },
-      {
+      { name: 'totalScore', },
+      { name: 'auditResult' },
+      { name: 'remark', editor: isEditor },
+      { name: 'admissionRequirement', editor: isEditor },
+      ...(isEditor ? [{
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {
           if (record == null) return;
@@ -40,9 +45,10 @@ export default function Index({ ds, isCreate }) {
             </a>
           );
         },
-      },
+      },] : []),
+
     ],
-    [],
+    [isCategory],
   );
 
   return (
@@ -52,7 +58,7 @@ export default function Index({ ds, isCreate }) {
         columns={columns}
         dataSet={ds}
         buttons={[
-          <PermissionButton
+          /*<PermissionButton
             key="btn-1"
             type="text"
             // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
@@ -69,7 +75,7 @@ export default function Index({ ds, isCreate }) {
             >
               新建
             </Lov>
-          </PermissionButton>,
+          </PermissionButton>,*/
           TableButtonType.add
         ]}
       />

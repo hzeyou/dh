@@ -1,9 +1,9 @@
-// import { HG_SRM_API_PREFIX } from '@/utils/config';
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { AxiosRequestConfig } from 'axios';
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
-
-import { intl } from 'utils/utils';
+import Record from 'choerodon-ui/dataset/data-set/Record';
+import { filterNullValueObject, intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
@@ -14,107 +14,152 @@ export const listDSConf = (): DataSetProps => ({
   autoQuery: true,
   queryFields: [
     {
-      name: 'vendorCode',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
-      name: 'vendorTypeName',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商名称'),
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
     },
     {
-      name: 'vendorType',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商类型'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      name: 'supplierTypeId',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.supplierTypeId`).d('供应商类型'),
+      lookupCode: 'SRM.SUPPLIER_TYPE',
     },
     {
-      name: 'vendor1',
+      name: 'level',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('同步状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.level`).d('供应商级别'),
+      lookupCode: 'SRM.SUPPLIER_LEVEL',
+      multiple: true,
     },
     {
-      name: 'vendor2',
+      name: 'syncSapStatus',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('生命周期阶段'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.syncSapStatus`).d('同步状态'),
+      lookupCode: 'SRM.SUPPLIER_SYNC_SAP_STATUS',
     },
     {
-      name: 'vendor3',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('创建方式'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      name: 'status',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.status`).d('生命周期阶段'),
+      lookupCode: 'SRM.SUPPLIER_STATUS',
     },
     {
-      name: 'vendor4',
+      name: 'createdFrom',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供货品类'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.createdFrom`).d('创建方式'),
+      lookupCode: 'SRM.SUPPLIER_CREATED_TYPE',
     },
     {
-      name: 'vendor5',
+      name: 'itemTypes',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商级别'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.itemTypes`).d('供货品类'),
     },
   ],
   fields: [
+    {
+      name: 'supplierId',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.supplierId`).d('供应商ID'),
+    },
     {
       name: 'supplierCode',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
-      name: 'vendorTypeName',
+      name: 'sapCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('SRM编码'),
+      label: intl.get(`${intlPrefix}.sapCode`).d('SAP编码'),
     },
     {
-      name: 'vendorStatus',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商名称'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
     },
     {
-      name: 'isRegisterAudit',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isRegisterAudit`).d('供应商类型'),
+      name: 'supplierTypeId',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.supplierTypeId`).d('供应商类型'),
+      lovCode: 'SRM.SUPPLIER_TYPE',
     },
     {
-      name: 'isZiZhiAudit',
+      name: 'level',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('供应商级别'),
+      label: intl.get(`${intlPrefix}.level`).d('供应商级别'),
+      lovCode: 'SRM.SUPPLIER_LEVEL',
+      multiple: true,
+      transformRequest: (value: any, record: Record) => {
+        return value?.join(',');
+      },
+      transformResponse: (value: any, record: Record) => {
+        return value?.split(',');
+      },
     },
     {
-      name: 'isXieYi',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXieYi`).d('生命周期阶段'),
+      name: 'status',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.status`).d('生命周期阶段'),
+      lookupCode: 'SRM.SUPPLIER_STATUS',
     },
     {
-      name: 'isXianChangAudit',
+      name: 'itemTypes',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXianChangAudit1`).d('供货品类'),
+      label: intl.get(`${intlPrefix}.itemTypes`).d('供货品类'),
     },
     {
-      name: 'isXianChangAudit1',
+      name: 'syncSapStatus',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXianChangAudit2`).d('创建方式'),
+      label: intl.get(`${intlPrefix}.syncSapStatus`).d('同步状态'),
+      lookupCode: 'SRM.SUPPLIER_SYNC_SAP_STATUS',
     },
     {
-      name: 'isXianChangAudit2',
+      name: 'syncSapInfo',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.isXianChangAudit3`).d('同步状态'),
+      label: intl.get(`${intlPrefix}.syncSapInfo`).d('同步返回信息'),
+    },
+    {
+      name: 'creditCode',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.creditCode`).d('统一社会信用代码'),
+    },
+    {
+      name: 'shortName',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.shortName`).d('简称'),
+    },
+    {
+      name: 'categoryName',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.categoryName`).d('供货品类'),
+    },
+    {
+      name: 'createdFrom',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.createdFrom`).d('创建方式'),
+      lookupCode: 'SRM.SUPPLIER_CREATED_TYPE',
+    },
+    {
+      name: 'registerAuditStatus',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.registerAuditStatus`).d('注册审核状态'),
+    },
+    {
+      name: 'admissionNo',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.admissionNo`).d('准入单号'),
     },
   ],
   transport: {
     read: ({ data }): AxiosRequestConfig => {
       return {
-        // url: `${HG_SRM_API_PREFIX}/supplier`,
-        url: `${process.env.SRM_HOST}/v1/{tenantId}/suppliers`,
+        url: `${HG_SRM_API_PREFIX}/suppliers`,
         method: 'get',
-        data,
+        data: data,
       };
     },
   },

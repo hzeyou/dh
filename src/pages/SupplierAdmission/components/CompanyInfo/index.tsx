@@ -9,21 +9,25 @@ import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import { ContentCard } from 'components/Page';
-import { lovCompanyInfoDSConf } from '@/pages/SupplierAdmission/stores/lovCompanyInfoDS';
+import { companyInfoLovDSConf } from '@/pages/SupplierAdmission/stores/companyInfoLovDS';
+import Record from 'choerodon-ui/dataset/data-set/Record';
 
-export default function Index({ ds, isCreate }) {
+export default function Index({ ds, isCreate, isUpdate }) {
+
+  const isEditor = isCreate || isUpdate;
 
   const lovBankDS = useMemo(() => {
-    const _lovBankDS = new DataSet(lovCompanyInfoDSConf());
+    const _lovBankDS = new DataSet(companyInfoLovDSConf());
     ds.setState('lovDS', _lovBankDS);
     return _lovBankDS;
   }, [ds]);
 
   const columns: Array<ColumnProps> = useMemo(
     () => [
-      { name: 'subsidiaryId',  },
-      { name: 'paymentTerms',  },
-      {
+      { name: 'subsidiaryLov', editor: isEditor, },
+      // { name: 'subsidiaryId', editor: true, },
+      { name: 'paymentTerms', editor: isEditor, },
+      ...(isEditor ? [{
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {
           if (record == null) return;
@@ -33,7 +37,8 @@ export default function Index({ ds, isCreate }) {
             </a>
           );
         },
-      },
+      },] : []),
+
     ],
     [],
   );
@@ -45,7 +50,7 @@ export default function Index({ ds, isCreate }) {
         columns={columns}
         dataSet={ds}
         buttons={[
-          <PermissionButton
+          /*<PermissionButton
             key="btn-1"
             type="text"
             // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
@@ -62,7 +67,8 @@ export default function Index({ ds, isCreate }) {
             >
               新建
             </Lov>
-          </PermissionButton>,
+          </PermissionButton>,*/
+          TableButtonType.add,
         ]}
       />
     </ContentCard>

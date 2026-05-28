@@ -33,6 +33,7 @@ interface DetailProps {
   history: any;
   match: {
     params: {
+      type: string;
       id: string;
     };
   };
@@ -41,15 +42,15 @@ interface DetailProps {
 function Detail(props: DetailProps) {
   const { history, match } = props;
   const {
-    params: { id },
+    params: { type, id },
   } = match;
 
-  console.log('getCurrentTenant==', getCurrentTenant());
-  console.log('getCurrentUser==', getCurrentUser());
-
   // 是否为创建
-  const isCreate: boolean = id === 'create';
-  const isUpdate: boolean = id === 'update';
+  const isCreate: boolean = type === 'create';
+  const isUpdate: boolean = type === 'update';
+  const isView: boolean = type === 'view';
+
+  console.log('id==', id);
 
   // 定义ds
   const [detailDS, supplyScopeDS, companyInfoDS, certDS, siteInspectionDS, agreementManagementDS] = useMemo(() => {
@@ -62,8 +63,14 @@ function Detail(props: DetailProps) {
     const _siteInspectionDS = new DataSet(siteInspectionDSConf());
     const _agreementManagementDS = new DataSet(agreementManagementDSConf());
 
-    if (!isCreate) {
-      _detailDS.setQueryParameter('id', id);
+    _detailDS.setState('supplyScopeDS', _supplyScopeDS);
+    _detailDS.setState('companyInfoDS', _companyInfoDS);
+    _detailDS.setState('certDS', _certDS);
+    _detailDS.setState('siteInspectionDS', _siteInspectionDS);
+    _detailDS.setState('agreementManagementDS', _agreementManagementDS);
+
+    if (isUpdate || isView) {
+      _detailDS.setState('id', id);
       _detailDS.query();
     }
 
@@ -72,7 +79,27 @@ function Detail(props: DetailProps) {
 
   const save = async () => {
     const base = await detailDS.validate();
-    if (base) {
+    const supplyScope = await supplyScopeDS.validate();
+    const siteInspection: boolean = await siteInspectionDS.validate();
+    let companyInfo = true;
+    let cert = true;
+    let agreementManagement = true;
+    if (detailDS?.current?.get('type') === '1') {
+      companyInfo = await companyInfoDS.validate();
+      cert = await certDS.validate();
+      agreementManagement = await agreementManagementDS.validate();
+    }
+
+    console.log('companyInfo==', base, supplyScope, companyInfo, cert, siteInspection, agreementManagement);
+
+    if (base && supplyScope && companyInfo && cert && siteInspection && agreementManagement) {
+      detailDS.current?.set('categoryInfo', JSON.stringify(supplyScopeDS.toData()));
+      detailDS.current?.set('inspectionInfo', JSON.stringify(siteInspectionDS.toData()));
+      if (detailDS?.current?.get('type') === '1') {
+        detailDS.current?.set('certificateInfo', JSON.stringify(certDS.toData()));
+        detailDS.current?.set('subsidiaryInfo', JSON.stringify(companyInfoDS.toData()));
+        detailDS.current?.set('agreementInfo', JSON.stringify(agreementManagementDS.toData()));
+      }
       const res = await detailDS.submit();
       console.log('res==', res);
     }
@@ -84,8 +111,8 @@ function Detail(props: DetailProps) {
   return (
     <>
       <Header
-        title={intl.get('srm.supplier.detail.title').d('供应商')}
-        backPath="/pts/action-item/list"
+        title={intl.get('srm.supplier.detail.title').d('准入及品类扩充')}
+        backPath="/srm/supplier-admission/list"
         isChange={detailDS.dirty}
       >
         <Button icon="save" onClick={save} color={ButtonColor.primary}>
@@ -106,6 +133,7 @@ function Detail(props: DetailProps) {
             ds={detailDS}
             isCreate={isCreate}
             isUpdate={isUpdate}
+            isView={isView}
           />
 
           <SupplyScopeList
@@ -131,6 +159,7 @@ function Detail(props: DetailProps) {
           <SiteInspection
             ds={siteInspectionDS}
             isCreate={isCreate}
+            detailDS={detailDS}
           />
 
           {
