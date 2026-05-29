@@ -27,6 +27,10 @@ export const certDSConf = (): DataSetProps => ({
       name: 'name',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.name`).d('证书名称'),
+      // dynamicProps: {
+      //   required: ({ record }) =>
+      //     record?.get('registrationReview') === checkedValue,
+      // },
       required: true,
     },
     {

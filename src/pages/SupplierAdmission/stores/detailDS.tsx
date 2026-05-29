@@ -37,7 +37,7 @@ export const detailDSConf = (): DataSetProps => {
         name: 'supplierCodeLov',
         type: FieldType.object,
         label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
-        lovCode: 'SCM.SUPPLIER',
+        lovCode: 'SRM.SUPPLIER_LIST',
         textField: 'supplierShortName',
         valueField: 'supplierCode',
         ignore: FieldIgnore.always,
@@ -59,7 +59,7 @@ export const detailDSConf = (): DataSetProps => {
         name: 'supplierTypeId',
         type: FieldType.string,
         label: intl.get(`${intlPrefix}.supplierTypeId`).d('供应商类型'),
-        bind: 'supplierCodeLov.supplierType',
+        bind: 'supplierCodeLov.supplierTypeId',
       },
       {
         name: 'status',
@@ -151,8 +151,9 @@ export const detailDSConf = (): DataSetProps => {
     events: {
       update: async ({ dataSet, record, name, value }) => {
         if (name === 'supplierCodeLov') {
-          _sDetailDS.setState('supplierId', '18');
-          _stDetailDS.setState('supplierId', '1');
+          const supplier = record.get('supplierCodeLov');
+          _sDetailDS.setState('supplierId', supplier.supplierId);
+          _stDetailDS.setState('supplierTypeId', supplier.supplierTypeId);
           await Promise.all([
             _sDetailDS.query(undefined),
             _stDetailDS.query(undefined),

@@ -101,7 +101,7 @@ export const detailDSConf = (): DataSetProps => ({
   ],
   transport: {
     read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
+      const supplierId = dataSet?.getState('supplierTypeId');
       return {
         url: `${HG_SRM_API_PREFIX}/supplier-types/${supplierId}`,
         method: 'get',
