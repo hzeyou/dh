@@ -1,20 +1,20 @@
-import { AxiosRequestConfig } from 'axios';
-import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
+
 import { LovSyncTable } from '@/utils/util';
-import { detailDSConf } from '@/pages/SupplierBusinessChange/stores/detailDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
 export const supplyCategoryDSConf = (): DataSetProps => ({
   autoCreate: false,
+  selection: false,
   fields: [
     {
       name: 'supplierId',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.supplierName`).d('供应商id'),
+      label: intl.get(`${intlPrefix}.supplierId`).d('供应商id'),
       required: true,
       bind: 'supplyCodeLov.supplierId',
     },
@@ -42,19 +42,31 @@ export const supplyCategoryDSConf = (): DataSetProps => ({
     {
       name: 'categoryId',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.categoryId`).d('品类'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.categoryId`).d('品类ID'),
+    },
+    {
+      name: 'categoryName',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.categoryName`).d('品类名称'),
+    },
+    {
+      name: 'level',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.level`).d('供应商等级'),
+      lookupCode: 'SRM.SUPPLIER_LEVEL',
+      bind: 'supplyCodeLov.supplierLevel',
     },
     {
       name: 'categoryLevel',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.categoryLevel`).d('供应商等级'),
-      bind: 'supplyCodeLov.supplierLevel',
+      lookupCode: 'SRM.SUPPLIER_LEVEL',
     },
     {
       name: 'newLevel',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.newLevel`).d('变更后等级'),
+      lookupCode: 'SRM.SUPPLIER_LEVEL',
     },
     {
       name: 'reson',
@@ -78,10 +90,11 @@ export const supplyCategoryDSConf = (): DataSetProps => ({
       ignore: FieldIgnore.always,
     },
   ],
+
   events: {
-    remove: ({dataSet}) => {
+    remove: ({ dataSet }) => {
       const lovDS = dataSet.getState('lovDS');
       LovSyncTable.delete(dataSet, lovDS, 'supplyCodeLov');
-    }
+    },
   },
 });

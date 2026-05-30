@@ -14,7 +14,7 @@ import { Header, Content } from 'components/Page';
 import ExcelExportPro from 'components/ExcelExportPro';
 import intl from 'utils/intl';
 import formatterCollections from 'utils/intl/formatterCollections';
-import { filterNullValueObject } from 'utils/utils';
+
 import withProps from 'utils/withProps';
 import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
@@ -24,7 +24,7 @@ import { listDSConf } from '../stores/listDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 // TODO 1 新建，2 审批中，3 已审批 4 删除，缺失驳回状态
-const editableStatusList = [1,];
+const editableStatusList = [1];
 
 interface HistoryLike {
   push(path: string): void;
@@ -43,16 +43,16 @@ function List(props: ListProps) {
     history.push('/srm/supplier-business-change/create');
   }
 
+  function getChangeId(record: Record) {
+    return record.get('changeId') || record.get('businessChangeId');
+  }
+
   function handleView(record: Record) {
-    history.push(
-      `/srm/supplier-business-change/update/${record.get('businessChangeId')}`,
-    );
+    history.push(`/srm/supplier-business-change/view/${getChangeId(record)}`);
   }
 
   function handleEdit(record: Record) {
-    history.push(
-      `/srm/supplier-business-change/update/${record.get('businessChangeId')}`,
-    );
+    history.push(`/srm/supplier-business-change/update/${getChangeId(record)}`);
   }
 
   async function handleDelete(record: Record) {

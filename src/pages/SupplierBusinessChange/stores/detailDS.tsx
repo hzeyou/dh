@@ -3,25 +3,60 @@ import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';
-import { billTypeOptionsDS, exitTypeOptionsDS } from '@/utils/config';
-import Record from 'choerodon-ui/dataset/data-set/Record';
-import { Form } from 'choerodon-ui/dataset/interface';
+import {
+  billTypeOptionsDS,
+  exitTypeOptionsDS,
+  HG_SRM_API_PREFIX,
+} from '@/utils/config';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+interface BusinessChangeDetailItem {
+  supplierId?: number;
+  supplierCode?: string;
+  supplierName?: string;
+  supplierType?: string;
+  supplierTypeId?: string;
+  level?: string;
+  categoryLevel?: string;
+  supplyCodeLov?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+const transformBusinessChangeDetail = (value: unknown) => {
+  if (!Array.isArray(value)) return [];
+
+  return value.map((item: BusinessChangeDetailItem) => ({
+    ...item,
+    supplyCodeLov: {
+      supplierId: item.supplierId,
+      supplierCode: item.supplierCode,
+      supplierName: item.supplierName,
+      supplierType: item.supplierType || item.supplierTypeId,
+      supplierTypeId: item.supplierTypeId,
+      supplierLevel: item.level || item.categoryLevel,
+    },
+  }));
+};
+
 export const detailDSConf = (): DataSetProps => ({
   autoCreate: true,
-  primaryKey: 'id',
-  idField: 'id',
+  primaryKey: 'changeId',
+  idField: 'changeId',
   fields: [
     {
-      name: 'id',
+      name: 'changeId',
       type: FieldType.number,
+    },
+    {
+      name: 'businessChangeNo',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.businessChangeNo`).d('业务变更单号'),
     },
     {
       name: 'changeCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('批量变更单号'),
+      label: intl.get(`${intlPrefix}.businessChangeNo`).d('业务变更单号'),
     },
     {
       name: 'type',
@@ -36,9 +71,7 @@ export const detailDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.exitType`).d('退出类型'),
       options: exitTypeOptionsDS,
       dynamicProps: {
-        required: ({ dataSet, record, name }) => {
-          return record?.get('type') === '3';
-        }
+        required: ({ record }) => record?.get('type') === '3',
       },
     },
     {
@@ -60,10 +93,18 @@ export const detailDSConf = (): DataSetProps => ({
       ignore: FieldIgnore.always,
       range: ['start', 'end'],
       dynamicProps: {
-        required: ({ dataSet, record, name }) => {
-          return record?.get('type') === '1';
-        }
+        required: ({ record }) => record?.get('type') === '1',
       },
+    },
+    {
+      name: 'applicant',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.applicant`).d('申请人'),
+    },
+    {
+      name: 'createdByName',
+      type: FieldType.string,
+      label: intl.get(`${intlPrefix}.applicant`).d('申请人'),
     },
     {
       name: 'remark',
@@ -71,28 +112,46 @@ export const detailDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.remark`).d('申请说明'),
     },
     {
-      name: 'applicant',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.applicant`).d('申请人'),
+      name: 'attachment',
+      type: FieldType.attachment,
+      label: intl.get(`${intlPrefix}.attachment`).d('附件上传'),
+    },
+    {
+      name: 'admissionCategoryId',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.admissionCategoryId`).d('准入品类ID'),
+    },
+    {
+      name: 'businessChangeDetail',
+      type: FieldType.object,
+      label: intl.get(`${intlPrefix}.businessChangeDetail`).d('业务变更明细'),
+      transformResponse: transformBusinessChangeDetail,
     },
   ],
   transport: {
     read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
+      const changeId = dataSet?.getState('changeId');
       return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
+        url: `${HG_SRM_API_PREFIX}/supplier-business-changes/${changeId}`,
         method: 'get',
       };
     },
-    submit: ({ dataSet, data }): AxiosRequestConfig => {
+    submit: ({ data }): AxiosRequestConfig => ({
+      url: `${HG_SRM_API_PREFIX}/supplier-business-changes/save`,
+      method: 'post',
+      data: data[0],
+    }),
+  },
+  events: {
+    load: ({ dataSet }) => {
+      const supplyCategoryDS = dataSet.getState('supplyCategoryDS');
+      const businessChangeDetail = dataSet.current?.get('businessChangeDetail');
 
-      console.log('data==', data);
+      const list = Array.from(businessChangeDetail);
 
-      return {
-        // url: `${process.env.SRM_DEV_HOST}/srm/supplier`,
-        // method: 'post',
-        // data: data[0],
-      };
+      if (!supplyCategoryDS || !Array.isArray(list)) return;
+
+      supplyCategoryDS.loadData(list);
     },
   },
 });

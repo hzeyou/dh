@@ -1,42 +1,63 @@
 import React from 'react';
 import {
   Attachment,
+  DataSet,
   DatePicker,
   Form,
-  Lov,
-  NumberField,
   Output,
   Select,
   TextArea,
-  TextField,
 } from 'choerodon-ui/pro';
-import { ContentCard } from 'components/Page';
 import { LabelLayout } from 'choerodon-ui/pro/lib/form/enum';
 import { observer } from 'mobx-react';
 
-function Index({ ds, isCreate }) {
+import { ContentCard } from 'components/Page';
+
+interface BusinessChangeProps {
+  ds: DataSet;
+  isCreate: boolean;
+  isUpdate: boolean;
+  isView?: boolean;
+}
+
+function Index(props: BusinessChangeProps) {
+  const { ds, isCreate, isUpdate, isView } = props;
+  const isEditor = !isView && (isCreate || isUpdate);
+  const billNoName = ds?.current?.get('businessChangeNo')
+    ? 'businessChangeNo'
+    : 'changeCode';
+  const applicantName = ds?.current?.get('applicant')
+    ? 'applicant'
+    : 'createdByName';
 
   return (
-    <ContentCard title="批量变更单">
+    <ContentCard title="业务变更">
       <Form dataSet={ds} columns={3} labelLayout={LabelLayout.vertical}>
+        <Output name={billNoName} />
 
-        <Output name="changeCode" />
-
-        <Select name="type" />
+        {isEditor ? <Select name="type" /> : <Output name="type" />}
 
         {ds?.current?.get('type') === '1' ? (
-          <DatePicker name="startEndDate" />
+          isEditor ? (
+            <DatePicker name="startEndDate" />
+          ) : (
+            <Output name="startEndDate" />
+          )
         ) : null}
 
         {ds?.current?.get('type') === '3' ? (
-          <Select name="exitType" />
+          isEditor ? (
+            <Select name="exitType" />
+          ) : (
+            <Output name="exitType" />
+          )
         ) : null}
 
-        <Output name="applicant" newLine />
+        <Output name={applicantName} newLine />
 
-        <TextArea name="remark" />
+        {isEditor ? <TextArea name="remark" /> : <Output name="remark" />}
 
-        <Attachment name="attachment" newLine />
+        <Attachment name="attachment" newLine disabled={isView} />
       </Form>
     </ContentCard>
   );
