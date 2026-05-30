@@ -1,18 +1,12 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Button, DataSet } from 'choerodon-ui/pro';
 import { observer } from 'mobx-react';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 
-import { getCurrentUserId, intl } from 'utils/utils';
+import { intl } from 'utils/utils';
 import formatterCollections from 'utils/intl/formatterCollections';
 
-import {
-  Header,
-  Content,
-  ListContent,
-  ListItem,
-  ContentCard,
-} from 'components/Page';
+import { Header, ListContent, ListItem } from 'components/Page';
 
 import { compose } from '@/utils/util';
 
@@ -25,34 +19,38 @@ import LifeCycleChangeLog from '@/pages/Supplier/components/LifeCycleChangeLog';
 import BusinessInfo from '@/pages/Supplier/components/BusinessInfo';
 
 interface DetailProps {
-  history: any;
   match: {
     params: {
       id: string;
+      type: string;
     };
   };
 }
 
 function Detail(props: DetailProps) {
-  const { history, match } = props;
+  const { match } = props;
   const {
-    params: { id },
+    params: { type, id },
   } = match;
 
-  console.log('actionHeaderId==', id);
-
   // 是否为创建
-  const isCreate: boolean = id === 'create';
+  const isCreate: boolean = type === 'create';
+  const isUpdate: boolean = type === 'update';
+  const editable: boolean = isCreate || isUpdate;
 
   // 定义ds
   const [detailDS, contactDS, bankDS, certDS] = useMemo(() => {
-    const _detailDS = new DataSet(detailDSConf());
     const _contactDS = new DataSet(contactDSConf());
     const _bankDS = new DataSet(bankDSConf());
     const _certDS = new DataSet(certDSConf());
+    const _detailDS = new DataSet(detailDSConf());
 
-    if (!isCreate) {
-      _detailDS.setQueryParameter('id', id);
+    _detailDS.setState('contactDS', _contactDS);
+    _detailDS.setState('bankDS', _bankDS);
+    _detailDS.setState('certDS', _certDS);
+
+    if (id) {
+      _detailDS.setState('supplierId', id);
       _detailDS.query();
     }
 
@@ -68,6 +66,7 @@ function Detail(props: DetailProps) {
     if (base && contact && bank && cert) {
       console.log('contact==', contactDS.toJSONData(), contactDS.toData());
       detailDS.current?.set('contactInfo', JSON.stringify(contactDS.toData()));
+      detailDS.current?.set('bankInfo', JSON.stringify(bankDS.toData()));
       detailDS.current?.set('certificateInfo', JSON.stringify(certDS.toData()));
       const res = await detailDS.submit();
       console.log('res==', res);
@@ -77,17 +76,19 @@ function Detail(props: DetailProps) {
   return (
     <>
       <Header
-        title={intl.get('srm.supplier.detail.title').d('供应商')}
-        backPath="/pts/action-item/list"
-        isChange={detailDS.dirty}
+        title={intl.get('srm.supplier.detail.title').d('供应商详情')}
+        backPath="/srm/supplier/list"
+        isChange={editable && detailDS.dirty}
       >
-        <Button icon="save" onClick={save} color={ButtonColor.primary}>
-          {intl.get('hzero.common.button.save').d('保存')}
-        </Button>
+        {editable && (
+          <Button icon="save" onClick={save} color={ButtonColor.primary}>
+            {intl.get('hzero.common.button.save').d('保存')}
+          </Button>
+        )}
       </Header>
       <ListContent>
         <ListItem>
-          { !isCreate ? (
+          {!isCreate ? (
             <>
               <CompanyInfo ds={detailDS} />
 
@@ -100,9 +101,8 @@ function Detail(props: DetailProps) {
             certDS={certDS}
             contactDS={contactDS}
             bankDS={bankDS}
-            isCreate={isCreate}
+            editable={editable}
           />
-
         </ListItem>
       </ListContent>
     </>

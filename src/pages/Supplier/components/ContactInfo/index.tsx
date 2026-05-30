@@ -1,20 +1,25 @@
-import { TableButtonType, TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
+import {
+  TableButtonType,
+  TableQueryBarType,
+} from 'choerodon-ui/pro/lib/table/enum';
 import { Table } from 'choerodon-ui/pro';
 import React, { useMemo } from 'react';
 import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import { intl } from 'utils/utils';
 import { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
 
-export default function Index({ ds }) {
+export default function Index({ ds, editable = true }) {
+  const columns: Array<ColumnProps> = useMemo(() => {
+    const baseColumns: Array<ColumnProps> = [
+      { name: 'name', editor: editable },
+      { name: 'phone', editor: editable },
+      { name: 'email', editor: editable },
+      { name: 'type', editor: editable },
+      { name: 'isMain', editor: editable },
+    ];
 
-  const columns: Array<ColumnProps> = useMemo(
-    () => [
-      { name: 'name', editor: true },
-      { name: 'phone', editor: true },
-      { name: 'email', editor: true },
-      { name: 'type', editor: true },
-      { name: 'isMain', editor: true },
-      {
+    if (editable) {
+      baseColumns.push({
         header: intl.get('hzero.common.button.action').d('操作'),
         renderer: ({ record }: RenderProps) => {
           if (record == null) return;
@@ -24,18 +29,18 @@ export default function Index({ ds }) {
             </a>
           );
         },
-      },
-    ],
-    [],
-  );
+      });
+    }
+
+    return baseColumns;
+  }, [ds, editable]);
 
   return (
     <Table
       queryBar={TableQueryBarType.filterBar}
       columns={columns}
       dataSet={ds}
-      buttons={[TableButtonType.add]}
+      buttons={editable ? [TableButtonType.add] : []}
     />
   );
-
 }

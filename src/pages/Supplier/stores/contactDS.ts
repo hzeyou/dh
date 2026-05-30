@@ -14,6 +14,7 @@ const mainOptionsDS = new DataSet({data: [ {meaning: '否', value: '0', disabled
 export const contactDSConf = (): DataSetProps => ({
   autoCreate: true,
   dataToJSON: DataToJSON.normal,
+  selection: false,
   fields: [
     {
       name: 'name',
@@ -46,7 +47,8 @@ export const contactDSConf = (): DataSetProps => ({
       label: intl.get(`${intlPrefix}.isZiZhiAudit`).d('是否主要联系人'),
       required: true,
       options: mainOptionsDS,
-      validator: (value, name,dataSet: Record): boolean | string => {
+      validator: (value, name, dataSet: Record): any => {
+        if (dataSet == null) return null;
         let count = 0;
         dataSet?.dataSet?.forEach(record => {
           if (record.get('isMain') === '1') {
@@ -58,25 +60,4 @@ export const contactDSConf = (): DataSetProps => ({
       },
     },
   ],
-  transport: {
-    read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
-        method: 'get',
-      };
-    },
-    submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
-
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
-        data: data[0],
-      };
-    },
-  },
 });

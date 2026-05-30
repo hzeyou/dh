@@ -139,6 +139,7 @@ function Detail(props: DetailProps) {
           <SupplyScopeList
             ds={supplyScopeDS}
             isCreate={isCreate}
+            isUpdate={isUpdate}
           />
 
           {
@@ -147,6 +148,7 @@ function Detail(props: DetailProps) {
                 <CompanyInfo
                   ds={companyInfoDS}
                   isCreate={isCreate}
+                  isUpdate={isUpdate}
                 />
                 <ContentCard title="证书资质信息">
                   <CertInfo ds={certDS} headColumns={[{ name: 'admissionRequirement', editor: true },]}/>
@@ -159,6 +161,8 @@ function Detail(props: DetailProps) {
           <SiteInspection
             ds={siteInspectionDS}
             isCreate={isCreate}
+            isUpdate={isUpdate}
+            isView={isView}
             detailDS={detailDS}
           />
 
@@ -167,6 +171,7 @@ function Detail(props: DetailProps) {
               <AgreementManagement
                 ds={agreementManagementDS}
                 isCreate={isCreate}
+                isUpdate={isUpdate}
               />
             ) : null
           }

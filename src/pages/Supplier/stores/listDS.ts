@@ -88,7 +88,7 @@ export const listDSConf = (): DataSetProps => ({
       lovCode: 'SRM.SUPPLIER_TYPE',
     },
     {
-      name: 'level',
+      name: 'levelMeaning',
       type: FieldType.string,
       label: intl.get(`${intlPrefix}.level`).d('供应商级别'),
       lovCode: 'SRM.SUPPLIER_LEVEL',

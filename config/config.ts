@@ -73,7 +73,7 @@ export default extendParentConfig({
       authorized: true,
     },
     {
-      path: '/srm/supplier/detail/:id', // 采购端
+      path: '/srm/supplier/:type/:id?', // 采购端
       component: './Supplier/Detail',
       authorized: true,
     },

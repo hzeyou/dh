@@ -10,7 +10,6 @@ import {
 } from 'choerodon-ui/pro/lib/table/enum';
 import { observer } from 'mobx-react';
 
-
 import { Header, Content } from 'components/Page';
 import ExcelExportPro from 'components/ExcelExportPro';
 import intl from 'utils/intl';
@@ -20,11 +19,10 @@ import withProps from 'utils/withProps';
 import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { compose } from '@/utils/util';
 import { listDSConf } from '../stores/listDS';
-import {operatorRender} from 'hzero-front/lib/utils/renderer';
+import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { Record } from 'choerodon-ui/dataset';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-
 
 interface ListProps {
   history: any;
@@ -32,34 +30,37 @@ interface ListProps {
 }
 
 function List(props: ListProps) {
-
   const { history, listDS } = props;
 
   const [status, setStatus] = useState('all');
 
-  const tabList = useMemo(() => [
-    { label: '全部', value: 'all' },
-    { label: '注册', value: '1'},
-    { label: '合格', value: '2' },
-    { label: '冻结', value: '3' },
-    { label: '淘汰', value: '4' },
-  ], []);
+  const tabList = useMemo(
+    () => [
+      { label: '全部', value: 'all' },
+      { label: '注册', value: '1' },
+      { label: '合格', value: '2' },
+      { label: '冻结', value: '3' },
+      { label: '淘汰', value: '4' },
+    ],
+    [],
+  );
 
   // 新建
   function handleCreate() {
-    history.push('/srm/supplier/detail/create');
+    history.push('/srm/supplier/view/create');
   }
 
   function handleEdit(record: Record) {
-    history.push(`/srm/supplier/detail/${record.get('supplierId') || record.id}`);
+    history.push(`/srm/supplier/view/${record.get('supplierId') || record.id}`);
   }
+
   // todo
   function goAdmissionDetail(record: Record) {
     history.push(`/srm/supplier/admission/${record.get('admissionNo')}`);
   }
 
   // 表格列
- const columns: Array<ColumnProps> = useMemo(() => {
+  const columns: Array<ColumnProps> = useMemo(() => {
     const baseColumns: Array<ColumnProps> = [
       {
         name: 'supplierCode',
@@ -71,7 +72,7 @@ function List(props: ListProps) {
       { name: 'sapCode', width: 140 },
       { name: 'supplierName', width: 180 },
       { name: 'supplierTypeId', width: 140 },
-      { name: 'level', width: 300 },
+      { name: 'levelMeaning', width: 300 },
       { name: 'status', width: 140, align: ColumnAlign.center },
       { name: 'itemTypes', width: 140 },
       { name: 'createdFrom', width: 120 },
@@ -81,9 +82,13 @@ function List(props: ListProps) {
       baseColumns.push(
         // 注册审核状态 缺字段 暂时registerAuditStatus
         { name: 'registerAuditStatus', width: 140 },
-        { name: 'admissionNo', width: 140,renderer: ({ value, record }) => (
-          <a onClick={() => goAdmissionDetail(record as Record)}>{value}</a>
-        ), },
+        {
+          name: 'admissionNo',
+          width: 140,
+          renderer: ({ value, record }) => (
+            <a onClick={() => goAdmissionDetail(record as Record)}>{value}</a>
+          ),
+        },
       );
     }
 
@@ -98,8 +103,8 @@ function List(props: ListProps) {
         lock: ColumnLock.right,
         width: 200,
         align: ColumnAlign.center,
-        renderer: ({record}) => {
-          const operators:any = [];
+        renderer: ({ record }) => {
+          const operators: any = [];
           if (status === '1') {
             operators.push({
               key: 'action1', // key
@@ -137,7 +142,6 @@ function List(props: ListProps) {
           }
 
           return operatorRender(operators, record, { limit: 6 });
-
         },
       },
     ];
@@ -154,7 +158,10 @@ function List(props: ListProps) {
 
   const onChange = async (activeKey: string) => {
     setStatus(activeKey);
-    await listDS.query(1, activeKey === 'all' ? {} : { status: Number(activeKey) });
+    await listDS.query(
+      1,
+      activeKey === 'all' ? {} : { status: Number(activeKey) },
+    );
   };
 
   return (
@@ -165,23 +172,20 @@ function List(props: ListProps) {
         </Button>
         <ExcelExportPro
           defaultSelectAll
-          modalProps={{closable: true}}
+          modalProps={{ closable: true }}
           requestUrl={`${HG_SRM_API_PREFIX}/suppliers/export`}
           queryParams={getExportQueryParams}
           exportAsync
         />
       </Header>
       <Content>
-        <Tabs  activeKey={status} onChange={onChange}>
-          {
-            tabList.map(item => (
-              <Tabs.TabPane
-                tab={intl.get('pts.pbcBoard.view.tab.kpi').d(item.label)}
-                key={item.value}
-              >
-              </Tabs.TabPane>
-            ))
-          }
+        <Tabs activeKey={status} onChange={onChange}>
+          {tabList.map(item => (
+            <Tabs.TabPane
+              tab={intl.get('pts.pbcBoard.view.tab.kpi').d(item.label)}
+              key={item.value}
+            ></Tabs.TabPane>
+          ))}
         </Tabs>
 
         <Table

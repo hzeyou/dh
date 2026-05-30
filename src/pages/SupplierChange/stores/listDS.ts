@@ -1,97 +1,104 @@
-// import { HG_SRM_API_PREFIX } from '@/utils/config';
-import { AxiosRequestConfig } from 'axios';
-import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { AxiosRequestConfig } from 'axios';
 
+import { HG_SRM_API_PREFIX } from '@/utils/config';
 import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+const statusOptionsDS = new DataSet({
+  data: [
+    { value: 1, meaning: '新建' },
+    { value: 2, meaning: '完成' },
+    { value: 3, meaning: '取消' },
+  ],
+});
+
 export const listDSConf = (): DataSetProps => ({
   selection: false,
+  primaryKey: 'changeId',
+  idField: 'changeId',
   pageSize: 20,
   autoQueryAfterSubmit: false,
   autoQuery: true,
   queryFields: [
     {
-      name: 'field',
+      name: 'changeNo',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('变更单号'),
+      label: intl.get(`${intlPrefix}.changeNo`).d('变更单号'),
     },
     {
-      name: 'field2',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商名称'),
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
     },
     {
-      name: 'field3',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商编码'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
-      name: 'field4',
-      type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('单据状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      name: 'status',
+      type: FieldType.number,
+      label: intl.get(`${intlPrefix}.status`).d('单据状态'),
+      options: statusOptionsDS,
     },
     {
-      name: 'field5',
+      name: 'createdByName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('创建人'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.createdByName`).d('创建人'),
     },
   ],
   fields: [
     {
-      name: 'field',
+      name: 'changeNo',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorCode`).d('变更单号'),
+      label: intl.get(`${intlPrefix}.changeNo`).d('变更单号'),
     },
     {
-      name: 'field1',
+      name: 'supplierCode',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorTypeName`).d('供应商编码'),
+      label: intl.get(`${intlPrefix}.supplierCode`).d('供应商编码'),
     },
     {
-      name: 'field2',
+      name: 'supplierName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('供应商名称'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.supplierName`).d('供应商名称'),
     },
     {
-      name: 'field3',
+      name: 'shortName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('简称'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.shortName`).d('简称'),
     },
     {
-      name: 'field4',
+      name: 'statusMeaning',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('单据状态'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.statusMeaning`).d('单据状态'),
     },
     {
-      name: 'field5',
+      name: 'createdByName',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('创建人'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.createdByName`).d('创建人'),
     },
     {
-      name: 'field6',
+      name: 'creationDateStr',
       type: FieldType.string,
-      label: intl.get(`${intlPrefix}.vendorStatus`).d('创建时间'),
-      lookupCode: 'SRM.ACTION.STATUS',
+      label: intl.get(`${intlPrefix}.creationDateStr`).d('创建时间'),
     },
   ],
   transport: {
-    read: ({ data }): AxiosRequestConfig => {
-      return {
-        // url: `${HG_SRM_API_PREFIX}/supplier`,
-        url: `${process.env.SRM_DEV_HOST}/api/srm/supplier`,
-        method: 'get',
-        data,
-      };
-    },
+    read: ({ data }): AxiosRequestConfig => ({
+      url: `${HG_SRM_API_PREFIX}/supplier-changes`,
+      method: 'get',
+      data,
+    }),
+    destroy: ({ data }): AxiosRequestConfig => ({
+      url: `${HG_SRM_API_PREFIX}/supplier-changes`,
+      method: 'delete',
+      data: {
+        ids: data.map(item => item.changeId),
+      },
+    }),
   },
 });

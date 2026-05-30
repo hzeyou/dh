@@ -16,10 +16,10 @@ export default function Index({ ds, isCreate, isUpdate }) {
 
   const isEditor = isCreate || isUpdate;
 
-  const lovBankDS = useMemo(() => {
-    const _lovBankDS = new DataSet(companyInfoLovDSConf());
-    ds.setState('lovDS', _lovBankDS);
-    return _lovBankDS;
+  const lovDS = useMemo(() => {
+    const _lovDS = new DataSet(companyInfoLovDSConf());
+    ds.setState('lovDS', _lovDS);
+    return _lovDS;
   }, [ds]);
 
   const columns: Array<ColumnProps> = useMemo(
