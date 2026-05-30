@@ -47,7 +47,7 @@ function List(props: ListProps) {
 
   // 新建
   function handleCreate() {
-    history.push('/srm/supplier/view/create');
+    history.push('/srm/supplier/create');
   }
 
   function handleEdit(record: Record) {

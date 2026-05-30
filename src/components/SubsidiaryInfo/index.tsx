@@ -9,7 +9,7 @@ import {LovSyncTable} from '@/utils/util';
 import PermissionButton from 'components/Permission/Button';
 import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import { ContentCard } from 'components/Page';
-import { companyInfoLovDSConf } from '@/pages/SupplierAdmission/stores/companyInfoLovDS';
+import { companyInfoLovDSConf } from '@/stores/subsidiaryInfoLovDS';
 import Record from 'choerodon-ui/dataset/data-set/Record';
 
 export default function Index({ ds, isCreate, isUpdate }) {
@@ -44,34 +44,32 @@ export default function Index({ ds, isCreate, isUpdate }) {
   );
 
   return (
-    <ContentCard title="公司信息">
-      <Table
-        queryBar={TableQueryBarType.filterBar}
-        columns={columns}
-        dataSet={ds}
-        buttons={[
-          /*<PermissionButton
-            key="btn-1"
-            type="text"
-            // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+    <Table
+      queryBar={TableQueryBarType.filterBar}
+      columns={columns}
+      dataSet={ds}
+      buttons={[
+        /*<PermissionButton
+          key="btn-1"
+          type="text"
+          // permissionList={[{ code: 'hzero.pts.execution-rate.work-order.ps.button.import' }]}
+        >
+          <Lov
+            dataSet={lovBankDS}
+            name="lovSortCode"
+            clearButton={false}
+            funcType={FuncType.flat}
+            mode={ViewMode.button}
+            onChange={() => {
+              LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
+            }}
           >
-            <Lov
-              dataSet={lovBankDS}
-              name="lovSortCode"
-              clearButton={false}
-              funcType={FuncType.flat}
-              mode={ViewMode.button}
-              onChange={() => {
-                LovSyncTable.add(ds, lovBankDS, 'lovSortCode', 'supplierId');
-              }}
-            >
-              新建
-            </Lov>
-          </PermissionButton>,*/
-          TableButtonType.add,
-        ]}
-      />
-    </ContentCard>
+            新建
+          </Lov>
+        </PermissionButton>,*/
+        TableButtonType.add,
+      ]}
+    />
 
   );
 

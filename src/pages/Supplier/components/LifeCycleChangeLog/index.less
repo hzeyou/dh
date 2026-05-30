@@ -1,12 +1,49 @@
-.my-steps {
-  justify-content: flex-start;
-  width: auto;
+
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  gap: 60px;
 }
 
-.my-steps :global(.c7n-steps-item-icon) {
-  display: none!important;
+
+
+.boxOuter {
+  position: relative;
+  border: 1px solid #ccc;
 }
 
-.my-steps :global(.c7n-steps-item-title:after) {
-  top: 50%!important;
+/* 添加连接符 */
+.boxOuter:not(:first-child)::before {
+  content: ' ';
+  width: 70px;
+  position: absolute;
+  left: -66px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-bottom: 1px solid #ccc;
 }
+
+.box {
+  background: #fff;
+  position: relative;
+  z-index: 2;
+}
+
+.boxInner {
+  position: relative;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px dashed #ccc;
+  align-items: center;
+}
+
+.body {
+  padding: 10px;
+}
+

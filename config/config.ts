@@ -65,6 +65,7 @@ export default extendParentConfig({
       component: './PurchaseOrder/Detail',
     },
 
+    // 路由变更 end ************************************************************************************
 
     /** 供应商 start */
     {
@@ -108,8 +109,8 @@ export default extendParentConfig({
       authorized: true,
     },
     {
-      path: '/srm/supplier-change/detail/:id', // 采购端
-      component: './SupplierChange/Detail',
+      path: '/srm/supplier-change/:type/:id?', // 采购端
+      component: './Supplier/Detail',
       authorized: true,
     },
     /** 供应商变更 end */
@@ -127,6 +128,8 @@ export default extendParentConfig({
       authorized: true,
     },
     /** 准入及品类扩充 end */
+
+    // 路由变更 end ************************************************************************************
 
     /** 供应商类型 start */
     {

@@ -21,7 +21,6 @@ import { listDSConf } from '../stores/listDS';
 import { operatorRender } from 'hzero-front/lib/utils/renderer';
 import { Record } from 'choerodon-ui/dataset';
 import openDetailModal from '../components/DetailModal';
-import { getCurrentOrganizationId } from 'utils/utils';
 import { HG_SRM_API_PREFIX } from '@/utils/config';
 
 const intlPrefix = 'srm.supplier.model.supplier';
@@ -39,11 +38,6 @@ function List(props: ListProps) {
     openDetailModal({
       data: { onSubmit: () => listDS.query(listDS.currentPage) },
     });
-  }
-
-  // 导出
-  function handleExports() {
-    listDS.export();
   }
 
   function handleEdit(record: Record) {
@@ -92,6 +86,7 @@ function List(props: ListProps) {
             {
               key: 'action2', // key
               ele: (
+                // TODO 需要联调接口
                 <a onClick={() => {}}>
                   {intl.get('hzero.common.button.change').d('重发')}
                 </a>
@@ -101,6 +96,7 @@ function List(props: ListProps) {
             {
               key: 'action3', // key
               ele: (
+                // TODO 需要联调接口
                 <a onClick={() => {}}>
                   {intl.get('hzero.common.button.change').d('关闭')}
                 </a>

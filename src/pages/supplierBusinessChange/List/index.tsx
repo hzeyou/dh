@@ -23,6 +23,7 @@ import { Record } from 'choerodon-ui/dataset';
 import { listDSConf } from '../stores/listDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
+
 // TODO 1 新建，2 审批中，3 已审批 4 删除，缺失驳回状态
 const editableStatusList = [1];
 

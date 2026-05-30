@@ -7,6 +7,7 @@ import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+// TODO 模拟值集
 const statusOptionsDS = new DataSet({
   data: [
     { value: 1, meaning: '新建' },

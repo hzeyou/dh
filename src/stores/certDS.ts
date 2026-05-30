@@ -6,6 +6,7 @@ import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
+// TODO 模拟值集
 const optionsDS = new DataSet({
   data: [
     { meaning: '是', value: '1' },
@@ -31,6 +32,7 @@ export const certDSConf = (): DataSetProps => ({
       //   required: ({ record }) =>
       //     record?.get('registrationReview') === checkedValue,
       // },
+      // TODO 需要动态判断是否必须
       required: true,
     },
     {

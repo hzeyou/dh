@@ -83,28 +83,4 @@ export const siteInspectionDSConf = (): DataSetProps => ({
       ignore: FieldIgnore.always,
     },
   ],
-  transport: {
-    read: ({ dataSet }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier/${supplierId}`,
-        method: 'get',
-      };
-    },
-    submit: ({ dataSet, data }): AxiosRequestConfig => {
-      const supplierId = dataSet?.getState('supplierId');
-      const isCreate = supplierId === 'create';
-
-      return {
-        url: `${process.env.SRM_DEV_HOST}/srm/supplier${
-          isCreate ? '' : `/${supplierId}`
-        }`,
-        method: isCreate ? 'post' : 'put',
-        data: data[0],
-      };
-    },
-  },
-  events: {
-
-  },
 });

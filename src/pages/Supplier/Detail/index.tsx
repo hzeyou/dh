@@ -17,6 +17,7 @@ import { certDSConf } from '@/stores/certDS';
 import CompanyInfo from '@/pages/Supplier/components/CompanyInfo';
 import LifeCycleChangeLog from '@/pages/Supplier/components/LifeCycleChangeLog';
 import BusinessInfo from '@/pages/Supplier/components/BusinessInfo';
+import { lifeCycleChangeLogDSConf } from '@/pages/Supplier/stores/lifeCycleChangeLogDS';
 
 interface DetailProps {
   match: {
@@ -39,10 +40,12 @@ function Detail(props: DetailProps) {
   const editable: boolean = isCreate || isUpdate;
 
   // 定义ds
-  const [detailDS, contactDS, bankDS, certDS] = useMemo(() => {
+  const [detailDS, contactDS, bankDS, certDS, lifeCycleChangeLog] = useMemo(() => {
     const _contactDS = new DataSet(contactDSConf());
     const _bankDS = new DataSet(bankDSConf());
     const _certDS = new DataSet(certDSConf());
+    const _lifeCycleChangeLogDS = new DataSet(lifeCycleChangeLogDSConf());
+
     const _detailDS = new DataSet(detailDSConf());
 
     _detailDS.setState('contactDS', _contactDS);
@@ -54,7 +57,7 @@ function Detail(props: DetailProps) {
       _detailDS.query();
     }
 
-    return [_detailDS, _contactDS, _bankDS, _certDS];
+    return [_detailDS, _contactDS, _bankDS, _certDS, _lifeCycleChangeLogDS];
   }, [id]);
 
   const save = async () => {
@@ -62,14 +65,11 @@ function Detail(props: DetailProps) {
     const contact = await contactDS.validate();
     const bank = await bankDS.validate();
     const cert = await certDS.validate();
-    console.log(base, contact, bank, cert);
     if (base && contact && bank && cert) {
-      console.log('contact==', contactDS.toJSONData(), contactDS.toData());
       detailDS.current?.set('contactInfo', JSON.stringify(contactDS.toData()));
       detailDS.current?.set('bankInfo', JSON.stringify(bankDS.toData()));
       detailDS.current?.set('certificateInfo', JSON.stringify(certDS.toData()));
-      const res = await detailDS.submit();
-      console.log('res==', res);
+      await detailDS.submit();
     }
   };
 
@@ -92,7 +92,7 @@ function Detail(props: DetailProps) {
             <>
               <CompanyInfo ds={detailDS} />
 
-              <LifeCycleChangeLog ds={detailDS} />
+              <LifeCycleChangeLog ds={lifeCycleChangeLog} />
             </>
           ) : null}
 

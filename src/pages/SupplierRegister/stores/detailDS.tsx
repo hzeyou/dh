@@ -73,17 +73,12 @@ export const detailDSConf = (): DataSetProps => ({
       };
     },
     submit: ({ dataSet, data }): AxiosRequestConfig => {
+      // TODO 需要联调接口
       return {
         url: `${HG_SRM_API_PREFIX}/supplier-registrations/save`,
         method: 'post',
         data: data[0],
       };
     },
-    exports: ({ dataSet, data }): AxiosRequestConfig => {
-      return {
-        url: `${HG_SRM_API_PREFIX}/supplier-registrations/export`,
-        method: 'get',
-      };
-    }
   },
 });

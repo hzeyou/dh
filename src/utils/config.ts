@@ -16,7 +16,7 @@ export const SRM_BUCKET_NAME = 'public';
 export const SRM_BUCKET_DIRECTORY = 'srm';
 
 
-
+// TODO 模拟值集
 export const billTypeOptionsDS = new DataSet({
   data: [
     { meaning: '冻结', value: '1' },
@@ -26,6 +26,7 @@ export const billTypeOptionsDS = new DataSet({
   ],
 });
 
+// TODO 模拟值集
 export const exitTypeOptionsDS = new DataSet({
   data: [
     { meaning: '呆滞退出', value: '1' },

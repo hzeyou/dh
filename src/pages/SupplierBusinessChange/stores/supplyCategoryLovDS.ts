@@ -1,5 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
-import DataSet, { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
+import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
 import { FieldIgnore, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 
 import { intl } from 'utils/utils';

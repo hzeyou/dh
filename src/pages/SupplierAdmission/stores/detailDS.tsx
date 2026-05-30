@@ -181,8 +181,7 @@ export const detailDSConf = (): DataSetProps => {
         }
       },
       load: async ({ dataSet }) => {
-        console.log('load', dataSet.toData());
-        //
+
         const _certDS: DataSet = dataSet.getState('certDS');
         const _supplyScopeDS: DataSet = dataSet.getState('supplyScopeDS');
         const _companyInfoDS: DataSet = dataSet.getState('companyInfoDS');
@@ -191,16 +190,19 @@ export const detailDSConf = (): DataSetProps => {
           'agreementManagementDS',
         );
 
+        // TODO 模拟数据
         _certDS.loadData(
           JSON.parse(
             '[{"type":1,"name":"证书名称","number":"证书号","effectiveDate":"2026-06-01","expiryDate":"2027-06-01","remark":"备注","status":1,"attachment":"wwww.cc.com","deleteFlag":0}]',
           ),
         );
 
+        // TODO 模拟数据
         _companyInfoDS.loadData(
           JSON.parse('[{"subsidiaryId":"1","paymentTerms":"1"}]'),
         );
 
+        // TODO 模拟数据
         _supplyScopeDS.loadData([
           {
             categoryId: '1',
@@ -216,12 +218,14 @@ export const detailDSConf = (): DataSetProps => {
           },
         ]);
 
+        // TODO 模拟数据
         _siteInspectionDS.loadData(
           JSON.parse(
             '[{"reviewId":1,"categoryCode":"CAT001","categoryName":"品类名称","auditFormNo":"AUDIT001","auditDate":"2026-05-26","passingScore":80,"totalScore":90,"auditResult":1,"remark":"备注1111","admissionRequirement":"0","deleteFlag":0}]',
           ),
         );
 
+        // TODO 模拟数据
         _agreementManagementDS.loadData(
           JSON.parse(
             '[{"agreementNo":"xy001","agreementName":"协议名称","remark":"备注1备注2备注3","admissionRequirement":"0","deleteFlag":"0"}]',

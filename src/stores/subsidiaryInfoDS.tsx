@@ -5,7 +5,7 @@ import { intl } from 'utils/utils';
 
 const intlPrefix = 'srm.supplier.model.supplier';
 
-export const companyInfoDSConf = (): DataSetProps => ({
+export const subsidiaryInfoDSConf = (): DataSetProps => ({
   autoCreate: false,
   primaryKey: 'id',
   idField: 'id',
