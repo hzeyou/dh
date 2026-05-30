@@ -94,7 +94,7 @@ export default extendParentConfig({
       authorized: true,
     },
     {
-      path: '/srm/supplier-business-change/detail/:id', // 采购端
+      path: '/srm/supplier-business-change/:type/:id?', // 采购端
       component: './SupplierBusinessChange/Detail',
       authorized: true,
     },
