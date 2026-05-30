@@ -23,7 +23,9 @@ import { Record } from 'choerodon-ui/dataset';
 import { listDSConf } from '../stores/listDS';
 
 const intlPrefix = 'srm.supplier.model.supplier';
-const newStatusList = [0, '0', 'NEW', 'new', 'DRAFT', 'draft', '新建'];
+
+// TODO 缺失 草稿状态
+const newStatusList = [0];
 
 interface HistoryLike {
   push(path: string): void;
@@ -39,12 +41,12 @@ function List(props: ListProps) {
 
   // 新建
   function handleCreate() {
-    history.push('/srm/supplier-admission/detail/create');
+    history.push('/srm/supplier-admission/create');
   }
 
   function handleEdit(record: Record, type: string) {
     history.push(
-      `/srm/supplier-admission/detail/${type}/${record.get('assessmentId')}`,
+      `/srm/supplier-admission/${type}/${record.get('assessmentId')}`,
     );
   }
 
@@ -61,10 +63,7 @@ function List(props: ListProps) {
 
   function isNewStatus(record?: Record) {
     if (!record) return false;
-    return (
-      newStatusList.includes(record.get('status')) ||
-      newStatusList.includes(record.get('statusMeaning'))
-    );
+    return newStatusList.includes(record.get('status'));
   }
 
   // 表格列

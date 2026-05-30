@@ -122,7 +122,7 @@ export default extendParentConfig({
       authorized: true,
     },
     {
-      path: '/srm/supplier-admission/detail/:type/:id?', // 采购端
+      path: '/srm/supplier-admission/:type/:id?', // 采购端
       component: './SupplierAdmission/Detail',
       authorized: true,
     },
