@@ -14,6 +14,7 @@ export const supplyCategoryLovDSConf = (): DataSetProps => ({
       type: FieldType.object,
       label: intl.get(`${intlPrefix}.lovSortCode`).d('新建'),
       multiple: true,
+      // TODO 需要值集
       lovCode: 'SCM.SUPPLIER',
       ignore: FieldIgnore.always,
     },
