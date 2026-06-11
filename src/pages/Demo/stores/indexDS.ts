@@ -8,11 +8,11 @@ const organizationId = getCurrentOrganizationId();
 
 const intlPrefix = 'srm.demo.model';
 
-const ListDSConfig = (): DataSetProps => {
+const ListDSConfig = (queryFields?): DataSetProps => {
   return {
     autoQuery: true,
     pageSize: 100,
-    queryFields: [
+    queryFields: queryFields ?? [
       {
         label: intl.get(`${intlPrefix}.title`).d('姓名'),
         name: 'name',
@@ -24,12 +24,6 @@ const ListDSConfig = (): DataSetProps => {
         type: FieldType.number,
         max: 100,
         step: 1
-      },
-      {
-        label: intl.get(`${intlPrefix}.content`).d('邮箱'),
-        name: 'email',
-        type: FieldType.email,
-        help: '用户邮箱，可以自动补全',
       },
     ],
     fields: [
@@ -72,7 +66,6 @@ const ListDSConfig = (): DataSetProps => {
         };
       },
       submit: ({ dataSet, data }) => {
-        console.log('submit==', data);
         return {
           data: data[0],  // body 参数
           url: `${process.env.SRM_DEV_HOST}/demo/`,
@@ -89,11 +82,12 @@ const ListDSConfig = (): DataSetProps => {
       },
     },
     events: {
-      load: ({ dataSet }) => {
-        console.log('load', dataSet);
-      },
-      query: ({ params, data }) => {
-        console.log('query', params, data);
+      query: ({ dataSet, params, data }) => {
+        dataSet.props.queryFields.forEach((fieldItem) => {
+          if (fieldItem.type === 'object' && params[fieldItem.name]) {
+            params[fieldItem.name] = params[fieldItem.name][fieldItem.valueField];
+          }
+        });
       },
     },
   };

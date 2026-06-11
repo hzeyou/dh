@@ -51,6 +51,11 @@ export default extendParentConfig({
           component: './Demo/Lov',
           authorized: true,
         },
+        {
+          path: '/srm/demo/dynamic',
+          component: './Demo/Dynamic',
+          authorized: true,
+        },
       ],
     },
 
