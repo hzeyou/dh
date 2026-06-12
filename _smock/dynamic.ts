@@ -52,6 +52,21 @@ module.exports = {
         res.send({ list: list });
       },
     },
+    {
+      name: 'list',
+      desc: '询报价列表',
+      method: 'GET',
+      url: '/dynamic-head/:id?',
+      handle: (req: Request, res: Response) => {
+        const { id } = req.params;
+        res.status(200);
+        let list = list1;
+        if (Number(id) === 2) {
+          list = list2;
+        }
+        res.send({ list: list });
+      },
+    },
   ]
 
 

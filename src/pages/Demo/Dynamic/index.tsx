@@ -12,7 +12,7 @@ import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
 import {ColumnLock, TableButtonType, TableQueryBarType} from 'choerodon-ui/pro/lib/table/enum';
 import { ButtonColor, FuncType } from 'choerodon-ui/pro/lib/button/enum';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import { ListDSConfig } from '../stores/indexDS';
+import { ListDSConfig as HeadDSConfig } from '../stores/dynamicHeadDS';
 
 
 const intlPrefix = 'srm.demo';
@@ -23,16 +23,17 @@ const Index = (props: ListProps) => {
 
   const [value, setValue] = useState(1);
 
-  const [listDS, setListDS] = useState(new DataSet(ListDSConfig()));
+  const headDS = useState(new DataSet(HeadDSConfig()));
+
+  const [listDS, setListDS] = useState<DataSet|null>(null);
 
   useEffect(() => {
-    fetch(`/dynamic/${value}`).then(res => res.json()).then((res) => {
-      setListDS(new DataSet(ListDSConfig(res.list)));
-    })
+    // fetch(`/dynamic/${value}`).then(res => res.json()).then((res) => {
+    //   setListDS(new DataSet();
+    // })
   }, [value]);
 
   console.log('组件 Demo');
-
 
   function toDetail(mode: 'view' | 'edit' | 'delete', record?: Record | null) {
     if (mode === 'view') {
@@ -45,12 +46,12 @@ const Index = (props: ListProps) => {
 
   async function delItem(record) {
 
-    const res = await listDS.delete(record, intl.get('srm.demo.list.delete.single').d('是否确认删除？'));
+    const res = await listDS?.delete(record, intl.get('srm.demo.list.delete.single').d('是否确认删除？'));
 
     // 刷新
     if (res === false) return;
 
-    listDS.query(listDS.currentPage);
+    listDS?.query(listDS?.currentPage);
 
   }
 
@@ -58,13 +59,11 @@ const Index = (props: ListProps) => {
     {
       width: 200,
       name: 'name',
-      // editor: true,
       help: '主键，区分用户',
     },
     {
       width: 200,
       name: 'age',
-      // editor: true,
       sortable: true,
     },
     {
@@ -141,20 +140,24 @@ const Index = (props: ListProps) => {
 
       </Header>
       <Content>
-        <Table
-          dataSet={listDS}
-          columns={columns}
-          queryBar={TableQueryBarType.professionalBar}
-          queryBarProps={{
-            queryFieldsLimit: 2,
-            fuzzyQueryPlaceholder: intl
-              .get(`${intlPrefix}.view.purchaseCode`)
-              .d('模糊筛选...'),
-            dynamicFilterBar: {
-              searchText: 'condition_key',
-            },
-          }}
-        />
+        {
+          listDS ? (
+            <Table
+              dataSet={listDS}
+              columns={columns}
+              queryBar={TableQueryBarType.professionalBar}
+              queryBarProps={{
+                queryFieldsLimit: 2,
+                fuzzyQueryPlaceholder: intl
+                  .get(`${intlPrefix}.view.purchaseCode`)
+                  .d('模糊筛选...'),
+                dynamicFilterBar: {
+                  searchText: 'condition_key',
+                },
+              }}
+            />
+          ) : null
+        }
       </Content>
     </>
   );
