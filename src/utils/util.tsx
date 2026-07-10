@@ -13,29 +13,29 @@ export const compose = (...fns) => (...args) =>
 
 
 export const LovSyncTable = {
-  add: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, subField: string, fieldLov?: string) => {
+  add: (dsTable: DataSet, dsLov: DataSet, fieldTable: string, subField: string = 'supplierId', fieldLov?: string) => {
     const data = dsLov.current?.toData();
     const list:Array<any> = data?.[fieldLov ?? fieldTable];
 
     const table:Array<any> = dsTable?.toData();
     const set = new Set();
     table.forEach(item => {
-      const key = item[fieldTable]?.supplierId;
+      const key = item[fieldTable]?.[subField];
       if (key) {
         set.add(key);
       }
     });
 
     list?.forEach?.(v => {
-      if (set.has(v.supplierId)) {
-        set.delete(v.supplierId);
+      if (set.has(v[subField])) {
+        set.delete(v[subField]);
       } else {
         dsTable.create({[fieldTable]: v});
       }
     });
 
     Array.from(set).forEach((id) => {
-      const record = dsTable.find((record) => record.get(fieldTable)?.supplierId === id);
+      const record = dsTable.find((record) => record.get(fieldTable)?.[subField] === id);
       if (record) {
         dsTable.remove(record);
       }
