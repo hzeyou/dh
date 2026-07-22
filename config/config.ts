@@ -56,6 +56,11 @@ export default extendParentConfig({
           component: './Demo/Dynamic',
           authorized: true,
         },
+        {
+          path: '/srm/demo/hwkf',
+          component: './Demo/Hwkf',
+          authorized: true,
+        },
       ],
     },
 
